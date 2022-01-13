@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mevron</string>
+    <string name="mevron_logo">mevron logo</string>
+    <string name="let_s_get_started">Let’s Get Started</string>
+    <string name="request_a_ride_at_an_unbeatable_price_safely">Request a ride at an unbeatable price, safely.</string>
+    <string name="forget_about_expensive_trips">Forget about expensive trips.</string>
+</resources>

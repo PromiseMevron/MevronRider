@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".IntroScreenActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/splash"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:background="@drawable/ic_gradient_splash"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:src="@drawable/mevron"
+        android:contentDescription="@string/mevron_logo" />
+    
+
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_25sdp"
+        android:fontFamily="@font/space_mono_bold"
+        android:text="@string/let_s_get_started"
+        android:textColor="@color/black"
+        app:background="@color/white"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="5dp"
+        android:textAllCaps="false"
+        android:textFontWeight="700"
+        android:textSize="@dimen/_16ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:targetApi="p" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineHeight="@dimen/_20sdp"
+        android:text="@string/request_a_ride_at_an_unbeatable_price_safely"
+        android:fontFamily="@font/space_mono"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/start_button"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:textSize="@dimen/_18ssp"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        tools:targetApi="p" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineHeight="@dimen/_50sdp"
+        android:text="@string/forget_about_expensive_trips"
+        android:fontFamily="@font/space_mono_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/subtitle"
+        android:layout_marginBottom="@dimen/_4sdp"
+        android:textSize="@dimen/_40ssp"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        tools:targetApi="p" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
