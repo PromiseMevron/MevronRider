@@ -40,7 +40,7 @@ object LauncherUtil {
                     action()
                     dismiss()
                 }
-                setActionTextColor(ContextCompat.getColor(context,R.color.colorDeepGreen))
+                setActionTextColor(ContextCompat.getColor(context,R.color.black))
                 show()
             }
     }
