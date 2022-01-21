@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/bottomSheet"
+    android:background="@drawable/rounded_corner"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="@dimen/_250sdp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+
+<TextView
+        android:id="@+id/name_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hey_there"
+        android:textColor="#666666"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_15ssp"/>
+
+    <TextView
+        android:id="@+id/where_go"
+        android:layout_width="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:text="@string/where_are_you_going"
+        app:layout_constraintTop_toBottomOf="@id/name_display"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:maxLines="1"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_20ssp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/destAddressLayout"
+        android:hint="@string/search_your_destination"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/where_go"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        app:startIconDrawable="@drawable/ic_search"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/destAddressField"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:imeOptions="actionDone"
+            android:focusableInTouchMode="false"
+            android:background="#F2F2F2"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/_13ssp"
+            tools:ignore="Autofill" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/address_item"
+        tools:itemCount="4"
+        app:layout_constraintTop_toBottomOf="@id/destAddressLayout"
+        android:layout_marginTop="@dimen/_24sdp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

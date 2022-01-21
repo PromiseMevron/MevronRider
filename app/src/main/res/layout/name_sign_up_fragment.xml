@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".auth.PhoneLoginFragment">
+
+    <ImageButton
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:backgroundTint="@android:color/transparent"
+        android:id="@+id/back_button"
+        android:src="@drawable/ic_back_button"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/back_button"/>
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/what_s_your_name"
+        android:fontFamily="@font/dmsans_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_25ssp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        tools:targetApi="p" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/your_name_helps_drivers_to_identify_you"
+        android:fontFamily="@font/dmsans_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_14ssp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:textColor="@color/gray_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text1"
+        tools:targetApi="p" />
+
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text2"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_30sdp">
+
+
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/rider_name"
+            android:hint="e.g. John Doe"
+            android:textColor="#333333"
+            android:backgroundTint="@android:color/transparent"
+            android:inputType="textPersonName"/>
+
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:src="@drawable/incorrect_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_layout"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:id="@+id/incorrect_number"/>
+
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/next_enabled"
+        android:backgroundTint="@android:color/transparent"
+        android:enabled="true"
+        android:id="@+id/next_button"
+        android:contentDescription="@string/next_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/_25sdp"
+        app:layout_constraintTop_toBottomOf="@id/incorrect_number"
+        android:layout_marginTop="@dimen/_20sdp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

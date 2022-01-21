@@ -4,4 +4,21 @@
     <string name="let_s_get_started">Let’s Get Started</string>
     <string name="request_a_ride_at_an_unbeatable_price_safely">Request a ride at an unbeatable price, safely.</string>
     <string name="forget_about_expensive_trips">Forget about expensive trips.</string>
+    <string name="back_button">back button</string>
+    <string name="hey_tell_us_your_mobile_number">Hey, tell us your mobile number</string>
+    <string name="we_ll_send_a_verification_code_on_this_number">We’ll send a verification code on this number.</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="next_button">Next Button</string>
+    <string name="enter_the_verification_code_sent_to_you">Enter the verification code sent to you</string>
+    <string name="we_have_sent_you_a_six_digit_code_on_your">We have sent you a six-digit code on your</string>
+    <string name="resend_code">Resend code</string>
+    <string name="what_s_your_name">What’s your name?</string>
+    <string name="your_name_helps_drivers_to_identify_you">Your name helps drivers to identify you.</string>
+    <string name="by_continuing_i_agree_to_the">By continuing, I agree to the</string>
+    <string name="terms_of_use_amp_privacy_policy"><![CDATA[terms of use & privacy policy.]]></string>
+    <string name="tell_us_your_email">Tell us your email?</string>
+    <string name="an_email_address_lets_us_share_trip_recipts">An email address lets us share trip recipts</string>
+    <string name="hey_there">Hey there,</string>
+    <string name="where_are_you_going">Where are you going?</string>
+    <string name="search_your_destination">Search your destination</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_graph"
+    app:startDestination="@id/phoneLoginFragment">
+
+    <fragment
+        android:id="@+id/phoneLoginFragment"
+        android:name="com.mevron.rides.rider.auth.PhoneLoginFragment"
+        android:label=""
+        tools:layout="@layout/phone_login_fragment" >
+        <action
+            android:id="@+id/action_phoneLoginFragment_to_OTPFragment"
+            app:destination="@id/OTPFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPFragment"
+        android:name="com.mevron.rides.rider.auth.OTPFragment"
+        tools:layout="@layout/o_t_fragment" >
+        <action
+            android:id="@+id/action_OTPFragment_to_nameSignUpFragment"
+            app:destination="@id/nameSignUpFragment" />
+        <argument
+            android:name="phone"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/nameSignUpFragment"
+        android:name="com.mevron.rides.rider.auth.NameSignUpFragment"
+        android:label="NameSignUpFragment"
+        tools:layout="@layout/name_sign_up_fragment">
+        <action
+            android:id="@+id/action_nameSignUpFragment_to_emailLoginFragment"
+            app:destination="@id/emailLoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailLoginFragment"
+        android:name="com.mevron.rides.rider.auth.EmailLoginFragment"
+        android:label="EmailLoginFragment"
+        tools:layout="@layout/email_login_fragment">
+        <argument android:name="name"
+            app:argType="string" />
+    </fragment>
+</navigation>
