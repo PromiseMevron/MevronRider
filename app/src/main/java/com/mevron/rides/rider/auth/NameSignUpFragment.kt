@@ -1,19 +1,16 @@
 package com.mevron.rides.rider.auth
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
-import androidx.databinding.DataBindingUtil
+import android.widget.EditText
+import android.widget.ImageButton
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.mevron.rides.rider.R
-import com.mevron.rides.rider.databinding.NameSignUpFragmentBinding
 
 class NameSignUpFragment : Fragment() {
 
@@ -22,56 +19,65 @@ class NameSignUpFragment : Fragment() {
     }
 
     private lateinit var viewModel: NameSignUpViewModel
-    private lateinit var binding: NameSignUpFragmentBinding
+   // private lateinit var binding: NameSignUpFragmentBinding
+    private lateinit var nextButton: ImageButton
+    private lateinit var backButton: ImageButton
+    private lateinit var riderName: EditText
+    //
     private var name = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.name_sign_up_fragment, container, false)
-
-        return binding.root
+      //  binding = DataBindingUtil.inflate(inflater, R.layout.name_sign_up_fragment, container, false)
+        val view = inflater.inflate(R.layout.name_sign_up_fragment, container, false)
+        riderName = view.findViewById(R.id.rider_name)
+        nextButton = view.findViewById(R.id.next_button)
+        backButton = view.findViewById(R.id.back_button)
+       // return binding.root
+        return  view
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.nextButton.setOnClickListener {
-            validateText()
+
+        nextButton.setOnClickListener {
+          ///  validateText()
+            nextButton.setImageResource(R.drawable.next_enabled)
+             val action = NameSignUpFragmentDirections.actionNameSignUpFragmentToEmailLoginFragment(name)
+             findNavController().navigate(action)
         }
 
-        binding.backButton.setOnClickListener {
+        backButton.setOnClickListener {
             activity?.onBackPressed()
         }
-        binding.riderName.addTextChangedListener {
-            object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                   // validateText()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {
-                 //   validateText()
-                }
-
+        riderName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
             }
-        }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+               // validateText()
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateText()
+            }
+        })
     }
 
     fun validateText(){
-       val name = binding.riderName.text.toString()
+        name = riderName.text.toString()
         if (AuthUtil.validateFullName(name)){
-          //  binding.nextButton.isEnabled = true
-           // binding.nextButton.setImageResource(R.drawable.next_enabled)
-            val action = NameSignUpFragmentDirections.actionNameSignUpFragmentToEmailLoginFragment(name)
-            findNavController().navigate(action)
+            nextButton.isEnabled = true
+            nextButton.setImageResource(R.drawable.next_enabled)
+
         }else{
-            Toast.makeText(context, "Enter your full name", Toast.LENGTH_LONG).show()
-           // binding.nextButton.isEnabled = false
-            //binding.nextButton.setImageResource(R.drawable.next_unenabled)
+           // Toast.makeText(context, "Enter your full name", Toast.LENGTH_LONG).show()
+           nextButton.isEnabled = false
+            nextButton.setImageResource(R.drawable.next_unenabled)
         }
     }
 

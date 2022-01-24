@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_done_unenabled"
         android:backgroundTint="@android:color/transparent"
-        android:enabled="true"
+        android:enabled="false"
         android:id="@+id/next_button"
         android:contentDescription="@string/next_button"
         app:layout_constraintEnd_toEndOf="parent"

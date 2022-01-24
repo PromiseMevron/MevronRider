@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_all_saved.xml" value="0.16458333333333333" />
+        <entry key="app/src/main/res/drawable/ic_all_saved_address.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_done_enabled.xml" value="0.1453125" />
         <entry key="app/src/main/res/drawable/ic_error_otp.xml" value="0.2523076923076923" />

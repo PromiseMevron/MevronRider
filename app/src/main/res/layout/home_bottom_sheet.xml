@@ -92,15 +92,12 @@
 
             <ImageView
                 android:id="@+id/display_image"
-                android:layout_width="@dimen/_42sdp"
-                android:layout_height="@dimen/_42sdp"
-                android:src="@drawable/ic_search"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:src="@drawable/ic_all_saved"
                 android:layout_marginStart="@dimen/_12sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-
-
-
 
 
                 <TextView
@@ -118,6 +115,15 @@
                     app:layout_constraintBottom_toBottomOf="@id/display_image"
                     android:fontFamily="@font/poppins_regular"
                     android:textSize="@dimen/_15ssp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/display_image"
+                app:layout_constraintBottom_toBottomOf="@id/display_image"
+                android:src="@drawable/ic_next"/>
+
 
 
 

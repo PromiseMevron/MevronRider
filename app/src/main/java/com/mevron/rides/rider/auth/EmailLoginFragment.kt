@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,8 +56,22 @@ class EmailLoginFragment : Fragment() {
         }
 
         binding.nextButton.setOnClickListener {
-            validateEmail()
+            submitDetail()
         }
+
+        binding.riderName.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                 //   validateEmail()
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    validateEmail()
+                }
+            })
+
     }
 
     fun moveToHome(){
@@ -66,9 +82,13 @@ class EmailLoginFragment : Fragment() {
     fun validateEmail(){
         email = binding.riderName.text.toString()
         if (AuthUtil.validateEmail(email)){
-            submitDetail()
+          //  submitDetail()
+            binding.nextButton.isEnabled = true
+            binding.nextButton.setImageResource(R.drawable.ic_done_enabled)
         }else{
-            Toast.makeText(context, "Enter a valid email", Toast.LENGTH_LONG).show()
+           // Toast.makeText(context, "Enter a valid email", Toast.LENGTH_LONG).show
+            binding.nextButton.isEnabled = true
+            binding.nextButton.setImageResource(R.drawable.ic_done_unenabled)
         }
     }
 

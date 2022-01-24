@@ -15,7 +15,7 @@ class IntroScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_intro_screen)
         val button = findViewById<Button>(R.id.start_button)
         button.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, AuthActivity::class.java))
             finish()
         }
     }
