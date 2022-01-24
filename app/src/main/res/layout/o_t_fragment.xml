@@ -74,10 +74,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:itemBackground="@android:color/transparent"
-            android:textColor="@android:color/black"
+            android:itemBackground="#C4C4C4"
+            android:textColor="#040472"
             app:lineColor="#000000"
-            app:viewType="line" />
+            app:viewType="none" />
 
 
     </LinearLayout>
@@ -104,8 +104,8 @@
         android:contentDescription="@string/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/_25sdp"
-        app:layout_constraintTop_toBottomOf="@id/incorrect_number"
-        android:layout_marginTop="@dimen/_20sdp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/_20sdp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:backgroundTint="@android:color/transparent"
-            android:src="@drawable/ic_resend"/>
+            android:src="@drawable/ic_resend_unenabled"/>
 
 
         <TextView
@@ -135,7 +135,7 @@
             android:gravity="center_vertical"
             android:fontFamily="@font/dmsans_regular"
             android:textSize="@dimen/_12ssp"
-            android:textColor="@color/primary_dark"
+            android:textColor="@color/gray_color"
             tools:targetApi="p" />
 
 

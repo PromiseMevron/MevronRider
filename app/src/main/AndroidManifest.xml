@@ -10,6 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mevron">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE" />
+
+
         <activity
             android:name=".home.HomeActivity"
             android:exported="false" />

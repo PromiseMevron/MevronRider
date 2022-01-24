@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_done_enabled.xml" value="0.1453125" />
         <entry key="app/src/main/res/drawable/ic_error_otp.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_frame_31.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_image_68.xml" value="0.25625" />
@@ -22,11 +23,12 @@
         <entry key="app/src/main/res/layout/address_item.xml" value="0.23233695652173914" />
         <entry key="app/src/main/res/layout/dialog_busy_layout.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/email_login_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.22864583333333333" />
-        <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.22604166666666667" />
-        <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.24270833333333333" />
       </map>
     </option>
@@ -40,7 +42,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.335" />
+        <option name="scale" value="0.1424731182795699" />
       </ProjectState>
     </option>
   </component>

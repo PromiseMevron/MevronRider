@@ -29,9 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/tell_us_your_email"
-        android:fontFamily="@font/dmsans_regular"
+        android:fontFamily="@font/poppins_regular"
         android:textFontWeight="500"
-        android:textSize="@dimen/_25ssp"
+        android:textSize="@dimen/_18ssp"
         android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginEnd="@dimen/_14sdp"
         android:layout_marginTop="@dimen/_40sdp"
@@ -46,9 +46,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/an_email_address_lets_us_share_trip_recipts"
-        android:fontFamily="@font/dmsans_regular"
+        android:fontFamily="@font/poppins_regular"
         android:textFontWeight="500"
-        android:textSize="@dimen/_14ssp"
+        android:textSize="@dimen/_12ssp"
         android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginEnd="@dimen/_14sdp"
         android:layout_marginTop="@dimen/_12sdp"
@@ -75,12 +75,12 @@
 
         <EditText
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_weight="2"
+            android:background="#c4c4c4"
             android:id="@+id/rider_name"
             android:hint="e.g. abc@xyz.com"
-            android:textColor="#333333"
-            android:backgroundTint="@android:color/transparent"
+            android:textColor="#383838"
             android:inputType="textEmailAddress"/>
 
 
@@ -102,14 +102,15 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_done_enabled"
+        android:src="@drawable/ic_done_unenabled"
         android:backgroundTint="@android:color/transparent"
         android:enabled="true"
         android:id="@+id/next_button"
         android:contentDescription="@string/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/_25sdp"
-        app:layout_constraintTop_toBottomOf="@id/incorrect_number"
+        android:layout_marginBottom="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/_20sdp"/>
 
     <LinearLayout
@@ -129,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/by_continuing_i_agree_to_the"
-            android:fontFamily="@font/dmsans_regular"
+            android:fontFamily="@font/poppins_regular"
             android:textFontWeight="500"
             android:textSize="@dimen/_10ssp"
             android:textColor="@color/gray_color"
@@ -143,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/terms_of_use_amp_privacy_policy"
-            android:fontFamily="@font/dmsans_regular"
+            android:fontFamily="@font/poppins_regular"
             android:textFontWeight="500"
             android:textSize="@dimen/_10ssp"
             android:textColor="@color/primary_dark"

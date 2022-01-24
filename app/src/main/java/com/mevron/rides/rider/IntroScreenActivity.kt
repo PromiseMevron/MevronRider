@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.mevron.rides.rider.auth.AuthActivity
+import com.mevron.rides.rider.home.HomeActivity
 
 class IntroScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +15,7 @@ class IntroScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_intro_screen)
         val button = findViewById<Button>(R.id.start_button)
         button.setOnClickListener {
-            startActivity(Intent(this, AuthActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
     }
