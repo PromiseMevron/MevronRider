@@ -18,8 +18,7 @@ class NameSignUpFragment : Fragment() {
         fun newInstance() = NameSignUpFragment()
     }
 
-    private lateinit var viewModel: NameSignUpViewModel
-   // private lateinit var binding: NameSignUpFragmentBinding
+
     private lateinit var nextButton: ImageButton
     private lateinit var backButton: ImageButton
     private lateinit var riderName: EditText

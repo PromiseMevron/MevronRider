@@ -1,12 +1,16 @@
 package com.mevron.rides.rider.home
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.databinding.HomeFragmentBinding
 
 class HomeFragment : Fragment() {
 
@@ -15,18 +19,44 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var binding: HomeFragmentBinding
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
+        return  binding.root
+       // return inflater.inflate()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.mevronHomeBottom.destAddressField.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
+        }
+
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronHomeBottom.bottomSheet)
+
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+               when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> binding.mevronHomeBottom.allSavedLayout.visibility = View.VISIBLE
+                    BottomSheetBehavior.STATE_COLLAPSED -> binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
+                    else -> binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
+                }
+            }
+        })
     }
+
+
 
 }

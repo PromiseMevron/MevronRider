@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.mevron.rides.rider.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/home_fragment" />
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="com.mevron.rides.rider.home.search.SearchLocationFragment"
+        tools:layout="@layout/search_location_fragment"
+        android:label="SearchLocationFragment" />
 </navigation>

@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/myRideFragment"
+            android:title="@string/my_rides" />
+        <item
+            android:id="@+id/notificationFragment"
+            android:title="@string/notifications" />
+        <item
+            android:id="@+id/paymentFragment"
+            android:title="@string/payment" />
+
+        <item
+            android:id="@+id/helpFragment"
+            android:title="@string/help" />
+        <item
+            android:id="@+id/settingsFragment"
+            android:title="@string/settings" />
+
+
+
+    </group>
 </menu>

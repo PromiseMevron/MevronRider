@@ -31,7 +31,8 @@
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.24270833333333333" />
+        <entry key="app/src/main/res/layout/search_location_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.25" />
       </map>
     </option>
   </component>
@@ -44,7 +45,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.1424731182795699" />
+        <option name="scale" value="0.24010416666666667" />
       </ProjectState>
     </option>
   </component>

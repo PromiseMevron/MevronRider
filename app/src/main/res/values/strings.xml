@@ -22,4 +22,18 @@
     <string name="where_are_you_going">Where are you going?</string>
     <string name="search_your_destination">Search your destination</string>
     <string name="all_saved_places">All Saved Places</string>
+    <string name="close_button">Close Button</string>
+    <string name="start">Start</string>
+    <string name="from">From</string>
+    <string name="where_to">Where to?</string>
+    <string name="add_stop">add stop</string>
+    <string name="add_home">Add Home</string>
+    <string name="add_work">Add Work</string>
+    <string name="current_location">Current Location</string>
+    <string name="set_location_on_the_map">Set location on the map</string>
+    <string name="my_rides">My Rides</string>
+    <string name="notifications">Notifications</string>
+    <string name="payment">Payment</string>
+    <string name="help">Help</string>
+    <string name="settings">Settings</string>
 </resources>
