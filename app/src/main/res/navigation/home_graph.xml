@@ -18,5 +18,14 @@
         android:id="@+id/searchLocationFragment"
         android:name="com.mevron.rides.rider.home.search.SearchLocationFragment"
         tools:layout="@layout/search_location_fragment"
-        android:label="SearchLocationFragment" />
+        android:label="SearchLocationFragment" >
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectOnMapFragment"
+            app:destination="@id/selectOnMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectOnMapFragment"
+        android:name="com.mevron.rides.rider.home.selectmap.SelectOnMapFragment"
+        tools:layout="@layout/select_on_map_fragment"
+        android:label="SelectOnMapFragment" />
 </navigation>

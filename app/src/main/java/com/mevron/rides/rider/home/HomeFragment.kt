@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,6 +25,8 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawer: ImageButton
 
 
     override fun onCreateView(
@@ -28,14 +34,20 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
+
         return  binding.root
        // return inflater.inflate()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.mevronHomeBottom.destAddressField.setOnClickListener {
+
+                binding.mevronHomeBottom.destAddressField.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
         }
 
@@ -55,6 +67,22 @@ class HomeFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        drawerLayout = activity?.findViewById(R.id.drawer_layout)!!
+        drawer = binding.drawerButton
+        drawer.setOnClickListener {
+
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
     }
 
 

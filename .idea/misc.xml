@@ -19,19 +19,21 @@
         <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.25625" />
         <entry key="app/src/main/res/font/sssss.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.209375" />
-        <entry key="app/src/main/res/layout/activity_home.xml" value="0.2391304347826087" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.11764705882352941" />
         <entry key="app/src/main/res/layout/activity_intro_screen.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/address_item.xml" value="0.23233695652173914" />
         <entry key="app/src/main/res/layout/dialog_busy_layout.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/email_login_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/empty_header.xml" value="0.12083333333333333" />
         <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/search_location_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/search_location_fragment.xml" value="0.10416666666666667" />
+        <entry key="app/src/main/res/layout/select_on_map_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.25" />
       </map>
     </option>

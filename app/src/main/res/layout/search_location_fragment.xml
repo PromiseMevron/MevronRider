@@ -2,13 +2,13 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/_22sdp"
+
+    android:background="#ffffff"
     tools:context=".home.search.SearchLocationFragment">
 
     <ImageButton
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/close"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_32sdp"
         android:layout_marginStart="@dimen/_20sdp"
         android:contentDescription="@string/close_button"/>
 
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_32sdp"
         android:textSize="@dimen/_15ssp"
         android:fontFamily="@font/poppins_regular"
         android:textFontWeight="500"

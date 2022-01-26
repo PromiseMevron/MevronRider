@@ -22,9 +22,7 @@
             android:id="@+id/mapView"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="-290dp" />
+            android:layout_height="match_parent"/>
 
         <ImageButton
             app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +34,19 @@
             android:scaleType="centerCrop"
             android:layout_marginBottom="@dimen/_260sdp"
             android:id="@+id/schedule_button"/>
+
+        <ImageButton
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="@dimen/_52sdp"
+            android:layout_height="@dimen/_52sdp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_open_drawer"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_260sdp"
+            android:id="@+id/drawer_button"/>
 
 
 
