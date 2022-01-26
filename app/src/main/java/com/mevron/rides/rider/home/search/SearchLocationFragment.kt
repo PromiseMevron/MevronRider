@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SearchLocationFragmentBinding
 
@@ -30,6 +31,10 @@ class SearchLocationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.close.setOnClickListener {
             activity?.onBackPressed()
+        }
+
+        binding.selectOnMap.setOnClickListener {
+            findNavController().navigate(R.id.action_searchLocationFragment_to_selectOnMapFragment)
         }
 
     }
