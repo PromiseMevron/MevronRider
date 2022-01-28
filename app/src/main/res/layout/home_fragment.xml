@@ -17,12 +17,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <fragment
-            android:id="@+id/mapView"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <fragment
+                android:id="@+id/mapView"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
 
         <ImageButton
             app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +58,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
+        android:visibility="visible"
         android:id="@+id/mevron_home_bottom"
         layout="@layout/home_bottom_sheet" />
 

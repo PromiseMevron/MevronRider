@@ -112,7 +112,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/destAddressLayout"
-
+        android:visibility="gone"
         android:layout_marginTop="@dimen/_2sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,8 +130,6 @@
             android:id="@+id/destAddressField"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
-            android:hint="@string/search_your_destination"
-
             android:background="#F2F2F2"
             android:inputType="textPersonName"
             android:textSize="@dimen/_13ssp"
@@ -141,6 +139,7 @@
 
 
     <ImageButton
+        android:visibility="gone"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
         android:background="@android:color/transparent"
@@ -150,7 +149,7 @@
         android:layout_marginEnd="@dimen/_10sdp"
         android:id="@+id/add_dest"
         android:contentDescription="@string/add_stop"
-        android:src="@drawable/ic_plus"/>
+        android:src="@drawable/ic_minus"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -348,13 +347,52 @@
     </LinearLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
+<!--    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/recycler_view"
         tools:listitem="@layout/address_item"
         app:layout_constraintTop_toBottomOf="@id/current_location"
-        app:layout_constraintBottom_toTopOf="@id/select_on_map"/>
+        app:layout_constraintBottom_toTopOf="@id/select_on_map"/>-->
+
+
+    <androidx.core.widget.NestedScrollView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/current_location"
+        app:layout_constraintBottom_toTopOf="@id/select_on_map"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_170sdp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:id="@+id/recyclerLayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/placesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:listitem="@layout/address_item"
+                android:paddingBottom="@dimen/_16sdp"
+                android:clipToPadding="false"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/savedPlacesRecyclerView"
+                android:layout_width="match_parent"
+                tools:listitem="@layout/address_item"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_16sdp"
+                android:clipToPadding="false"/>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 
 

@@ -40,4 +40,6 @@
     <string name="pick_me_from_here">Pick me from here</string>
     <string name="set_drop_off_location_on_map">Set drop-off location on map</string>
     <string name="drop_me_here">Drop me here</string>
+    <string name="choose_your_ride">Choose your ride</string>
+    <string name="confirm_economy">Confirm Economy</string>
 </resources>

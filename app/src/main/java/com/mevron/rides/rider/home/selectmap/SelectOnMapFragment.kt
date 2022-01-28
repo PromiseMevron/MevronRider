@@ -1,15 +1,58 @@
 package com.mevron.rides.rider.home.selectmap
 
+import android.Manifest
+import android.content.Context
+import android.content.IntentSender
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.RelativeLayout
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
+import com.mevron.rides.rider.util.Constants
+import com.google.android.gms.maps.model.Marker
+import java.util.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
-class SelectOnMapFragment : Fragment() {
+import com.google.android.gms.maps.model.MarkerOptions
+
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
+import java.io.IOException
+import java.lang.StringBuilder
+import android.graphics.Bitmap
+import android.graphics.Canvas
+
+import android.graphics.drawable.Drawable
+import androidx.navigation.fragment.findNavController
+
+import com.google.android.gms.maps.model.BitmapDescriptor
+
+
+
+
+
+class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
     companion object {
         fun newInstance() = SelectOnMapFragment()
@@ -17,6 +60,10 @@ class SelectOnMapFragment : Fragment() {
 
     private lateinit var viewModel: SelectOnMapViewModel
     private lateinit var binding: SelectOnMapFragmentBinding
+    private lateinit var gMap: GoogleMap
+    private lateinit var mapView: SupportMapFragment
+    private var marker: Marker? = null
+    private lateinit var locationField: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +76,9 @@ class SelectOnMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+
+        locationField = binding.startAddressField
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -36,9 +86,213 @@ class SelectOnMapFragment : Fragment() {
         binding.pickMe.setOnClickListener {
             binding.pickMeLqyout.visibility = View.GONE
             binding.dropMeLqyout.visibility = View.VISIBLE
+            locationField = binding.endAddressField
+            marker?.remove()
+        }
+
+        binding.dropMe.setOnClickListener {
+            findNavController().navigate(R.id.action_selectOnMapFragment_to_selectRideFragment)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+
+        if (googleMap != null) {
+            gMap = googleMap
+
+            gMap.setOnMapClickListener(this)
+            gMap.setOnMapLongClickListener(this)
+        }
+
+
+        MapsInitializer.initialize(activity?.applicationContext)
+
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+            != PackageManager.PERMISSION_GRANTED && context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+            } != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            return
+        }
+
+     /*   googleMap?.setOnMapClickListener {
+            Toast.makeText(context, "ww", Toast.LENGTH_LONG).show()
+            getAddressFromLocation(it)
+        }*/
+        val gMapView = mapView.view
+        if (gMapView?.findViewById<View>("1".toInt()) != null) {
+            val locationButton = (gMapView.findViewById<View>("1".toInt()).parent as View).findViewById<View>("2".toInt())
+            val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+            layoutParams.setMargins(0, 0, 30, 850)
+        }
+
+        googleMap?.isMyLocationEnabled = true
+        googleMap?.isMyLocationEnabled = true
+        googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+
+        getLocationProvider()?.lastLocation?.addOnSuccessListener {
+
+            val location = it
+            if (location != null) {
+                val currentLocation = LatLng(location.latitude, location.longitude)
+                val cameraPosition = CameraPosition.Builder()
+                    .bearing(0.toFloat())
+                    .target(currentLocation)
+                    .zoom(15.toFloat())
+                    .build()
+                googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
+            } else { displayLocationSettingsRequest() }
+        }
+            ?.addOnFailureListener {
+                it.printStackTrace()
+            }
+
+
+    }
+
+    private fun displayLocationSettingsRequest() {
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 500
+        locationRequest.fastestInterval = 100
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        val client = context?.let { LocationServices.getSettingsClient(it) }
+        val task = client?.checkLocationSettings(builder.build())
+        task?.addOnFailureListener { locationException: java.lang.Exception? ->
+            if (locationException is ResolvableApiException) {
+                try {
+                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
+                } catch (senderException: IntentSender.SendIntentException) {
+                    senderException.printStackTrace()
+                    /*  Snackbar.make(context, binding.root,"Please enable location setting to use your current address.",
+
+                          View.OnClickListener { displayLocationSettingsRequest() }, "Retry", Snackbar.LENGTH_LONG
+
+                          )*/
+
+                    val snackbar = Snackbar
+                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
+                        .setAction("Retry") {
+                            displayLocationSettingsRequest()
+                        }
+
+                    snackbar.show()
+                    // showErrorMessage(context, constraintLayout, "Please enable location setting to use your current address.",
+                    //  View.OnClickListener { displayLocationSettingsRequest() }, getString(com.google.android.gms.maps.R.string.retry_text))
+                }
+            }
         }
     }
 
 
+
+    fun getLocationProvider(): FusedLocationProviderClient? {
+        return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
+    }
+
+    override fun onLocationChanged(p0: Location) {
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mapView.getMapAsync(this)
+        }
+    }
+
+    fun getAddressFromLocation(location: LatLng?) {
+
+        try {
+            if (location != null) {
+                val geoCoder = Geocoder(context, Locale.getDefault())
+
+                val addresses = geoCoder.getFromLocation(location.latitude, location.longitude, 1)
+                // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                val address = if (addresses.isNotEmpty())
+                    addresses[0].getAddressLine(0)
+                else ""
+                locationField.setText(address)
+
+            }
+        } catch (ex: Exception){
+            ex.printStackTrace()
+
+        }
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        mapClicked(p0)
+    }
+
+    override fun onMapLongClick(p0: LatLng?) {
+     //   Toast.makeText(context, "sds 2222 333", Toast.LENGTH_LONG).show()
+     mapClicked(p0)
+    }
+
+    fun mapClicked(p0: LatLng?){
+        getAddressFromLocation(p0)
+
+        //remove previously placed Marker
+        marker?.remove()
+
+        //place marker where user just clicked
+        marker = gMap.addMarker(
+            p0?.let {
+                MarkerOptions().position(it).title("")
+                    .icon(context?.let { it1 -> BitmapFromVector(it1) })
+            }
+        )
+    }
+
+
+    private fun BitmapFromVector(context: Context): BitmapDescriptor? {
+        // below line is use to generate a drawable.
+        var id = 0
+        if (locationField == binding.startAddressField){
+            id = R.drawable.ic_marker_pick
+        }else{
+            id = R.drawable.ic_marker_drop
+        }
+        val vectorDrawable = ContextCompat.getDrawable(context, id)
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable!!.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        // below line is use to add bitmap in our canvas.
+        val canvas = Canvas(bitmap)
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas)
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 
 }

@@ -20,60 +20,16 @@
         android:id="@+id/name_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hey_there"
+        android:text="@string/choose_your_ride"
         android:textColor="#666666"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginStart="@dimen/_12sdp"
         android:textStyle="bold"
         android:fontFamily="@font/poppins_regular"
         android:textSize="@dimen/_15ssp"/>
-
-    <TextView
-        android:id="@+id/where_go"
-        android:layout_width="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="wrap_content"
-        android:text="@string/where_are_you_going"
-        app:layout_constraintTop_toBottomOf="@id/name_display"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:layout_marginStart="@dimen/_12sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:maxLines="1"
-        android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_20ssp"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/destAddressLayout"
-        android:hint="@string/search_your_destination"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/where_go"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/_12sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        app:startIconDrawable="@drawable/ic_search"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/destAddressField"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_45sdp"
-            android:imeOptions="actionDone"
-            android:focusableInTouchMode="false"
-            android:background="#F2F2F2"
-            android:inputType="textPersonName"
-            android:textSize="@dimen/_13ssp"
-            tools:ignore="Autofill" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -81,16 +37,16 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/destAddressLayout"
+            app:layout_constraintTop_toBottomOf="@id/name_display"
             android:layout_marginTop="@dimen/_24sdp"
-            tools:listitem="@layout/address_item"
+            tools:listitem="@layout/vehicle_item"
             tools:itemCount="4"/>
 
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/all_saved_layout"
         android:background="#ffffff"
         android:padding="@dimen/_10sdp"
@@ -102,27 +58,27 @@
 
         <ImageView
             android:id="@+id/display_image"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:src="@drawable/ic_all_saved"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_calendar"
             android:layout_marginStart="@dimen/_12sdp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
 
-        <TextView
+        <Button
             android:id="@+id/dest_addres"
             android:layout_width="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="wrap_content"
-            android:text="@string/all_saved_places"
+            android:layout_height="@dimen/_50sdp"
+            android:text="@string/confirm_economy"
             app:layout_constraintStart_toEndOf="@id/display_image"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textStyle="bold"
             android:layout_marginStart="@dimen/_12sdp"
-            android:maxLines="1"
-            app:layout_constraintTop_toTopOf="@id/display_image"
-            app:layout_constraintBottom_toBottomOf="@id/display_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:fontFamily="@font/poppins_regular"
             android:textSize="@dimen/_15ssp"/>
 

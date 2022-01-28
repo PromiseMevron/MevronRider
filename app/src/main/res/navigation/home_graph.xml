@@ -22,10 +22,22 @@
         <action
             android:id="@+id/action_searchLocationFragment_to_selectOnMapFragment"
             app:destination="@id/selectOnMapFragment" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectRideFragment"
+            app:destination="@id/selectRideFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectOnMapFragment"
         android:name="com.mevron.rides.rider.home.selectmap.SelectOnMapFragment"
         tools:layout="@layout/select_on_map_fragment"
-        android:label="SelectOnMapFragment" />
+        android:label="SelectOnMapFragment" >
+        <action
+            android:id="@+id/action_selectOnMapFragment_to_selectRideFragment"
+            app:destination="@id/selectRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectRideFragment"
+        android:name="com.mevron.rides.rider.home.select_ride.SelectRideFragment"
+        android:label="select_ride_fragment"
+        tools:layout="@layout/select_ride_fragment" />
 </navigation>

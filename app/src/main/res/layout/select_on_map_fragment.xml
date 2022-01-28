@@ -42,7 +42,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/startAddressLayout"
-            android:hint="@string/search_your_destination"
             android:layout_marginTop="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_12sdp"
+            app:hintEnabled="false"
             app:startIconDrawable="@drawable/ic_search"
             android:layout_height="wrap_content">
 
@@ -110,7 +110,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/endAddressLayout"
-            android:hint="@string/search_your_destination"
             android:layout_marginTop="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -119,6 +118,7 @@
             android:layout_width="match_parent"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_12sdp"
+            app:hintEnabled="false"
             app:startIconDrawable="@drawable/ic_search"
             android:layout_height="wrap_content">
 
