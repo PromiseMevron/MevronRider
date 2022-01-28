@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_destination.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_done_enabled.xml" value="0.1453125" />
+        <entry key="app/src/main/res/drawable/ic_error_email.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_error_otp.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_frame_31.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_home_address.xml" value="0.2490740740740741" />
@@ -18,13 +19,18 @@
         <entry key="app/src/main/res/drawable/ic_location.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_map_pin.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_marker_drop.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_marker_pick.xml" value="0.140625" />
+        <entry key="app/src/main/res/drawable/ic_next.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_open_drawer.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_other_adresss.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_pill.xml" value="0.23958333333333334" />
         <entry key="app/src/main/res/drawable/ic_resend.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_resend_unenabled.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/ic_round_arrow_back.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.23796296296296296" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/next_enabled.xml" value="0.23958333333333334" />
+        <entry key="app/src/main/res/drawable/next_unenabled.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.25625" />
         <entry key="app/src/main/res/font/sssss.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.209375" />
