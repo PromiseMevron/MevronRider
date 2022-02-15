@@ -60,9 +60,8 @@
                 android:layout_height="@dimen/_45sdp"
                 android:imeOptions="actionDone"
                 android:focusableInTouchMode="false"
-                android:background="#F2F2F2"
+                android:background="@drawable/rounded_corner_field"
                 android:inputType="textPersonName"
-
                 android:textSize="@dimen/_13ssp"
                 tools:ignore="Autofill" />
 
@@ -128,7 +127,7 @@
                 android:layout_height="@dimen/_45sdp"
                 android:imeOptions="actionDone"
                 android:focusableInTouchMode="false"
-                android:background="#F2F2F2"
+                android:background="@drawable/rounded_corner_field"
                 android:inputType="textPersonName"
 
                 android:textSize="@dimen/_13ssp"

@@ -47,9 +47,7 @@ import android.graphics.drawable.Drawable
 import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.maps.model.BitmapDescriptor
-
-
-
+import com.mevron.rides.rider.home.model.LocationModel
 
 
 class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, OnMapClickListener, GoogleMap.OnMapLongClickListener {
@@ -64,6 +62,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
     private lateinit var mapView: SupportMapFragment
     private var marker: Marker? = null
     private lateinit var locationField: EditText
+    private var locations : Array<LocationModel> = arrayOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +78,9 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
 
         locationField = binding.startAddressField
+
+
+
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -91,8 +93,41 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         }
 
         binding.dropMe.setOnClickListener {
-            findNavController().navigate(R.id.action_selectOnMapFragment_to_selectRideFragment)
+            if (binding.endAddressField.text.toString().isNotEmpty() && locations.isNotEmpty() && locations.size > 1){
+                val action = SelectOnMapFragmentDirections.actionSelectOnMapFragmentToSelectRideFragment(locations)
+                findNavController().navigate(action)
+            }else{
+                Toast.makeText(context, "Select Location", Toast.LENGTH_LONG).show()
+            }
+
         }
+
+        getPresentLocation()
+    }
+
+    private fun getPresentLocation(){
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+            != PackageManager.PERMISSION_GRANTED && context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+            } != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            return
+        }
+
+        getLocationProvider()?.lastLocation?.addOnSuccessListener {
+            //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+            val location = it
+            if (location != null) {
+                val currentLocation = LatLng(location.latitude, location.longitude)
+                getAddressFromLocation(currentLocation)
+                mapClicked(currentLocation)
+            } else { displayLocationSettingsRequest() }
+        }
+            ?.addOnFailureListener {
+                it.printStackTrace()
+            }
     }
 
     override fun onStart() {
@@ -224,6 +259,19 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                 val address = if (addresses.isNotEmpty())
                     addresses[0].getAddressLine(0)
                 else ""
+                if (locationField == binding.startAddressField){
+                    if (locations.isEmpty()){
+                        locations += LocationModel(location.latitude, location.longitude, address)
+                    }else{
+                        locations[0] = LocationModel(location.latitude, location.longitude, address)
+                    }
+                }else{
+                    if (locations.size == 1){
+                        locations += LocationModel(location.latitude, location.longitude, address)
+                    }else{
+                        locations[1] = LocationModel(location.latitude, location.longitude, address)
+                    }
+                }
                 locationField.setText(address)
 
             }

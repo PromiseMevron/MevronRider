@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.home.select_ride
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -15,6 +16,10 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -24,28 +29,42 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.auth.EmailLoginFragmentArgs
 import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
 import com.mevron.rides.rider.databinding.SelectRideFragmentBinding
+import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
+import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.home.model.cars.GetCarRequests
+import com.mevron.rides.rider.home.model.cars.Ride
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.LauncherUtil
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SelectRideFragment : Fragment(), OnMapReadyCallback {
+@AndroidEntryPoint
+class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
 
     companion object {
         fun newInstance() = SelectRideFragment()
     }
 
-    private lateinit var viewModel: SelectRideViewModel
+    private val viewModel: SelectRideViewModel by viewModels()
     private lateinit var mapView: SupportMapFragment
     private lateinit var gMap: GoogleMap
     private lateinit var geoDirections: GeoDirectionsResponse
     private lateinit var binding: SelectRideFragmentBinding
     private lateinit var apiInterface: GeoAPIInterface
+    private lateinit var location:Array<LocationModel>
+    private var mDialog: Dialog? = null
+    private lateinit var adapter: CarsAdapter
+    private lateinit var cars: List<Ride>
+    var pos = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,11 +85,91 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        location = arguments?.let { SelectRideFragmentArgs.fromBundle(it).location }!!
+
+        getCars(location)
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
+        binding.mevronRideBottom.destAddres.setOnClickListener {
+            val action = SelectRideFragmentDirections.actionSelectRideFragmentToPaymentFragment2(location)
+            findNavController().navigate(action)
+        }
+        binding.bqckButton.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
+       // name = arguments?.let { EmailLoginFragmentArgs.fromBundle(it).name }!!
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        binding.mevronRideBottom.codeApplied.setOnClickListener {
+            if (binding.mevronRideBottom.codeSave.visibility == View.VISIBLE){
+                binding.mevronRideBottom.codeSave.visibility = View.GONE
+                binding.mevronRideBottom.codeDirection.setImageResource(R.drawable.ic_code_up)
+            }else{
+                binding.mevronRideBottom.codeSave.visibility = View.VISIBLE
+                binding.mevronRideBottom.codeDirection.setImageResource(R.drawable.ic_code_down)
+            }
+        }
         mapView.getMapAsync(this)
         displayLocationSettingsRequest()
+    }
+
+    private fun getCars(location: Array<LocationModel>) {
+        toggleBusyDialog(true, "Please wait")
+
+        val data = GetCarRequests(destinationAddress = location[1].address,
+        destinationLatitude = location[1].lat.toString(),
+        destinationLongitude = location[1].lng.toString(),
+        pickupAddress = location[0].address,
+        pickupLatitude = location[0].lat.toString(),
+        pickupLongitude = location[0].lng.toString())
+
+        viewModel.getCars(data).observe(viewLifecycleOwner, Observer {
+
+            it.let {  res ->
+                when(res){
+
+                    is  GenericStatus.Success ->{
+                        toggleBusyDialog(false)
+                        cars = res.data?.success?.data?.rides!!
+                        if (cars.isNotEmpty()){
+                            binding.mevronRideBottom.destAddres.text = "Confirm ${cars[pos].name}"
+                        }
+
+                        adapter = context?.let { it1 -> CarsAdapter(res.data.success.data.rides, it1, pos, this) }!!
+
+                        binding.mevronRideBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
+                            RecyclerView.VERTICAL, false)
+                        binding.mevronRideBottom.recyclerView.adapter = adapter
+                    }
+
+                    is  GenericStatus.Error ->{
+                        toggleBusyDialog(false)
+                    }
+
+                    is GenericStatus.Unaunthenticated -> {
+                        toggleBusyDialog(false)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null){
+        if(busy){
+            if(mDialog == null){
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout,null)
+                mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+            }else{
+                if(!desc.isNullOrBlank()){
+                    val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout,null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+                }
+            }
+            mDialog?.show()
+        }else{
+            mDialog?.dismiss()
+        }
     }
 
     private fun displayLocationSettingsRequest() {
@@ -126,20 +225,45 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback {
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.animateCamera(boundsUpdate)
-        val rectLine = PolylineOptions().width(10f).color(ContextCompat.getColor(context!!, R.color.secondary))
+        val rectLine = PolylineOptions().width(10f).color(ContextCompat.getColor(context!!, R.color.primary))
         for (step in steps) { rectLine.add(step) }
-        gMap.clear()
+       // gMap.clear()
         gMap.addPolyline(rectLine)
-        gMap.addMarker(
-            MarkerOptions()
-                .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-                .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))).showInfoWindow()
+
 
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
-        gMap.addMarker(
-            MarkerOptions()
+        var loc1 = location[0].address
+        if (loc1.length > 20){
+            loc1 = location[0].address.substring(0..20)
+        }
+
+        var loc2 = location[1].address
+        if (loc2.length > 20){
+            loc2 = location[1].address.substring(0..20)
+        }
+        val marker1 =  MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
-            .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))).showInfoWindow()
+            .title("From")
+            .snippet(loc1)
+
+        val marker2 =  MarkerOptions()
+            .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+            .title("To")
+            .snippet(loc2)
+        // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))
+
+
+        gMap.addMarker(marker1).showInfoWindow()
+        gMap.addMarker(marker2).showInfoWindow()
+
+
+      /*  gMap.addMarker(
+            MarkerOptions()
+                .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+                .title("1111")
+                .snippet("33333")
+            // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))
+        ).showInfoWindow()*/
 
     }
 
@@ -261,8 +385,8 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun getGeoLocation(){
-        val directionsEndpoint = "json?origin=" + "6.6064391" + "," + "3.2065786"+
-                "&destination=" + "6.5561258" + "," + "3.3858765" +
+        val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}"+
+                "&destination=" + "${location[1].lat}" + "," + "${location[1].lng}" +
                 "&sensor=false&units=metric&mode=driving"+ "&key=" + "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
         val call: Call<GeoDirectionsResponse> = apiInterface.getGeoDirections(directionsEndpoint)
         call.enqueue(object : Callback<GeoDirectionsResponse?> {
@@ -289,6 +413,15 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback {
                 call.cancel()
             }
         })
+    }
+
+    override fun selectedCar(pos: Int, car: String) {
+        adapter = context?.let { it1 -> CarsAdapter(cars, it1, pos, this) }!!
+
+        binding.mevronRideBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
+            RecyclerView.VERTICAL, false)
+        binding.mevronRideBottom.recyclerView.adapter = adapter
+        binding.mevronRideBottom.destAddres.text = "Confirm ${car}"
     }
 
 

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_corner"
+    app:behavior_hideable="false"
+    android:paddingBottom="@dimen/_150sdp"
+    app:behavior_peekHeight="350dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:id="@+id/pay_type_layout">
+
+        <TextView
+            android:id="@+id/name_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_a_payment_method"
+            android:textColor="#383838"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_15ssp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_display"
+            android:layout_marginTop="@dimen/_24sdp"
+            tools:listitem="@layout/pay_type_item"
+            tools:itemCount="4"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/voucher_add_layout">
+
+        <TextView
+            android:id="@+id/name_display2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_a_voucher_gift_card"
+            android:textColor="#383838"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_15ssp"/>
+
+        <TextView
+            android:id="@+id/name_display3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_a_voucher_gift_card"
+            android:textColor="#626262"
+            app:layout_constraintTop_toBottomOf="@id/name_display2"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_12ssp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="2"
+            android:id="@+id/rider_code"
+            android:hint="Enter Code"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_display3"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:paddingStart="@dimen/_10sdp"
+            android:background="@drawable/rounded_corner_field"
+            android:textColor="#383838"
+            android:inputType="textPersonName"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_done_enable"
+            android:background="@android:color/transparent"
+            android:id="@+id/done_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rider_code"
+            android:layout_marginTop="@dimen/_24sdp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

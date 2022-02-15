@@ -39,6 +39,7 @@ class EmailLoginFragment : Fragment() {
     private lateinit var binding: EmailLoginFragmentBinding
     private var email = ""
     private var name = ""
+    private var submit = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,21 +57,12 @@ class EmailLoginFragment : Fragment() {
         }
 
         binding.nextButton.setOnClickListener {
-            submitDetail()
+            validateEmail()
+            submit = true
+
+            //moveToHome()
         }
 
-        binding.riderName.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                 //   validateEmail()
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    validateEmail()
-                }
-            })
 
     }
 
@@ -79,21 +71,65 @@ class EmailLoginFragment : Fragment() {
         activity?.finish()
     }
 
+    fun addWatcher(){
+
+        binding.riderName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //   validateEmail()
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateEmail()
+            }
+        })
+    }
+
     fun validateEmail(){
         email = binding.riderName.text.toString()
         if (AuthUtil.validateEmail(email)){
           //  submitDetail()
             binding.nextButton.isEnabled = true
             binding.nextButton.setImageResource(R.drawable.ic_done_enabled)
-        }else{
-           // Toast.makeText(context, "Enter a valid email", Toast.LENGTH_LONG).show
+
+            binding.incorrectNumber.visibility = View.INVISIBLE
+            binding.nextButton.setImageResource(R.drawable.next_enabled)
             binding.nextButton.isEnabled = true
-            binding.nextButton.setImageResource(R.drawable.ic_done_unenabled)
+            binding.riderName.setBackground(resources.getDrawable(R.drawable.rounded_corner_field,))
+            binding.riderName.setTextColor(resources.getColor(R.color.field_color ))
+            if (submit){
+                submitDetail()
+            }
+            //  binding.otpView.setItemBackgroundResources(R.drawable.rounded_corner_field)
+         //   binding.otpView.setItemBackground(resources.getDrawable(R.drawable.rounded_corner_field,))
+            //  binding.otpView.itemBackground.setBackgroundResource(R.drawable.rounded_corner_field)
+          //  binding.otpView.setTextColor(resources.getColor(R.color.field_color ))
+
+
+        }else{
+            submit = false
+           // Toast.makeText(context, "Enter a valid email", Toast.LENGTH_LONG).show
+         //   binding.nextButton.isEnabled = true
+            binding.nextButton.setImageResource(R.drawable.ic_done_enabled)
+           // binding.incorrectNumber.visibility = View.INVISIBLE
+            binding.nextButton.isEnabled = true
+            binding.riderName.setBackground(resources.getDrawable(R.drawable.rounded_corner_field_red,))
+            binding.riderName.setTextColor(resources.getColor(R.color.red ))
+            addWatcher()
         }
     }
 
     fun submitDetail(){
         toggleBusyDialog(true,"Submitting Data...")
+        val fullName = name.split(" ")
+        val fName = fullName[0]
+        var lName = ""
+        for (i in 1 until (fullName.size)){
+            lName += fullName[i]
+        }
+      //  val data = SaveDetailsRequest(email = email, firstName = fName, lastName = lName)
         val data = SaveDetailsRequest(email = email, fullName = name)
         viewModel.sendDetail(data).observe(viewLifecycleOwner, Observer {
             it.let { res ->

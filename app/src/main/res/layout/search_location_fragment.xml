@@ -56,9 +56,9 @@
         <EditText
             android:id="@+id/startAddressField"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="wrap_content"
             android:hint="@string/from"
-            android:background="#F2F2F2"
+            android:background="@drawable/rounded_corner_map"
             android:inputType="textPersonName"
             android:textSize="@dimen/_13ssp"
             tools:ignore="Autofill" />
@@ -83,13 +83,13 @@
         app:endIconDrawable="@drawable/ic_plus"
         android:layout_height="wrap_content">
 
+
         <EditText
             android:id="@+id/stopAddressField"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="wrap_content"
             android:hint="@string/where_to"
-
-            android:background="#F2F2F2"
+            android:background="@drawable/rounded_corner_map"
             android:inputType="textPersonName"
             android:textSize="@dimen/_13ssp"
             tools:ignore="Autofill" />
@@ -129,8 +129,8 @@
         <EditText
             android:id="@+id/destAddressField"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:background="#F2F2F2"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_map"
             android:inputType="textPersonName"
             android:textSize="@dimen/_13ssp"
             tools:ignore="Autofill" />

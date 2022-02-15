@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".settings.SaveAddressFragment">
+
+    <ImageButton
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_back_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/close"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:contentDescription="@string/close_button"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:textSize="@dimen/_15ssp"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:id="@+id/state_of_location"
+        tools:targetApi="p" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/addressLayout"
+        app:hintEnabled="false"
+        android:layout_marginTop="@dimen/_7sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/state_of_location"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@color/primary"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/addressField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_your_address"
+            android:background="@drawable/rounded_corner_map"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/_13ssp"
+            tools:ignore="Autofill" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@id/addressLayout"
+        android:id="@+id/placesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        tools:listitem="@layout/address_item"
+        tools:itemCount="5"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_16sdp"
+        android:clipToPadding="false"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

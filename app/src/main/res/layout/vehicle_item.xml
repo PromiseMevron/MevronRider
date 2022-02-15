@@ -6,14 +6,22 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_marginTop="@dimen/_10sdp"
-    android:layout_marginStart="@dimen/_10sdp"
-    android:layout_marginEnd="@dimen/_10sdp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:id="@+id/background"
+    android:layout_height="@dimen/_80sdp">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp">
     <ImageView
-        android:layout_width="@dimen/_88sdp"
-        android:layout_height="@dimen/_48sdp"
+        android:layout_width="@dimen/_68sdp"
+        android:layout_height="@dimen/_38sdp"
         tools:src="@drawable/bike"
         android:id="@+id/vehicle_image"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +33,7 @@
         app:layout_constraintStart_toEndOf="@id/vehicle_image"
         android:layout_marginStart="@dimen/_10sdp"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_15ssp"
+        android:textSize="@dimen/_13ssp"
         android:textColor="#383838"
         app:layout_constraintTop_toTopOf="@id/vehicle_image"
         android:id="@+id/vehicle_name"/>
@@ -45,7 +53,7 @@
         app:layout_constraintStart_toEndOf="@id/people"
         android:layout_marginStart="@dimen/_5sdp"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_9ssp"
+        android:textSize="@dimen/_7ssp"
         android:textColor="#999999"
         app:layout_constraintTop_toTopOf="@id/people"
         android:id="@+id/vehicle_count"/>
@@ -58,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_10sdp"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_15ssp"
+        android:textSize="@dimen/_13ssp"
         android:textColor="#383838"
         app:layout_constraintTop_toTopOf="@id/vehicle_image"
         android:id="@+id/vehicle_price"/>
@@ -69,10 +77,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="3:24 PM"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_12ssp"
+        android:textSize="@dimen/_10ssp"
         android:textColor="#999999"
         app:layout_constraintTop_toTopOf="@id/vehicle_count"
         android:id="@+id/vehicle_arrival"/>
 
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

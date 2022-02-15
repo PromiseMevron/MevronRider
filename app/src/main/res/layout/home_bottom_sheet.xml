@@ -4,16 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_hideable="false"
+        android:id="@+id/bottomSheet"
+        app:behavior_peekHeight="300dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/bottomSheet"
-    android:background="@drawable/rounded_corner"
 
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="300dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
+    android:background="@drawable/rounded_corner">
 
 
 <TextView
@@ -26,9 +30,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginStart="@dimen/_12sdp"
-        android:textStyle="bold"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_15ssp"/>
+        android:textSize="@dimen/_13ssp"/>
 
     <TextView
         android:id="@+id/where_go"
@@ -44,8 +47,11 @@
         android:textStyle="bold"
         android:textColor="@color/primary"
         android:maxLines="1"
+        android:textFontWeight="600"
+        android:lineHeight="32dp"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_20ssp"/>
+        android:textSize="@dimen/_17ssp"
+        tools:targetApi="p" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/destAddressLayout"
@@ -67,7 +73,7 @@
             android:layout_height="@dimen/_45sdp"
             android:imeOptions="actionDone"
             android:focusableInTouchMode="false"
-            android:background="#F2F2F2"
+            android:background="@drawable/rounded_corner_field"
             android:inputType="textPersonName"
             android:textSize="@dimen/_13ssp"
             tools:ignore="Autofill" />
@@ -84,6 +90,8 @@
             app:layout_constraintTop_toBottomOf="@id/destAddressLayout"
             android:layout_marginTop="@dimen/_24sdp"
             tools:listitem="@layout/address_item"
+            android:id="@+id/recycler_view"
+            android:paddingBottom="@dimen/_50sdp"
             tools:itemCount="4"/>
 
 
@@ -143,4 +151,5 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>

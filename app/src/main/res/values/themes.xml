@@ -10,7 +10,12 @@
         <item name="colorSecondaryVariant">@color/secondary_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+
+
         <!-- Customize your theme here. -->
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
     </style>

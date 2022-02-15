@@ -1,7 +1,10 @@
 package com.mevron.rides.rider.di
 
 import android.content.Context
+import androidx.room.Room
 import com.mevron.rides.rider.App
+import com.mevron.rides.rider.localdb.MevronDao
+import com.mevron.rides.rider.localdb.MevronDatabase
 import com.mevron.rides.rider.remote.MevronAPI
 import com.mevron.rides.rider.remote.MevronRepo
 import com.mevron.rides.rider.util.Constants.BASE_URL
@@ -10,6 +13,7 @@ import com.mevron.rides.rider.util.Constants.TOKEN
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -40,7 +44,8 @@ object AppModule {
             .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(Interceptor { chain ->
                   val sPref= App.ApplicationContext.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE)
-                   val token = sPref.getString(TOKEN, null)
+                //   val token = sPref.getString(TOKEN, null)
+                val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiIiLCJuYW1lIjoiIiwidXVpZCI6IjJhZDc3NjQ4LTA1NmItNDc5NC1hNzJjLTczNzdkY2QyMzc0MyIsInBob25lTnVtYmVyIjoiMjM0ODA2NTc1NzU1NiIsInR5cGUiOiJyaWRlciIsImlhdCI6MTY0NDU2MjI2M30.CYRBDdxmio0MsufO4bKO064KgiDJ4dRFLViOIYSDW5w"
                 val newRequest: Request = chain.request().newBuilder()
                      .addHeader("Authorization", "Bearer $token")
                     .addHeader("Accept", "application/json")
@@ -64,8 +69,22 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun mainReop(api: MevronAPI): MevronRepo {
-        return MevronRepo(api = api)
+    fun mainReop(api: MevronAPI, dao: MevronDao): MevronRepo {
+        return MevronRepo(api = api, dao = dao)
     }
+
+    @Singleton
+    @Provides
+    fun provideMevronDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(context, MevronDatabase::class.java, "mevron_database").build()
+
+
+
+    @Singleton
+    @Provides
+    fun provideMevronDao(
+        database: MevronDatabase
+    ) = database.addDAO()
 
 }

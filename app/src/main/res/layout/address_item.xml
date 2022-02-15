@@ -9,13 +9,15 @@
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/_5sdp"
+    android:paddingBottom="@dimen/_5sdp"
     android:layout_marginTop="1dp"
     >
 
     <ImageView
         android:id="@+id/display_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:src="@drawable/ic_search"
         android:layout_marginStart="@dimen/_10sdp"
 
@@ -45,7 +47,7 @@
             android:textColor="#000000"
             android:maxLines="1"
             android:fontFamily="@font/dmsans_bold"
-            android:textSize="@dimen/_15ssp"/>
+            android:textSize="@dimen/_12ssp"/>
 
         <TextView
             android:id="@+id/dest_addres"
@@ -58,8 +60,9 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:textColor="#666666"
             android:maxLines="1"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_11ssp"/>
+            android:textSize="@dimen/_9ssp"/>
 
 
     </LinearLayout>
@@ -69,6 +72,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+
         android:background="#F2F2F2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,8 +15,10 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -30,29 +32,28 @@
 
 
         <ImageButton
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="127dp"
+            android:id="@+id/schedule_button"
+            android:layout_width="190dp"
             android:layout_height="46dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/schedule"
-            android:scaleType="centerCrop"
             android:layout_marginBottom="@dimen/_260sdp"
-            android:id="@+id/schedule_button"/>
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/schedule"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="@dimen/_52sdp"
-            android:layout_height="@dimen/_52sdp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_open_drawer"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="@dimen/_30sdp"
+            android:id="@+id/drawer_button"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
             android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_30sdp"
             android:layout_marginBottom="@dimen/_260sdp"
-            android:id="@+id/drawer_button"/>
-
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_open_drawer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

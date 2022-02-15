@@ -2,6 +2,7 @@ package com.mevron.rides.rider.auth
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.databinding.OTFragmentBinding
+import com.mevron.rides.rider.home.HomeActivity
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Constants.TOKEN
@@ -34,6 +36,7 @@ class OTPFragment : Fragment() {
     private var phoneNumber = ""
     var phoneWrite = ""
     private var mDialog: Dialog? = null
+    private var isNew  = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +52,7 @@ class OTPFragment : Fragment() {
         binding.otpView.itemCount = 6
         phoneNumber = arguments?.let { OTPFragmentArgs.fromBundle(it).phone }!!
         phoneWrite = arguments?.let { OTPFragmentArgs.fromBundle(it).phone }!!
-        phoneWrite = "${context?.getString(R.string.we_have_sent_you_a_six_digit_code_on_your)}${phoneNumber}"
+        phoneWrite = "${context?.getString(R.string.we_have_sent_you_a_six_digit_code_on_your)} $phoneNumber"
         binding.text2.text = phoneWrite
         binding.otpView.setOtpCompletionListener {
             val data = ValidateOTPRequest(code = it, phoneNumber =phoneNumber)
@@ -60,7 +63,13 @@ class OTPFragment : Fragment() {
             activity?.onBackPressed()
         }
         binding.nextButton.setOnClickListener {
-            findNavController().navigate(R.id.action_OTPFragment_to_nameSignUpFragment)
+            if (isNew){
+                findNavController().navigate(R.id.action_OTPFragment_to_nameSignUpFragment)
+            }else{
+                startActivity(Intent(activity, HomeActivity::class.java))
+                activity?.finish()
+            }
+
         }
 
     }
@@ -81,19 +90,30 @@ class OTPFragment : Fragment() {
                         snackbar?.show()
                         binding.incorrectNumber.visibility = View.VISIBLE
                         binding.nextButton.setImageResource(R.drawable.next_unenabled)
-                        binding.nextButton.isEnabled = false
+                        binding.nextButton.isEnabled = true
+                      //  binding.otpView.setBackgroundResource(R.drawable.rounded_corner_field_red)
+                        binding.otpView.setItemBackgroundResources(R.drawable.rounded_corner_field_red)
+                        binding.otpView.setItemBackground(resources.getDrawable(R.drawable.rounded_corner_field_red))
+                      //  binding.ccpLayout.setBackgroundResource(R.drawable.rounded_corner_field_red)
+                        binding.otpView.setTextColor(resources.getColor(R.color.red ))
                     }
                     is  GenericStatus.Success ->{
                         toggleBusyDialog(false)
                         val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
                         val editor = sPref.edit()
                         editor.putString(TOKEN, res.data?.success?.data?.accessToken)
+                        val type = (res.data?.success?.data?.riderType ?: "").lowercase()
+                        isNew = type == "new"
                         //TOKENhhh
                       //  editor.putString("TOKENhhh", resource.data?.data?.token)
                         editor.apply()
                         binding.incorrectNumber.visibility = View.INVISIBLE
                         binding.nextButton.setImageResource(R.drawable.next_enabled)
                         binding.nextButton.isEnabled = true
+                      //  binding.otpView.setItemBackgroundResources(R.drawable.rounded_corner_field)
+                        binding.otpView.setItemBackground(resources.getDrawable(R.drawable.rounded_corner_field,))
+                      //  binding.otpView.itemBackground.setBackgroundResource(R.drawable.rounded_corner_field)
+                        binding.otpView.setTextColor(resources.getColor(R.color.field_color ))
 
 
                     }

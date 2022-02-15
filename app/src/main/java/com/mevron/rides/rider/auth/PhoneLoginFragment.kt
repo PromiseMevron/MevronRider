@@ -46,6 +46,7 @@ class PhoneLoginFragment : Fragment() {
     private  var countryCode = ""
     private var phone = ""
     private var mDialog: Dialog? = null
+    private var submit = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +60,10 @@ class PhoneLoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initPhoneListener(binding.phoneNumber, binding.incorrectNumber, binding.countryPicker)
+        country = binding.countryPicker.selectedCountryName
+        countryCode = binding.countryPicker.selectedCountryCode
+
+
         binding.countryPicker.registerCarrierNumberEditText(binding.phoneNumber)
 
         binding.countryPicker.setOnCountryChangeListener(OnCountryChangeListener {
@@ -68,10 +72,22 @@ class PhoneLoginFragment : Fragment() {
         })
 
 
+
+
+        binding.nextButton.setOnClickListener {
+            submit = true
+            phone = binding.phoneNumber.text.toString().trim().drop(1)
+            initPhoneListener(binding.phoneNumber, binding.incorrectNumber, binding.countryPicker)
+
+        }
+
+
+    }
+
+    fun addWatcher(){
         binding.phoneNumber.addTextChangedListener {
             object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    initPhoneListener(binding.phoneNumber, binding.incorrectNumber, binding.countryPicker)
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -79,17 +95,13 @@ class PhoneLoginFragment : Fragment() {
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
+                    initPhoneListener(binding.phoneNumber, binding.incorrectNumber, binding.countryPicker)
 
                 }
 
             }
         }
-
-        binding.nextButton.setOnClickListener {
-            loginUser()
-        }
     }
-
 
     fun loginUser(){
         phone = binding.phoneNumber.text.toString().trim().drop(1)
@@ -155,14 +167,27 @@ class PhoneLoginFragment : Fragment() {
         if (ccPicker != null) {
             ccPicker.setPhoneNumberValidityChangeListener {
                 if (!it && !isNewNumberType(phoneField.text.toString().trim())) {
+                    submit = false
                     imageView.visibility = View.VISIBLE
-                    binding.nextButton.setImageResource(R.drawable.next_unenabled)
-                    binding.nextButton.isEnabled = false
+                  //  binding.nextButton.setImageResource(R.drawable.next_unenabled)
+                    binding.nextButton.isEnabled = true
+                    phoneField.setBackgroundResource(R.drawable.rounded_corner_field_red)
+                    binding.ccpLayout.setBackgroundResource(R.drawable.rounded_corner_field_red)
+                    phoneField.setTextColor(resources.getColor(R.color.red ))
+                    addWatcher()
                 }
                 else {
                     imageView.visibility = View.INVISIBLE
-                    binding.nextButton.setImageResource(R.drawable.next_enabled)
+                 //   binding.nextButton.setImageResource(R.drawable.next_enabled)
                     binding.nextButton.isEnabled = true
+                    phoneField.setBackgroundResource(R.drawable.rounded_corner_field)
+                    binding.ccpLayout.setBackgroundResource(R.drawable.rounded_corner_field)
+                    phoneField.setTextColor(resources.getColor(R.color.field_color ))
+                    if (submit){
+                        loginUser()
+                    }
+
+
                 }
             }
         }
@@ -172,10 +197,10 @@ class PhoneLoginFragment : Fragment() {
                     val number = phoneField.text.toString().trim()
                     if (number.length !in 11..14) {
                         imageView.visibility = View.INVISIBLE
-                        binding.nextButton.setImageResource(R.drawable.next_enabled)
+                        binding.nextButton.setImageResource(R.drawable.next_unenabled)
                     } else {
                         imageView.visibility = View.GONE
-                        binding.nextButton.setImageResource(R.drawable.next_unenabled)
+                        binding.nextButton.setImageResource(R.drawable.next_enabled)
                     }
                 }
 

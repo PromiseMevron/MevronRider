@@ -14,4 +14,7 @@
     <color name="secondary">#FF0000</color>
     <color name="secondary_200">#EA5252</color>
     <color name="gray_color">#999999</color>
+    <color name="red">#FF0000</color>
+    <color name="red_14">#24FF0000</color>
+    <color name="field_color">#383838</color>
 </resources>

@@ -9,20 +9,95 @@
     android:layout_height="match_parent"
     android:id="@+id/bottomSheet"
     android:background="@drawable/rounded_corner"
-
     app:behavior_hideable="false"
     app:behavior_peekHeight="300dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    android:id="@+id/top_layer"
+    app:layout_constraintTop_toTopOf="parent">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:id="@+id/code_applied"
+        android:paddingBottom="@dimen/_10sdp"
+        android:background="#1A0B973A"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/surge_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_code_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_24sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_16sdp"/>
+
+
+        <TextView
+            android:id="@+id/code_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RIDE30 code is applied"
+            android:textColor="#0B973A"
+            android:lineHeight="@dimen/_20ssp"
+            android:textFontWeight="600"
+            app:layout_constraintTop_toTopOf="@id/surge_image"
+            app:layout_constraintStart_toEndOf="@id/surge_image"
+            app:layout_constraintBottom_toBottomOf="@id/surge_image"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_10ssp"
+            tools:targetApi="p" />
+
+        <ImageView
+            android:id="@+id/code_direction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_code_down"
+            android:layout_marginEnd="@dimen/_16sdp"
+            app:layout_constraintBottom_toBottomOf="@id/surge_image"
+            app:layout_constraintTop_toTopOf="@id/surge_image"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/code_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You saved 40% on your ride"
+            android:textColor="#000000"
+            android:lineHeight="@dimen/_20ssp"
+            android:textFontWeight="600"
+            app:layout_constraintTop_toBottomOf="@id/code_number"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/code_number"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_9ssp"
+            tools:targetApi="p" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 <TextView
         android:id="@+id/name_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/choose_your_ride"
-        android:textColor="#666666"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#383838"
+    android:textAlignment="center"
+    android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/top_layer"
         app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/_20sdp"
@@ -35,6 +110,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_display"
@@ -72,15 +148,16 @@
             android:layout_width="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_height="@dimen/_50sdp"
-            android:text="@string/confirm_economy"
+            tools:text="@string/confirm_economy"
             app:layout_constraintStart_toEndOf="@id/display_image"
             android:textColor="#ffffff"
             android:textStyle="bold"
+            android:textAllCaps="false"
             android:layout_marginStart="@dimen/_12sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_15ssp"/>
+            android:textSize="@dimen/_10ssp"/>
 
         <ImageView
             android:layout_width="wrap_content"

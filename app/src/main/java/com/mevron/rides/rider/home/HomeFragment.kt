@@ -1,8 +1,10 @@
 package com.mevron.rides.rider.home
 
 import android.Manifest
+import android.app.Dialog
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
@@ -11,14 +13,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.RelativeLayout
-
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
+import com.mevron.rides.rider.localdb.SavedAddress
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.common.api.GoogleApi
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -26,37 +33,40 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
+import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.util.Constants
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.CameraUpdateFactory
-
-import com.google.android.gms.maps.model.CircleOptions
-
+import com.mevron.rides.rider.util.LauncherUtil
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 
-
-
-
-
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
+@AndroidEntryPoint
+class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSelected {
 
     companion object {
         fun newInstance() = HomeFragment()
     }
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var binding: HomeFragmentBinding
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<NestedScrollView>
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
     private lateinit var gMap: GoogleMap
     private lateinit var mapView: SupportMapFragment
     private var mCircle: Circle? = null
+    private lateinit var adapter: HomeAdapter
+    private var add: ArrayList<LocationModel> = arrayListOf()
+    private var mDialog: Dialog? = null
 
     var radiusInMeters = 100.0
     var strokeColor = -0x10000 //Color Code you want
@@ -71,16 +81,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.home_fragment, container, false)
 
         return  binding.root
-       // return inflater.inflate()
+
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        add = arrayListOf()
 
+        getAddressFromApi()
+        getAddress()
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
                 binding.mevronHomeBottom.destAddressField.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
+        }
+
+        binding.mevronHomeBottom.allSavedLayout.setOnClickListener {
+            findNavController().navigate(R.id.action_global_addSavedPlaceFragment)
         }
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronHomeBottom.bottomSheet)
@@ -153,7 +170,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
           //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
             val location = it
             if (location != null) {
+
                 val currentLocation = LatLng(location.latitude, location.longitude)
+                getAddressFromLocation(currentLocation)
                 val cameraPosition = CameraPosition.Builder()
                     .bearing(0.toFloat())
                     .target(currentLocation)
@@ -210,6 +229,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(p0: Location) {
+        val currentLocation = LatLng(p0.latitude, p0.longitude)
+        getAddressFromLocation(currentLocation)
+
         val addCircle = CircleOptions().center(LatLng(p0.latitude, p0.longitude)).radius(radiusInMeters).fillColor(shadeColor)
             .strokeColor(strokeColor).strokeWidth(8f)
         mCircle = gMap.addCircle(addCircle)
@@ -226,6 +248,94 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mapView.getMapAsync(this)
         }
+    }
+
+    fun getAddressFromLocation(location: LatLng?) {
+
+        try {
+            if (location != null) {
+                val geoCoder = Geocoder(context, Locale.getDefault())
+
+                val addresses = geoCoder.getFromLocation(location.latitude, location.longitude, 1)
+                // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                val address = if (addresses.isNotEmpty())
+                    addresses[0].getAddressLine(0)
+                else ""
+                add.add(LocationModel(location.latitude, location.longitude, address))
+
+            }
+        } catch (ex: Exception){
+            ex.printStackTrace()
+
+        }
+    }
+
+    fun getAddressFromApi(){
+      //  toggleBusyDialog(true,"Please Wait...")
+
+        viewModel.getAddresses().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+            it.let {  res ->
+                when(res){
+
+                    is  GenericStatus.Success ->{
+                      //  toggleBusyDialog(false)
+
+                    }
+
+                    is  GenericStatus.Error ->{
+                       // toggleBusyDialog(false)
+                    }
+
+                    is GenericStatus.Unaunthenticated -> {
+                       // toggleBusyDialog(false)
+                    }
+                }
+            }
+        })
+
+    }
+
+    private fun getAddress(){
+        viewModel.getAddressFromDB().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            adapter = HomeAdapter(it, this)
+            binding.mevronHomeBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
+                RecyclerView.VERTICAL, false)
+            binding.mevronHomeBottom.recyclerView.adapter = adapter
+        })
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null){
+        if(busy){
+            if(mDialog == null){
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout,null)
+                mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+            }else{
+                if(!desc.isNullOrBlank()){
+                    val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout,null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+                }
+            }
+            mDialog?.show()
+        }else{
+            mDialog?.dismiss()
+        }
+    }
+
+    override fun selectedAddress(data: LocationModel, dt: SavedAddress) {
+      if (add.isEmpty()){
+          Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
+      }else{
+          add.add(data)
+          var ads = arrayOf<LocationModel>()
+          for (a in add){
+              ads += a
+          }
+          val action = HomeFragmentDirections.actionHomeFragmentToSelectRideFragment(ads)
+          findNavController().navigate(action)
+      }
     }
 
 }

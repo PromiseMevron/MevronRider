@@ -4,15 +4,22 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/gradient_background.xml" value="0.18072916666666666" />
+        <entry key="app/src/main/res/drawable/ic_add_type.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/ic_address_image.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_all_saved.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/drawable/ic_all_saved_address.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_close_drawer.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_destination.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_done_enabled.xml" value="0.1453125" />
+        <entry key="app/src/main/res/drawable/ic_done_unenabled.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_error_email.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_error_otp.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_frame_31.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_gog_pay.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_home_address.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_home_black.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_image_68.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_image_69.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2490740740740741" />
@@ -20,37 +27,63 @@
         <entry key="app/src/main/res/drawable/ic_map_pin.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_marker_drop.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_marker_pick.xml" value="0.140625" />
+        <entry key="app/src/main/res/drawable/ic_minus.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_next.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_open_drawer.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_other_adresss.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_people.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/ic_pick_up.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_pill.xml" value="0.23958333333333334" />
+        <entry key="app/src/main/res/drawable/ic_places.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_resend.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_resend_unenabled.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_round_arrow_back.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.23796296296296296" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_work_black.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/next_enabled.xml" value="0.23958333333333334" />
         <entry key="app/src/main/res/drawable/next_unenabled.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/rounded_border_car.xml" value="0.335" />
+        <entry key="app/src/main/res/drawable/rounded_border_save_button.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/rounded_border_update.xml" value="0.1824074074074074" />
         <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/rounded_corner_field.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/rounded_corner_field_red.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/rounded_corner_map.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/rounded_corner_rating.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/rounded_corner_save_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/font/sssss.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.209375" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.11764705882352941" />
-        <entry key="app/src/main/res/layout/activity_intro_screen.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/activity_intro_screen.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2234375" />
-        <entry key="app/src/main/res/layout/address_item.xml" value="0.23233695652173914" />
+        <entry key="app/src/main/res/layout/add_saved_place_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/address_item.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/booked_fragment.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/cancel_dialog.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/confirm_ride_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_busy_layout.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/email_login_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/empty_header.xml" value="0.12083333333333333" />
-        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/logout_dialod.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.22604166666666667" />
-        <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.18468468468468469" />
+        <entry key="app/src/main/res/layout/pay_bottom.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/pay_type_item.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/payment_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/payment_method_fragment.xml" value="0.15416666666666667" />
+        <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/ride_bottom_sheet.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/save_address_details_fragment.xml" value="0.25660964230171074" />
+        <entry key="app/src/main/res/layout/save_address_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/search_location_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/select_on_map_fragment.xml" value="0.24010416666666667" />
-        <entry key="app/src/main/res/layout/select_ride_fragment.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/select_ride_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/update_address_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/vehicle_item.xml" value="0.335" />
         <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.25" />
       </map>
@@ -61,12 +94,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.24010416666666667" />
-      </ProjectState>
-    </option>
   </component>
 </project>

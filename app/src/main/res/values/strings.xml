@@ -42,4 +42,31 @@
     <string name="drop_me_here">Drop me here</string>
     <string name="choose_your_ride">Choose your ride</string>
     <string name="confirm_economy">Confirm Economy</string>
+    <string name="add_a_payment_method">Add a Payment Method</string>
+    <string name="apple_pay">Apple Pay</string>
+    <string name="credit_debit_card">Credit/Debit Card</string>
+    <string name="google_pay">Google Pay</string>
+    <string name="paypal">Paypal</string>
+    <string name="add_a_voucher_gift_card">Add a Voucher/Gift card</string>
+    <string name="pay_with_cash">Pay with Cash</string>
+    <string name="choose_a_payment_method">Choose a payment method</string>
+    <string name="cancel_this_ride">Cancel this ride?</string>
+
+    <string name="saved_places">Saved Places</string>
+    <string name="promos">Promos</string>
+    <string name="referral_code">Referral Code</string>
+    <string name="emergency_contacts">Emergency Contacts</string>
+    <string name="enter_your_address">Enter your address</string>
+    <string name="logout">Logout</string>
+    <string name="do_you_want_to_logout_from_this_device">Do you want to logout from this device?</string>
+    <string name="add_a_new_place">Add a new Place</string>
+    <string name="save_this_place">Save this place</string>
+    <string name="name_this_place">Name this Place</string>
+    <string name="e_g_sam_s_house">e.g. Sam’s House</string>
+    <string name="home">Home</string>
+    <string name="work">Work</string>
+    <string name="address">Address</string>
+    <string name="save_address">Save Address</string>
+    <string name="update">Update</string>
+
 </resources>

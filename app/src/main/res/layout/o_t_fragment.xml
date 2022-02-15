@@ -27,11 +27,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/enter_the_verification_code_sent_to_you"
-        android:fontFamily="@font/dmsans_regular"
-        android:textFontWeight="500"
-        android:textSize="@dimen/_25ssp"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="600"
+        android:lineHeight="32dp"
+        android:textSize="@dimen/_20ssp"
         android:layout_marginStart="@dimen/_14sdp"
-        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_60sdp"
         android:layout_marginTop="@dimen/_40sdp"
         android:textColor="@color/primary"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,6 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text2"
@@ -73,10 +75,12 @@
             android:id="@+id/otp_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|end"
+            android:gravity="center_horizontal|end"
             android:inputType="number"
-            android:itemBackground="#C4C4C4"
-            android:textColor="#040472"
-            app:lineColor="#000000"
+            android:itemBackground="@drawable/rounded_corner_field"
+            android:textColor="#383838"
+            app:itemSpacing="15dp"
             app:viewType="none" />
 
 
@@ -95,17 +99,17 @@
 
 
     <ImageButton
+        android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/next_unenabled"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="@dimen/_20sdp"
         android:backgroundTint="@android:color/transparent"
-        android:enabled="false"
-        android:id="@+id/next_button"
         android:contentDescription="@string/next_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/_25sdp"
+        android:enabled="false"
+        android:src="@drawable/next_unenabled"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/_20sdp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:layout_width="wrap_content"
