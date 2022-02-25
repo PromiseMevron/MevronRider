@@ -157,7 +157,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.animateCamera(boundsUpdate)
-        val rectLine = PolylineOptions().width(10f).color(ContextCompat.getColor(context!!, R.color.primary))
+        val rectLine = PolylineOptions().width(20f).color(ContextCompat.getColor(context!!, R.color.primary))
         for (step in steps) { rectLine.add(step) }
         // gMap.clear()
         gMap.addPolyline(rectLine)
@@ -167,12 +167,12 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         val marker1 =  MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
             .title("From")
-            .snippet(location[0].address.substring(0..20))
+            .snippet(location[0].address.substring(0..5))
 
         val marker2 =  MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
             .title("To")
-            .snippet(location[1].address.substring(0..20))
+            .snippet(location[1].address.substring(0..5))
         // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))
 
 

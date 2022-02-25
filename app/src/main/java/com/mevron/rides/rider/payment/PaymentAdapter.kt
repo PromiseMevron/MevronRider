@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.payment
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class PaymentAdapter(val paySelected: PaySelected): RecyclerView.Adapter<Payment
     }
 
     override fun onBindViewHolder(holder: PayHolder, position: Int) {
+        holder.binding.next.visibility = View.INVISIBLE
         if (position == 0){
             holder.binding.image.setImageResource(R.drawable.ic_add_type)
             holder.binding.typeName.text = "Add a Payment Method"

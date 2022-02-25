@@ -21,6 +21,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:visibility="visible"
             android:layout_height="match_parent">
 
             <fragment
@@ -31,10 +32,12 @@
         </RelativeLayout>
 
 
+
         <ImageButton
             android:id="@+id/schedule_button"
             android:layout_width="190dp"
             android:layout_height="46dp"
+            android:visibility="visible"
             android:layout_marginBottom="@dimen/_260sdp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"

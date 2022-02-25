@@ -11,7 +11,7 @@
             android:id="@+id/notificationFragment"
             android:title="@string/notifications" />
         <item
-            android:id="@+id/paymentFragment"
+            android:id="@+id/savedpaymentFragment"
             android:title="@string/payment" />
 
         <item

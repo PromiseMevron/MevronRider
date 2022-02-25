@@ -7,15 +7,16 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -28,11 +29,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
-import com.mevron.rides.rider.R
-import com.mevron.rides.rider.auth.EmailLoginFragmentArgs
-import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
 import com.mevron.rides.rider.databinding.SelectRideFragmentBinding
-import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.home.model.cars.GetCarRequests
@@ -46,6 +43,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.mevron.rides.rider.R
+
 
 @AndroidEntryPoint
 class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
@@ -143,6 +142,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
                     }
 
                     is  GenericStatus.Error ->{
+
                         toggleBusyDialog(false)
                     }
 
@@ -221,11 +221,12 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         val bounds = builder.build()
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.3).toInt()
+        val padding = (width * 0.01).toInt()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.animateCamera(boundsUpdate)
-        val rectLine = PolylineOptions().width(10f).color(ContextCompat.getColor(context!!, R.color.primary))
+        val rectLine = PolylineOptions().width(15f).color(ContextCompat.getColor(context!!, R.color.primary))
+
         for (step in steps) { rectLine.add(step) }
        // gMap.clear()
         gMap.addPolyline(rectLine)
@@ -241,7 +242,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         if (loc2.length > 20){
             loc2 = location[1].address.substring(0..20)
         }
-        val marker1 =  MarkerOptions()
+    /*    val marker1 =  MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
             .title("From")
             .snippet(loc1)
@@ -249,12 +250,36 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         val marker2 =  MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
             .title("To")
-            .snippet(loc2)
+            .snippet(loc2)*/
         // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))
+        val sLl= (startLocation?.lat ?: 0.0) - 0.00025
+        val sLlg= (startLocation?.lng ?: 0.0) - 0.00025
+
+        val sLl2= (endLocation?.lat ?: 0.0) + 0.0001
+        val sLlg2= (endLocation?.lng ?: 0.0) + 0.0001
 
 
-        gMap.addMarker(marker1).showInfoWindow()
-        gMap.addMarker(marker2).showInfoWindow()
+        val marker1 =  MarkerOptions()
+            .position(LatLng(sLl, sLlg))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc1, loc = "Start", color = "#F57519")))
+
+        val marker2 =  MarkerOptions()
+            .position(LatLng(sLl2, sLlg2))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, loc = "To", color = "#F9170F")))
+
+
+        val marker3 =  MarkerOptions()
+            .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
+            .icon(BitmapFromVector(context!!, R.drawable.ic_driver_pick))
+
+        val marker4 =  MarkerOptions()
+            .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+            .icon(BitmapFromVector(context!!, R.drawable.ic_driver_dest))
+
+        gMap.addMarker(marker1)
+        gMap.addMarker(marker2)
+        gMap.addMarker(marker3)
+        gMap.addMarker(marker4)
 
 
       /*  gMap.addMarker(
@@ -262,10 +287,38 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
                 .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
                 .title("1111")
                 .snippet("33333")
-            // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))
+             .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))
         ).showInfoWindow()*/
 
     }
+
+
+    private fun createClusterBitmap(add: String, loc: String, color: String): Bitmap {
+        val cluster: View = LayoutInflater.from(context).inflate(
+            R.layout.choose_rider_marker,
+            null
+        )
+        val clusterSizeText = cluster.findViewById<View>(R.id.address) as TextView
+        clusterSizeText.text = add
+        val clusterSizeText2 = cluster.findViewById<View>(R.id.state) as TextView
+        clusterSizeText2.text = loc
+        clusterSizeText2.setTextColor(Color.parseColor(color))
+
+      //  clusterSizeText.text = clusterSize.toString()
+        cluster.measure(
+            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        )
+        cluster.layout(0, 0, cluster.measuredWidth, cluster.measuredHeight)
+        val clusterBitmap = Bitmap.createBitmap(
+            cluster.measuredWidth,
+            cluster.measuredHeight, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(clusterBitmap)
+        cluster.draw(canvas)
+        return clusterBitmap
+    }
+
 
     private fun BitmapFromVector(context: Context, id: Int): BitmapDescriptor? {
         // below line is use to generate a drawable.
@@ -352,6 +405,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
 
 
         p0?.isMyLocationEnabled = true
+      //  gMap.isTrafficEnabled = true
 
 
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
@@ -361,7 +415,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
                 val cameraPosition = CameraPosition.Builder()
                     .bearing(0.toFloat())
                     .target(currentLocation)
-                    .zoom(15.toFloat())
+                    .zoom(25.toFloat())
                     .build()
                 gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 

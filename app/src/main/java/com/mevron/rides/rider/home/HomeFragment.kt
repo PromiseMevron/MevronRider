@@ -2,19 +2,22 @@ package com.mevron.rides.rider.home
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.Toast
-import com.mevron.rides.rider.localdb.SavedAddress
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
@@ -24,29 +27,36 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.api.GoogleApi
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
-import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.GenericStatus
+import com.mevron.rides.rider.remote.socket.SocketHandler
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
+import com.mevron.rides.rider.util.mixpanel
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONArray
 import java.util.*
+import org.json.JSONObject
+
+
+
+
+
+
+
 
 
 @AndroidEntryPoint
@@ -87,10 +97,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        add = arrayListOf()
+        val props = JSONObject()
+        props.put("Home Screen", true)
+        mixpanel().track("Android Home Screen", props)
 
+
+        add = arrayListOf()
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronHomeBottom.bottomSheet)
         getAddressFromApi()
         getAddress()
+
+        SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = "3.2390875", lat = "6.6000652")
+        SocketHandler.establishConnection()
+
+
+
+
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
                 binding.mevronHomeBottom.destAddressField.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
@@ -100,7 +122,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             findNavController().navigate(R.id.action_global_addSavedPlaceFragment)
         }
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronHomeBottom.bottomSheet)
+
+      //  bottomSheetBehavior.peekHeight
 
 
         bottomSheetBehavior.addBottomSheetCallback(object :
@@ -116,6 +139,47 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
                 }
             }
         })
+    }
+
+    fun addMarkerToMap(lat: Double, lng: Double){
+
+        val marker =  MarkerOptions()
+            .position(LatLng(lat, lng))
+            .icon(BitmapFromVector(context!!, R.drawable.car_icon_png))
+
+        gMap.addMarker(marker)
+    }
+
+    private fun BitmapFromVector(context: Context, id: Int): BitmapDescriptor? {
+        // below line is use to generate a drawable.
+
+        val vectorDrawable = ContextCompat.getDrawable(context, id)
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable!!.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        // below line is use to add bitmap in our canvas.
+        val canvas = Canvas(bitmap)
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas)
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     override fun onStart() {
@@ -139,6 +203,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
         if (googleMap != null) {
             gMap = googleMap
+            val s = SocketHandler.getSocket()
+
+            //  s.emit("")
+            s.on("nearby_drivers"){
+                Log.i("socket io", it.toString())
+                Log.i("socket io 2", it[0].toString())
+                activity?.runOnUiThread {
+                   //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
+                    val data = it[0] as JSONObject
+                    val locations = data["locations"] as JSONArray
+                    gMap.clear()
+                    for (l in 0 until locations.length()){
+                        val latLng = locations[l] as JSONObject
+                        val lat = (latLng["latitude"] as String).toDouble()
+                        val lng = (latLng["longitude"] as String).toDouble()
+                        addMarkerToMap(lat, lng)
+                    }
+
+                }
+
+            }
         }
         MapsInitializer.initialize(activity?.applicationContext)
 
@@ -172,11 +257,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             if (location != null) {
 
                 val currentLocation = LatLng(location.latitude, location.longitude)
+
+
                 getAddressFromLocation(currentLocation)
                 val cameraPosition = CameraPosition.Builder()
                     .bearing(0.toFloat())
                     .target(currentLocation)
-                    .zoom(15.toFloat())
+                    .zoom(15.5.toFloat())
                     .build()
                 googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
                 //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
@@ -192,8 +279,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     private fun displayLocationSettingsRequest() {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 500
-        locationRequest.fastestInterval = 100
+        locationRequest.interval = 4000
+        locationRequest.fastestInterval = 1000
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
         val client = context?.let { LocationServices.getSettingsClient(it) }
@@ -299,6 +386,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
     private fun getAddress(){
         viewModel.getAddressFromDB().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it.isEmpty()){
+                Toast.makeText(context, "1", Toast.LENGTH_LONG).show()
+                bottomSheetBehavior.peekHeight = 500
+            }
+
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
             adapter = HomeAdapter(it, this)
             binding.mevronHomeBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false)

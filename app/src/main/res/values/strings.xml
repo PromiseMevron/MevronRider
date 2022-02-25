@@ -68,5 +68,20 @@
     <string name="address">Address</string>
     <string name="save_address">Save Address</string>
     <string name="update">Update</string>
+    <string name="driver_is_arriving">Driver is arriving</string>
+    <string name="meet_your_driver_at_the_pick_up_spot">Meet your driver at the pick-up spot</string>
+    <string name="min">min</string>
+    <string name="reach_the_pick_up_spot_within_5_min_to_avoid_waiting_charges">Reach the pick-up spot within 5 min to avoid waiting charges.</string>
+    <string name="ride_in_progress">Ride in Progress</string>
+    <string name="you_ll_reach_the_destination_by_03_24_pm">You’ll reach the destination by 03:24 PM</string>
+    <string name="drop_off_at">DROP-OFF AT</string>
+    <string name="emergency_assistance">Emergency assistance</string>
+    <string name="once_you_call_for_assistance_your_location_and_vehicle_details_will_be_automatically_shared">Once you call for assistance, your location and vehicle details will be automatically shared.</string>
+    <string name="vehicle_details">Vehicle Details</string>
+    <string name="you_ve_reached_your_destination">You’ve reached your destination</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="card_details">Card Details</string>
+    <string name="tap_here_to_cancel_this_ride_if_rider_don_t_show_up">Tap here to cancel this ride, if rider don’t show up.</string>
+    <string name="waiting_for_the_rider">Waiting for the rider</string>
 
 </resources>

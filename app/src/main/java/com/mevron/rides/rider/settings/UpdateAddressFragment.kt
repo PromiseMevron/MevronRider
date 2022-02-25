@@ -152,7 +152,7 @@ class UpdateAddressFragment : Fragment() {
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                   
+
                    binding.address.setText("")
                 }
                 AutocompleteActivity.RESULT_CANCELED -> {

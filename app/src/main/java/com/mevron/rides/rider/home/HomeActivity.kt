@@ -18,6 +18,14 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
+import android.widget.Toast
+
+import com.flutterwave.raveandroid.RavePayActivity
+
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
+
+
+
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -41,7 +49,7 @@ class HomeActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment?
 
         appBarConfiguration = AppBarConfiguration(setOf(R.id.myRideFragment,
-            R.id.notificationFragment, R.id.paymentFragment, R.id.helpFragment,
+            R.id.notificationFragment, R.id.savedpaymentFragment, R.id.helpFragment,
             R.id.settingsFragment), drawerLayout)
        // NavigationUI.setupWithNavController(navigationView, navController)
         navView.setupWithNavController(navController)
@@ -66,11 +74,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        for (fragment in getSupportFragmentManager().getFragments()) {
-        fragment.onActivityResult(requestCode, resultCode, data);
-    }
-}
+
+
+
 
 }

@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mevron.rides.rider.auth.model.otp.OTPResponse
 import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
-import com.mevron.rides.rider.auth.model.register.RegisterBody
-import com.mevron.rides.rider.auth.model.register.RegisterResponse
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.HTTPErrorHandler
 import com.mevron.rides.rider.remote.MevronRepo

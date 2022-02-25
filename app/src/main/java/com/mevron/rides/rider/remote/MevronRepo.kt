@@ -1,24 +1,22 @@
 package com.mevron.rides.rider.remote
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.mevron.rides.rider.auth.model.details.SaveDetailsRequest
 import com.mevron.rides.rider.auth.model.details.SaveResponse
 import com.mevron.rides.rider.auth.model.otp.OTPResponse
 import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.auth.model.register.RegisterBody
 import com.mevron.rides.rider.auth.model.register.RegisterResponse
+import com.mevron.rides.rider.home.model.AddCard
 import com.mevron.rides.rider.home.model.cars.GetCarRequests
 import com.mevron.rides.rider.home.model.cars.GetCarsCategory
 import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
 import com.mevron.rides.rider.home.model.getAddress.SaveAddressRequest
 import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
+import com.mevron.rides.rider.home.model.getCard.GetCardResponse
 import com.mevron.rides.rider.localdb.MevronDao
 import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.model.GeneralResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -69,5 +67,13 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     fun getllAddress(): LiveData<MutableList<SavedAddress>>{
         return dao.getAllAddress()
+    }
+
+    suspend fun addCard(data: AddCard): Response<GeneralResponse>{
+        return api.addCard(data)
+    }
+
+    suspend fun getCards(): Response<GetCardResponse>{
+        return  api.getCards()
     }
 }

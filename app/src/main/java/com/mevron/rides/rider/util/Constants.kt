@@ -1,7 +1,8 @@
 package com.mevron.rides.rider.util
 
 object Constants {
-    const val BASE_URL = "https://mevron-rider.herokuapp.com/"
+  //  const val BASE_URL = "https://mevron-rider.herokuapp.com/"
+    const val BASE_URL = "http://staging.mevron.com:8081/"
     const val DATABASE_NAME = "alphally_db"
     const val SHARED_PREF_KEY = "alphally"
     const val TOKEN = "token"

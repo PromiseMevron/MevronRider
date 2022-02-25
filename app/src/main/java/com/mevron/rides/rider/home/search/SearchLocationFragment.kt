@@ -48,7 +48,9 @@ import com.mevron.rides.rider.settings.SettingsFragmentDirections
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.hideKeyboard
+import com.mevron.rides.rider.util.mixpanel
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
 import java.util.*
 
 @AndroidEntryPoint
@@ -79,6 +81,9 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val props = JSONObject()
+        props.put("Search Screen", true)
+        mixpanel().track("Android Search Screen", props)
         getAddress()
         val sessionToken = AutocompleteSessionToken.newInstance()
         selectedField = binding.startAddressField

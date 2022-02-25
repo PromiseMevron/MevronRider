@@ -3,8 +3,6 @@ package com.mevron.rides.rider.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mevron.rides.rider.auth.model.otp.OTPResponse
-import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
 import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.GenericStatus

@@ -5,6 +5,8 @@ import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.fragment.app.Fragment
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 
 fun String.isValidEmail(): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(this).matches()
@@ -18,4 +20,8 @@ fun View.hideKeyboard() {
 
 fun EditText.getString(): String{
     return this.text.toString()
+}
+
+fun Fragment.mixpanel(): MixpanelAPI {
+    return MixpanelAPI.getInstance(context, "YOUR_TOKEN")
 }

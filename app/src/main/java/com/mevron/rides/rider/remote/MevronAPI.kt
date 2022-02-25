@@ -6,11 +6,13 @@ import com.mevron.rides.rider.auth.model.otp.OTPResponse
 import com.mevron.rides.rider.auth.model.otp.ValidateOTPRequest
 import com.mevron.rides.rider.auth.model.register.RegisterBody
 import com.mevron.rides.rider.auth.model.register.RegisterResponse
+import com.mevron.rides.rider.home.model.AddCard
 import com.mevron.rides.rider.home.model.cars.GetCarRequests
 import com.mevron.rides.rider.home.model.cars.GetCarsCategory
 import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
 import com.mevron.rides.rider.home.model.getAddress.SaveAddressRequest
 import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
+import com.mevron.rides.rider.home.model.getCard.GetCardResponse
 import com.mevron.rides.rider.remote.model.GeneralResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -45,6 +47,10 @@ interface MevronAPI {
     @POST("api/v1/rider/auth/savedPlaces/{uiid}")
     suspend fun updateAddress(@Path("uiid") identifier: String, @Body data: UpdateAddress): Response<GeneralResponse>
 
+    @POST("api/v1/rider/auth/payment-method/create")
+    suspend fun addCard(@Body data: AddCard): Response<GeneralResponse>
 
+    @GET("api/v1/rider/auth/payment-method")
+    suspend fun getCards(): Response<GetCardResponse>
 
 }

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bottomSheet"
+        android:background="@drawable/rounded_corner"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="400dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_44sdp"
+            android:background="#0B973A"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal|center_vertical"
+            android:id="@+id/arrived_linear">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_handle"
+                android:layout_marginBottom="@dimen/_5sdp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/you_ve_reached_your_destination"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                android:fontFamily="@font/poppins_regular"
+                android:textFontWeight="400"
+                android:textSize="@dimen/_13ssp"
+                android:lineHeight="@dimen/_22sdp"
+                android:layout_marginEnd="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_14sdp"
+                tools:targetApi="p" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trip Details"
+            android:textAllCaps="false"
+            android:textColor="#383838"
+            android:fontFamily="@font/poppins_regular"
+            android:textFontWeight="600"
+            android:textSize="@dimen/_18ssp"
+            android:lineHeight="@dimen/_32sdp"
+            android:id="@+id/trip_detail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/arrived_linear"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            tools:targetApi="p" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_trip"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="@id/trip_detail"
+            app:layout_constraintBottom_toBottomOf="@id/trip_detail"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:id="@+id/edit_trip"/>
+
+
+
+        <ImageView
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:src="@drawable/ic_driver_pick"
+            android:id="@+id/pick_logo"
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_14sdp"
+            app:layout_constraintTop_toBottomOf="@+id/trip_detail"
+            android:layout_marginTop="@dimen/_20sdp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/drop_off_at"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/poppins_regular"
+            android:textFontWeight="400"
+            android:textSize="@dimen/_10ssp"
+            android:lineHeight="@dimen/_20sdp"
+            android:id="@+id/pick_text"
+            app:layout_constraintStart_toEndOf="@id/pick_logo"
+            app:layout_constraintTop_toTopOf="@id/pick_logo"
+            android:layout_marginStart="@dimen/_14sdp"
+            tools:targetApi="p" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fairmont Cafe"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_regular"
+            android:textFontWeight="500"
+            android:textSize="@dimen/_12ssp"
+            android:lineHeight="@dimen/_24sdp"
+            android:id="@+id/pick_name"
+            android:layout_marginTop="@dimen/_2sdp"
+            app:layout_constraintStart_toStartOf="@id/pick_text"
+            app:layout_constraintTop_toBottomOf="@id/pick_text"
+            tools:targetApi="p" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="86706 Kuhic Trafficway, Phenix City, AL"
+            android:textAllCaps="false"
+            android:textColor="#9C9C9C"
+            android:fontFamily="@font/poppins_regular"
+            android:textFontWeight="500"
+            android:maxLines="1"
+            android:textSize="@dimen/_11ssp"
+            android:lineHeight="@dimen/_24sdp"
+            android:id="@+id/pick_address"
+            android:textAlignment="viewStart"
+            android:layout_marginTop="@dimen/_1sdp"
+            app:layout_constraintStart_toStartOf="@id/pick_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pick_name"
+            tools:targetApi="p" />
+
+
+        <ImageButton
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:id="@+id/share_button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_share_trip_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pick_address"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="@dimen/_15sdp"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

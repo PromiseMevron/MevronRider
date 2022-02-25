@@ -44,6 +44,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -283,11 +284,15 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
     override fun onMapClick(p0: LatLng?) {
         mapClicked(p0)
+        Log.i("onMapClick Long", p0?.longitude.toString())
+        Log.i("onMapClick Lat", p0?.latitude.toString())
     }
 
     override fun onMapLongClick(p0: LatLng?) {
      //   Toast.makeText(context, "sds 2222 333", Toast.LENGTH_LONG).show()
      mapClicked(p0)
+        Log.i("onMapClick Long", p0?.longitude.toString())
+        Log.i("onMapClick Lat", p0?.latitude.toString())
     }
 
     fun mapClicked(p0: LatLng?){

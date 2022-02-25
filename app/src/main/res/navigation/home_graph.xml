@@ -140,4 +140,27 @@
             android:name="address"
             app:argType="com.mevron.rides.rider.localdb.SavedAddress" />
     </fragment>
+    <fragment
+        android:id="@+id/bookedFragment"
+        android:name="com.mevron.rides.rider.home.booked.BookedFragment"
+        android:label="booked_fragment"
+        tools:layout="@layout/booked_fragment" /><action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
+    <fragment
+        android:id="@+id/savedpaymentFragment"
+        android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"
+        android:label="saved_payment_fragment"
+        tools:layout="@layout/saved_payment_fragment" >
+        <action
+            android:id="@+id/action_savedpaymentFragment_to_cardDetailsFragment"
+            app:destination="@id/cardDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        tools:layout="@layout/card_details_fragment"
+        android:name="com.mevron.rides.rider.payment.CardDetailsFragment"
+        android:label="CardDetailsFragment" >
+        <argument
+            android:name="card"
+            app:argType="com.mevron.rides.rider.home.model.getCard.Data" />
+    </fragment>
 </navigation>

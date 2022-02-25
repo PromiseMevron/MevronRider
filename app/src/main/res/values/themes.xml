@@ -20,6 +20,35 @@
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
     </style>
 
+    <style name="NavigationViewStyle">
+        <item name="android:textSize">25sp</item>
+    </style>
+
+
+
+    <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/secondary</item>
+     <!--   <item name="OTPButtonStyle">@style/myOtpBtnStyle</item>-->
+        <item name="PayButtonStyle">@style/myBtnStyle</item>
+   <!--     <item name="PinButtonStyle">@style/myPinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/myOtpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/myTabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/myPinHeaderStyle</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>-->
+    </style>
+
+    <style name="tabLayoutStyle2" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">#607d8b</item>
+    </style>
+
+    <style name="myBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/orange_button_curved</item>
+        <item name="android:textColor">@color/raveWhite</item>
+    </style>
 
 
 </resources>
