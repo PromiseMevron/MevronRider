@@ -5,11 +5,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,27 +35,20 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.maps.android.SphericalUtil
+import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.socket.SocketHandler
-import com.mevron.rides.rider.util.Constants
-import com.mevron.rides.rider.util.LauncherUtil
-import com.mevron.rides.rider.util.mixpanel
-import com.mixpanel.android.mpmetrics.MixpanelAPI
+import com.mevron.rides.rider.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
-import java.util.*
 import org.json.JSONObject
-
-
-
-
-
-
-
+import java.util.*
+import kotlin.math.ln
 
 
 @AndroidEntryPoint
@@ -73,11 +65,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     private lateinit var drawer: ImageButton
     private lateinit var gMap: GoogleMap
     private lateinit var mapView: SupportMapFragment
-    private var mCircle: Circle? = null
+
     private lateinit var adapter: HomeAdapter
     private var add: ArrayList<LocationModel> = arrayListOf()
     private var mDialog: Dialog? = null
 
+    var LOCATION_REFRESH_TIME = 4000 // 4 seconds. The Minimum Time to get location update
+    var LOCATION_REFRESH_DISTANCE = 0 // 0 meters. The Minimum Distance to be changed to get location update
+
+
+    private var mCircle: Circle? = null
     var radiusInMeters = 100.0
     var strokeColor = -0x10000 //Color Code you want
 
@@ -107,9 +104,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         getAddressFromApi()
         getAddress()
 
-        SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = "3.2390875", lat = "6.6000652")
-        SocketHandler.establishConnection()
-
 
 
 
@@ -133,54 +127,37 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> binding.mevronHomeBottom.allSavedLayout.visibility = View.VISIBLE
-                    BottomSheetBehavior.STATE_COLLAPSED -> binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
-                    else -> binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.mevronHomeBottom.allSavedLayout.visibility = View.VISIBLE
+                        binding.mevronHomeBottom.scheduleButton.visibility = View.GONE
+                    }
+
+
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
+                        binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                    }
+                    else ->{
+                        binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
+                        binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                    }
                 }
             }
         })
     }
 
     fun addMarkerToMap(lat: Double, lng: Double){
+        val lg = LatLng(lat, lng)
 
         val marker =  MarkerOptions()
             .position(LatLng(lat, lng))
-            .icon(BitmapFromVector(context!!, R.drawable.car_icon_png))
-
+            .icon(bitmapFromVector(R.drawable.group))
+           // .rotation()
         gMap.addMarker(marker)
     }
 
-    private fun BitmapFromVector(context: Context, id: Int): BitmapDescriptor? {
-        // below line is use to generate a drawable.
 
-        val vectorDrawable = ContextCompat.getDrawable(context, id)
-
-        // below line is use to set bounds to our vector drawable.
-        vectorDrawable!!.setBounds(
-            0,
-            0,
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight
-        )
-
-        // below line is use to create a bitmap for our
-        // drawable which we have added.
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
-
-        // below line is use to add bitmap in our canvas.
-        val canvas = Canvas(bitmap)
-
-        // below line is use to draw our
-        // vector drawable in canvas.
-        vectorDrawable.draw(canvas)
-
-        // after generating our bitmap we are returning our bitmap.
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
 
     override fun onStart() {
         super.onStart()
@@ -203,27 +180,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
         if (googleMap != null) {
             gMap = googleMap
-            val s = SocketHandler.getSocket()
 
-            //  s.emit("")
-            s.on("nearby_drivers"){
-                Log.i("socket io", it.toString())
-                Log.i("socket io 2", it[0].toString())
-                activity?.runOnUiThread {
-                   //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
-                    val data = it[0] as JSONObject
-                    val locations = data["locations"] as JSONArray
-                    gMap.clear()
-                    for (l in 0 until locations.length()){
-                        val latLng = locations[l] as JSONObject
-                        val lat = (latLng["latitude"] as String).toDouble()
-                        val lng = (latLng["longitude"] as String).toDouble()
-                        addMarkerToMap(lat, lng)
-                    }
-
-                }
-
-            }
         }
         MapsInitializer.initialize(activity?.applicationContext)
 
@@ -236,18 +193,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
             return
         }
-        val gMapView = mapView.view
-        if (gMapView?.findViewById<View>("1".toInt()) != null) {
-            val locationButton = (gMapView.findViewById<View>("1".toInt()).parent as View).findViewById<View>("2".toInt())
-            val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-            layoutParams.setMargins(0, 0, 30, 850)
+        googleMap?.isMyLocationEnabled = true
+        googleMap?.isMyLocationEnabled = true
+
+        val mLocationManager = context?.let {
+            it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
 
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+        mLocationManager?.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            LOCATION_REFRESH_TIME.toLong(),
+            LOCATION_REFRESH_DISTANCE.toFloat(),
+            this
+        )
+
        /// Toast.makeText(context, "11", Toast.LENGTH_LONG).show()
       //  val currentShipment = context.viewModel.currentShipment
       //  if (currentShipment.senderAddress.isNullOrEmpty() && currentShipment.receiverAddress.isNullOrEmpty()) {
@@ -257,17 +216,37 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             if (location != null) {
 
                 val currentLocation = LatLng(location.latitude, location.longitude)
+                SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = currentLocation.longitude.toString(), lat = currentLocation.latitude.toString())
+                SocketHandler.establishConnection()
+                val s = SocketHandler.getSocket()
+                s?.on("nearby_drivers"){
+                    Log.i("socket io", it.toString())
+                    Log.i("socket io 2", it[0].toString())
+                    activity?.runOnUiThread {
+                        //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
+                        val data = it[0] as JSONObject
+                        val locations = data["locations"] as JSONArray
+                        gMap.clear()
+                        for (l in 0 until locations.length()){
+                            val latLng = locations[l] as JSONObject
+                            val lat = (latLng["latitude"] as String).toDouble()
+                            val lng = (latLng["longitude"] as String).toDouble()
+                            addMarkerToMap(lat, lng)
+                        }
 
+                    }
+
+                }
 
                 getAddressFromLocation(currentLocation)
                 val cameraPosition = CameraPosition.Builder()
                     .bearing(0.toFloat())
                     .target(currentLocation)
-                    .zoom(15.5.toFloat())
+                    .zoom(18.5.toFloat())
                     .build()
                 googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
                 //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
-            } else { displayLocationSettingsRequest() }
+            } else { displayLocationSettingsRequest(binding) }
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
@@ -276,40 +255,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
     }
 
-    private fun displayLocationSettingsRequest() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 4000
-        locationRequest.fastestInterval = 1000
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        val client = context?.let { LocationServices.getSettingsClient(it) }
-        val task = client?.checkLocationSettings(builder.build())
-        task?.addOnFailureListener { locationException: java.lang.Exception? ->
-            if (locationException is ResolvableApiException) {
-                try {
-                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
-                } catch (senderException: IntentSender.SendIntentException) {
-                    senderException.printStackTrace()
-                  /*  Snackbar.make(context, binding.root,"Please enable location setting to use your current address.",
 
-                        View.OnClickListener { displayLocationSettingsRequest() }, "Retry", Snackbar.LENGTH_LONG
-
-                        )*/
-
-                    val snackbar = Snackbar
-                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry") {
-                            displayLocationSettingsRequest()
-                        }
-
-                    snackbar.show()
-                   // showErrorMessage(context, constraintLayout, "Please enable location setting to use your current address.",
-                      //  View.OnClickListener { displayLocationSettingsRequest() }, getString(com.google.android.gms.maps.R.string.retry_text))
-                }
-            }
-        }
-    }
 
     fun getLocationProvider(): FusedLocationProviderClient? {
         return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
@@ -319,16 +265,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         val currentLocation = LatLng(p0.latitude, p0.longitude)
         getAddressFromLocation(currentLocation)
 
-        val addCircle = CircleOptions().center(LatLng(p0.latitude, p0.longitude)).radius(radiusInMeters).fillColor(shadeColor)
-            .strokeColor(strokeColor).strokeWidth(8f)
-        mCircle = gMap.addCircle(addCircle)
+       // val addCircle = CircleOptions().center(LatLng(p0.latitude, p0.longitude)).radius(radiusInMeters).fillColor(shadeColor)
+        //    .strokeColor(strokeColor).strokeWidth(8f)
+       // mCircle = gMap.addCircle(addCircle)
 
         //move map camera
 
         //move map camera
         gMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(p0.latitude, p0.longitude)))
-        gMap.animateCamera(CameraUpdateFactory.zoomTo(15f))
+        gMap.animateCamera(CameraUpdateFactory.zoomTo(18.5f))
     }
+
+    override fun onStop() {
+        super.onStop()
+    //    SocketHandler.closeConnection()
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -338,6 +290,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     }
 
     fun getAddressFromLocation(location: LatLng?) {
+
 
         try {
             if (location != null) {
@@ -387,7 +340,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     private fun getAddress(){
         viewModel.getAddressFromDB().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it.isEmpty()){
-                Toast.makeText(context, "1", Toast.LENGTH_LONG).show()
+              //  Toast.makeText(context, "1", Toast.LENGTH_LONG).show()
                 bottomSheetBehavior.peekHeight = 500
             }
 

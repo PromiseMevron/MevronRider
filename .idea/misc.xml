@@ -46,12 +46,15 @@
         <entry key="app/src/main/res/drawable/ic_pick_up.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_pill.xml" value="0.23958333333333334" />
         <entry key="app/src/main/res/drawable/ic_places.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_plus.xml" value="0.2105" />
         <entry key="app/src/main/res/drawable/ic_rectangle.xml" value="0.17552083333333332" />
         <entry key="app/src/main/res/drawable/ic_resend.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_resend_unenabled.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_round_arrow_back.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/ic_schedule.xml" value="0.18958333333333333" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.23796296296296296" />
         <entry key="app/src/main/res/drawable/ic_share_trip_status.xml" value="0.2324074074074074" />
+        <entry key="app/src/main/res/drawable/ic_stop_new_ride.xml" value="0.1921875" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_work_black.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/next_enabled.xml" value="0.23958333333333334" />
@@ -87,10 +90,11 @@
         <entry key="app/src/main/res/layout/email_login_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/emergency_bottom_layout.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/layout/empty_header.xml" value="0.12083333333333333" />
-        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.1" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/logout_dialod.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/make_payment_marker.xml" value="0.375" />
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.18468468468468469" />
         <entry key="app/src/main/res/layout/on_ride_bottom.xml" value="0.22447916666666667" />
@@ -119,12 +123,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.17798913043478262" />
-      </ProjectState>
-    </option>
   </component>
 </project>

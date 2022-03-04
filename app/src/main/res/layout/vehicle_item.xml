@@ -5,10 +5,10 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_marginTop="@dimen/_10sdp"
+
     android:layout_width="match_parent"
     android:id="@+id/background"
-    android:layout_height="@dimen/_80sdp">
+    android:layout_height="@dimen/_60sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

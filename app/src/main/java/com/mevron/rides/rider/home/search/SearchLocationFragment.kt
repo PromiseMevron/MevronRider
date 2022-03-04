@@ -45,10 +45,7 @@ import com.mevron.rides.rider.home.HomeFragmentDirections
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.settings.SettingsFragmentDirections
-import com.mevron.rides.rider.util.Constants
-import com.mevron.rides.rider.util.LauncherUtil
-import com.mevron.rides.rider.util.hideKeyboard
-import com.mevron.rides.rider.util.mixpanel
+import com.mevron.rides.rider.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
 import java.util.*
@@ -257,7 +254,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
             if (location != null) {
                 val currentLocation = LatLng(location.latitude, location.longitude)
                 getAddressFromLocation(currentLocation)
-            } else { displayLocationSettingsRequest() }
+            } else { displayLocationSettingsRequest(binding) }
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
@@ -268,40 +265,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
     }
 
     //  }
-    private fun displayLocationSettingsRequest() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 500
-        locationRequest.fastestInterval = 100
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        val client = context?.let { LocationServices.getSettingsClient(it) }
-        val task = client?.checkLocationSettings(builder.build())
-        task?.addOnFailureListener { locationException: java.lang.Exception? ->
-            if (locationException is ResolvableApiException) {
-                try {
-                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
-                } catch (senderException: IntentSender.SendIntentException) {
-                    senderException.printStackTrace()
-                    /*  Snackbar.make(context, binding.root,"Please enable location setting to use your current address.",
 
-                          View.OnClickListener { displayLocationSettingsRequest() }, "Retry", Snackbar.LENGTH_LONG
-
-                          )*/
-
-                    val snackbar = Snackbar
-                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry") {
-                            displayLocationSettingsRequest()
-                        }
-
-                    snackbar.show()
-                    // showErrorMessage(context, constraintLayout, "Please enable location setting to use your current address.",
-                    //  View.OnClickListener { displayLocationSettingsRequest() }, getString(com.google.android.gms.maps.R.string.retry_text))
-                }
-            }
-        }
-    }
     fun getAddressFromLocation(location: LatLng?) {
 
          try {

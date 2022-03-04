@@ -8,33 +8,39 @@ import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.ScrollView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
+import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.home.ride.ConfirmRideFragmentDirections
+import com.mevron.rides.rider.remote.socket.SocketHandler
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.bitmapFromVector
+import com.mevron.rides.rider.util.getGeoLocation
+import org.json.JSONObject
 import java.util.*
 
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
@@ -66,6 +72,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     var shadeColor = 0x44ff0000 //opaque red fill
 
+    private lateinit var location:Array<LocationModel>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -90,7 +98,9 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         val task: TimerTask = object : TimerTask() {
             override fun run() {
-                handler.post { stimulateWebsocket()}
+                handler.post {
+                 //   stimulateWebsocket()
+                }
             }
         }
 
@@ -99,10 +109,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
 
-    fun stimulateWebsocket(){
+    fun stimulateWebsocket(status: String){
+        Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
 
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        if (stateee == 1){
+        if (status == "driver_arrived"){
             binding.bookedHomeBottom.text1.visibility = View.GONE
             binding.bookedHomeBottom.text2.visibility = View.GONE
             binding.bookedHomeBottom.text11.visibility = View.VISIBLE
@@ -110,27 +121,75 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             binding.bookedHomeBottom.driverLinera.visibility = View.GONE
 
         }
-        if (stateee == 2){
+        if (status == "trip_began"){
            driverAllBottomSheetBehavior.isHideable = true
             onrideBottomSheetBehavior.isHideable = false
             driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             onrideBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        if (stateee == 3){
+        if (status == "completed"){
             onrideBottomSheetBehavior.isHideable = true
             rechedBottomSheetBehavior.isHideable = false
             onrideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             rechedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        if (stateee == 4){
-            timer?.cancel()
-        }
-        stateee += 1
+
+
 
 
     }
+
+
+   /* private fun addMarkerToPolyLines() {
+
+        val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+        var loc1 = location[0].address
+        if (loc1.length > 20){
+            loc1 = location[0].address.substring(0..20)
+        }
+
+        var loc2 = location[1].address
+        if (loc2.length > 20){
+            loc2 = location[1].address.substring(0..20)
+        }
+
+        val sLl= (startLocation?.lat ?: 0.0) - 0.00025
+        val sLlg= (startLocation?.lng ?: 0.0) - 0.00025
+
+        val sLl2= (endLocation?.lat ?: 0.0) + 0.0001
+        val sLlg2= (endLocation?.lng ?: 0.0) + 0.0001
+
+
+        val marker1 =  MarkerOptions()
+            .position(LatLng(sLl, sLlg))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc1, img = R.drawable.ic_driver_pick)))
+
+        val marker2 =  MarkerOptions()
+            .position(LatLng(sLl2, sLlg2))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, img = R.drawable.ic_driver_dest)))
+
+
+        val marker3 =  MarkerOptions()
+            .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
+            .icon(bitmapFromVector(R.drawable.ic_driver_pick))
+
+        val marker4 =  MarkerOptions()
+            .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+            .icon(bitmapFromVector(R.drawable.ic_driver_dest))
+
+        gMap.addMarker(marker1)
+        gMap.addMarker(marker2)
+        gMap.addMarker(marker3)
+        gMap.addMarker(marker4)
+
+
+
+
+
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -153,7 +212,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding.scheduleButton.setOnClickListener {
             emergBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-        setRepeatingAsyncTask()
+      //  setRepeatingAsyncTask()
 
     }
 
@@ -171,6 +230,18 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 drawerLayout.openDrawer(GravityCompat.START)
             }
         }
+
+        val s = SocketHandler.getSocket()
+        s?.on("trip_status") { it1 ->
+            Log.i("getAddressFromApi 33", "getAddressFromApi 33: ${it1[0]}")
+            activity?.runOnUiThread {
+
+                val dt = it1[0] as? JSONObject
+                val trip = dt?.get("trip") as? JSONObject
+                val status = trip?.get("status") as? String
+                stimulateWebsocket(status = status ?: "")
+            }
+        }
         mapView.getMapAsync(this)
 
     }
@@ -182,6 +253,30 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             gMap = googleMap
         }
         MapsInitializer.initialize(activity?.applicationContext)
+
+
+
+        location = arguments?.let { BookedFragmentArgs.fromBundle(it).location }!!
+        getGeoLocation(location, gMap, true) {
+          //  geoDirections = it
+           // addMarkerToPolyLines()
+        }
+
+            // Toast.makeText(context, "${it1[0]}", Toast.LENGTH_LONG).show()
+
+            // val dat = Gson().fromJson(dt.toString(), TripManagementDataClass::class.java)
+
+
+
+        if (location.isNotEmpty()){
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(18.5.toFloat())
+                .build()
+            gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
@@ -202,12 +297,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         googleMap?.isMyLocationEnabled = true
-        googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         /// Toast.makeText(context, "11", Toast.LENGTH_LONG).show()
         //  val currentShipment = context.viewModel.currentShipment
         //  if (currentShipment.senderAddress.isNullOrEmpty() && currentShipment.receiverAddress.isNullOrEmpty()) {
-        getLocationProvider()?.lastLocation?.addOnSuccessListener {
+     /*   getLocationProvider()?.lastLocation?.addOnSuccessListener {
             //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
             val location = it
             if (location != null) {
@@ -225,7 +319,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
-            }
+            }*/
         //  }
 
     }

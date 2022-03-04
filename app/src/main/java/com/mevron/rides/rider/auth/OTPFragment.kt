@@ -21,6 +21,7 @@ import com.mevron.rides.rider.home.HomeActivity
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Constants.TOKEN
+import com.mevron.rides.rider.util.Constants.UUID
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -102,6 +103,7 @@ class OTPFragment : Fragment() {
                         val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
                         val editor = sPref.edit()
                         editor.putString(TOKEN, res.data?.success?.data?.accessToken)
+                        editor.putString(UUID, res.data?.success?.data?.uuid)
                         val type = (res.data?.success?.data?.riderType ?: "").lowercase()
                         isNew = type == "new"
                         //TOKENhhh

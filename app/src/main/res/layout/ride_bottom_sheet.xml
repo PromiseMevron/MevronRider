@@ -110,7 +110,7 @@
         app:layout_constraintTop_toBottomOf="@id/top_layer"
         app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_12sdp"
         android:textStyle="bold"
         android:fontFamily="@font/poppins_regular"
@@ -124,7 +124,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_display"
-            android:layout_marginTop="@dimen/_24sdp"
+
             tools:listitem="@layout/vehicle_item"
             tools:itemCount="4"/>
 

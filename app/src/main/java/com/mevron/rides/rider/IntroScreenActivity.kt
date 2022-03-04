@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.mevron.rides.rider.auth.AuthActivity
-import com.mevron.rides.rider.home.HomeActivity
 
 class IntroScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

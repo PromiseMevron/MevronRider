@@ -5,14 +5,17 @@ import android.app.Dialog
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageButton
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -22,18 +25,28 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.ConfirmRideFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.payment.PaymentFragmentArgs
+import com.mevron.rides.rider.home.ride.model.rideconfirm.TripManagementDataClass
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
+import com.mevron.rides.rider.remote.model.RideRequest
+import com.mevron.rides.rider.remote.socket.SocketHandler
+import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.displayLocationSettingsRequest
+import com.mevron.rides.rider.util.getGeoLocation
+import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@AndroidEntryPoint
 class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: ConfirmRideFragmentBinding
@@ -42,12 +55,14 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
     private lateinit var geoDirections: GeoDirectionsResponse
     private lateinit var apiInterface: GeoAPIInterface
     private lateinit var location:Array<LocationModel>
+    private var isCard = false
+    private var uiid = ""
 
     companion object {
         fun newInstance() = ConfirmRideFragment()
     }
 
-    private lateinit var viewModel: ConfirmRideViewModel
+    private val viewModel: ConfirmRideViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,111 +79,133 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         if (this::gMap.isInitialized) {
             gMap.clear()
         }
-        getGeoLocation()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
         location = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).location }!!
+        isCard = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).isCard }!!
+        uiid = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).uiid }!!
+        sendAddressFromApi()
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()
         }
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
 
+
         mapView.getMapAsync(this)
         binding.cancelButton.setOnClickListener {
             showDialog()
         }
-        displayLocationSettingsRequest()
-    }
-
-    private fun displayLocationSettingsRequest() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 500
-        locationRequest.fastestInterval = 100
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        val client = context?.let { LocationServices.getSettingsClient(it) }
-        val task = client?.checkLocationSettings(builder.build())
-        task?.addOnFailureListener { locationException: java.lang.Exception? ->
-            if (locationException is ResolvableApiException) {
-                try {
-                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
-                } catch (senderException: IntentSender.SendIntentException) {
-                    senderException.printStackTrace()
-                    val snackbar = Snackbar
-                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry") {
-                            displayLocationSettingsRequest()
-                        }
-
-                    snackbar.show()
-                }
-            }
-        }
+        displayLocationSettingsRequest(binding)
     }
 
 
-    private fun plotPolyLines() {
 
-        val steps: ArrayList<LatLng> = ArrayList()
-        if (geoDirections.routes.isNullOrEmpty()) {
-            return
-        }
-        val geoBounds = geoDirections.routes?.get(0)?.bounds
-        val geoSteps = geoDirections.routes?.get(0)?.legs?.get(0)?.steps
-        geoSteps?.forEach { geoStep ->
-            steps.addAll(decodePolyline(geoStep.polyline?.points!!))
-        }
-        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
-        steps.add(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
 
-        val builder = LatLngBounds.Builder()
-        builder.include(LatLng(geoBounds?.northeast?.lat ?: 0.0, geoBounds?.northeast?.lng ?: 0.0))
-        builder.include(LatLng(geoBounds?.southwest?.lat ?: 0.0, geoBounds?.southwest?.lng ?: 0.0))
-
-        val bounds = builder.build()
-        val width = resources.displayMetrics.widthPixels
-        val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.3).toInt()
-
-        val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        gMap.animateCamera(boundsUpdate)
-        val rectLine = PolylineOptions().width(10f).color(ContextCompat.getColor(context!!, R.color.primary))
-        for (step in steps) { rectLine.add(step) }
-        // gMap.clear()
-        gMap.addPolyline(rectLine)
-
+    private fun addMarkerToPolyLines() {
 
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
-        val marker1 =  MarkerOptions()
+        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+
+        val marker3 =  MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
-            .title("From")
-            .snippet(location[0].address.substring(0..20))
+            .icon(bitmapFromVector( R.drawable.ic_driver_pick))
 
-        val marker2 =  MarkerOptions()
+        val marker4 =  MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-            .title("To")
-            .snippet(location[1].address.substring(0..20))
-        // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))
+            .icon(bitmapFromVector(R.drawable.ic_driver_dest))
+        gMap.addMarker(marker3)
+        gMap.addMarker(marker4)
 
 
-        gMap.addMarker(marker1).showInfoWindow()
-        gMap.addMarker(marker2).showInfoWindow()
-
-
-        /*  gMap.addMarker(
-              MarkerOptions()
-                  .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-                  .title("1111")
-                  .snippet("33333")
-              // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))
-          ).showInfoWindow()*/
 
     }
+
+
+
+    override fun onStop() {
+        super.onStop()
+        //SocketHandler.closeConnection()
+    }
+
+
+    fun sendAddressFromApi(){
+        //  toggleBusyDialog(true,"Please Wait...")
+        val method = if (isCard) "card" else "cash"
+
+        val data = RideRequest(cardId = uiid, paymentMethod = method, destinationLongitude = location[1].lng.toString(), destinationLatitude = location[1].lat.toString(),
+        destinationAddress = location[1].address, pickupAddress = location[0].address, pickupLongitude = location[0].lng.toString(), pickupLatitude = location[0].lat.toString(), vehicleType = "standard")
+
+        viewModel.confirmRider(data).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+            it.let {  res ->
+                when(res){
+
+                    is  GenericStatus.Success ->{
+                     //   Toast.makeText(context, "55", Toast.LENGTH_SHORT).show()
+
+                       // SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = location[0].lng.toString(), lat = location[0].lat.toString())
+                       // SocketHandler.establishConnection()
+                        val s = SocketHandler.getSocket()
+                        s?.on("search_drivers"){it1 ->
+                            Log.i("getAddressFromApi", "getAddressFromApi: ${it1[0]}")
+                            activity?.runOnUiThread {
+
+                                binding.findingFoundDriver.visibility = View.VISIBLE
+                                binding.confirmingDriver.visibility = View.GONE
+
+                            }
+                           // Toast.makeText(context, "${it1[0]}", Toast.LENGTH_LONG).show()
+
+                           // val dat = Gson().fromJson(dt.toString(), TripManagementDataClass::class.java)
+
+                        }
+
+
+
+
+                        s?.on("trip_status"){it1 ->
+                            Log.i("getAddressFromApi 33", "getAddressFromApi 33: ${it1[0]}")
+                            activity?.runOnUiThread {
+
+                                val dt = it1[0] as? JSONObject
+                                val trip = dt?.get("trip") as? JSONObject
+                                val status = trip?.get("status") as? String
+                                if (status == "accepted"){
+                                    val action = ConfirmRideFragmentDirections.actionGlobalBookedFragment(location)
+                                    findNavController().navigate(action)
+                                }
+                            }
+                            // Toast.makeText(context, "${it1[0]}", Toast.LENGTH_LONG).show()
+
+                            // val dat = Gson().fromJson(dt.toString(), TripManagementDataClass::class.java)
+
+                        }
+
+                    }
+
+                    is  GenericStatus.Error ->{
+                       Toast.makeText(context, "Ride Booking Failed", Toast.LENGTH_LONG).show()
+                    }
+
+                    is GenericStatus.Unaunthenticated -> {
+                        // toggleBusyDialog(false)
+                        Toast.makeText(context, "Ride Booking Failed", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        })
+
+    }
+
+
+
 
     private fun showDialog() {
         val dialog = activity?.let { Dialog(it) }!!
@@ -188,38 +225,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    private fun decodePolyline(encoded: String): ArrayList<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
 
-            val position = LatLng(lat.toDouble() / 1E5, lng.toDouble() / 1E5)
-            poly.add(position)
-        }
-        return poly
-    }
 
 
     override fun onMapReady(p0: GoogleMap?) {
@@ -227,6 +233,23 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
             gMap = p0
         }
         MapsInitializer.initialize(context?.applicationContext)
+
+        location = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).location }!!
+
+        getGeoLocation(location, gMap) {
+            geoDirections = it
+            addMarkerToPolyLines()
+        }
+
+        if (location.isNotEmpty()){
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(15.5.toFloat())
+                .build()
+            gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
@@ -242,28 +265,10 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         p0?.isMyLocationEnabled = true
 
 
-        getLocationProvider()?.lastLocation?.addOnSuccessListener {
-            val location = it
-            if (location != null) {
-                val currentLocation = LatLng(location.latitude, location.longitude)
-                val cameraPosition = CameraPosition.Builder()
-                    .bearing(0.toFloat())
-                    .target(currentLocation)
-                    .zoom(15.toFloat())
-                    .build()
-                gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 
-            } else { displayLocationSettingsRequest() }
-        }
-            ?.addOnFailureListener {
-                it.printStackTrace()
-            }
 
     }
 
-    fun getLocationProvider(): FusedLocationProviderClient? {
-        return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -272,35 +277,5 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun getGeoLocation(){
-        val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}"+
-                "&destination=" + "${location[1].lat}" + "," + "${location[1].lng}" +
-                "&sensor=false&units=metric&mode=driving"+ "&key=" + "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
-        val call: Call<GeoDirectionsResponse> = apiInterface.getGeoDirections(directionsEndpoint)
-        call.enqueue(object : Callback<GeoDirectionsResponse?> {
-            override fun onResponse(call: Call<GeoDirectionsResponse?>?, response: Response<GeoDirectionsResponse?>) {
-                if (response.isSuccessful) {
-                    response.body().let {
-                        val directionsPayload = it
-                        if (directionsPayload != null) {
-                            geoDirections = directionsPayload
-                            plotPolyLines()
-                        }
-                        else {
-
-                        }
-                    }
-                }
-                else {
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<GeoDirectionsResponse?>, t: Throwable?) {
-                call.cancel()
-            }
-        })
-    }
 
 }

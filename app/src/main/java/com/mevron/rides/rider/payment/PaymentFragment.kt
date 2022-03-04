@@ -1,44 +1,52 @@
 package com.mevron.rides.rider.payment
 
 import android.Manifest
-import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.PaymentFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.home.model.getCard.Data
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.util.Constants
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.mevron.rides.rider.util.bitmapFromVector
+import com.mevron.rides.rider.util.displayLocationSettingsRequest
+import com.mevron.rides.rider.util.getGeoLocation
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
     companion object {
         fun newInstance() = PaymentFragment()
     }
 
-    private lateinit var viewModel: PaymentViewModel
+
+    private val viewModel: PaymentViewModel by viewModels()
     private lateinit var binding:PaymentFragmentBinding
     private lateinit var mapView: SupportMapFragment
     private lateinit var gMap: GoogleMap
@@ -46,6 +54,11 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
     private lateinit var apiInterface: GeoAPIInterface
     private lateinit var location:Array<LocationModel>
     private lateinit var adapter: PaymentAdapter
+    private var data: List<Data> = ArrayList()
+
+    private var uiid:String = ""
+    private var method = ""
+    private var isCard = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,20 +74,26 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         if (this::gMap.isInitialized) {
             gMap.clear()
         }
-        getGeoLocation()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = PaymentAdapter(this)
+
+        method = "Cash"
+        isCard = false
         binding.mevronPayBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
             RecyclerView.VERTICAL, false)
-      binding.mevronPayBottom.recyclerView.adapter = adapter
+
         location = arguments?.let { PaymentFragmentArgs.fromBundle(it).location }!!
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
         binding.payCash.setOnClickListener {
-            val action = PaymentFragmentDirections.actionPaymentFragment2ToConfirmRideFragment(location)
+            if (method.isEmpty()){
+                Toast.makeText(context, "Select a payment method", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val action = PaymentFragmentDirections.actionPaymentFragment2ToConfirmRideFragment(location, isCard, uiid)
             findNavController().navigate(action)
         }
         binding.bqckButton.setOnClickListener {
@@ -85,7 +104,9 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
 
         mapView.getMapAsync(this)
-        displayLocationSettingsRequest()
+
+        displayLocationSettingsRequest(binding)
+        getCards()
         binding.addVoucher.setOnClickListener {
             binding.mevronPayBottom.payTypeLayout.visibility = View.GONE
             binding.mevronPayBottom.voucherAddLayout.visibility = View.VISIBLE
@@ -104,125 +125,90 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
     }
 
 
-    private fun displayLocationSettingsRequest() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 500
-        locationRequest.fastestInterval = 100
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        val client = context?.let { LocationServices.getSettingsClient(it) }
-        val task = client?.checkLocationSettings(builder.build())
-        task?.addOnFailureListener { locationException: java.lang.Exception? ->
-            if (locationException is ResolvableApiException) {
-                try {
-                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
-                } catch (senderException: IntentSender.SendIntentException) {
-                    senderException.printStackTrace()
-                    val snackbar = Snackbar
-                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
-                        .setAction("Retry") {
-                            displayLocationSettingsRequest()
-                        }
-
-                    snackbar.show()
-                }
-            }
-        }
-    }
 
 
-    private fun plotPolyLines() {
 
-        val steps: ArrayList<LatLng> = ArrayList()
-        if (geoDirections.routes.isNullOrEmpty()) {
-            return
-        }
-        val geoBounds = geoDirections.routes?.get(0)?.bounds
-        val geoSteps = geoDirections.routes?.get(0)?.legs?.get(0)?.steps
-        geoSteps?.forEach { geoStep ->
-            steps.addAll(decodePolyline(geoStep.polyline?.points!!))
-        }
-        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
-        steps.add(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-
-        val builder = LatLngBounds.Builder()
-        builder.include(LatLng(geoBounds?.northeast?.lat ?: 0.0, geoBounds?.northeast?.lng ?: 0.0))
-        builder.include(LatLng(geoBounds?.southwest?.lat ?: 0.0, geoBounds?.southwest?.lng ?: 0.0))
-
-        val bounds = builder.build()
-        val width = resources.displayMetrics.widthPixels
-        val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.3).toInt()
-
-        val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        gMap.animateCamera(boundsUpdate)
-        val rectLine = PolylineOptions().width(20f).color(ContextCompat.getColor(context!!, R.color.primary))
-        for (step in steps) { rectLine.add(step) }
-        // gMap.clear()
-        gMap.addPolyline(rectLine)
-
+    private fun addMarkerToPolyLines() {
 
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+        var loc1 = location[0].address
+        if (loc1.length > 20){
+            loc1 = location[0].address.substring(0..20)
+        }
+
+        var loc2 = location[1].address
+        if (loc2.length > 20){
+            loc2 = location[1].address.substring(0..20)
+        }
+
+        val sLl= (startLocation?.lat ?: 0.0) - 0.00025
+        val sLlg= (startLocation?.lng ?: 0.0) - 0.00025
+
+        val sLl2= (endLocation?.lat ?: 0.0) + 0.0001
+        val sLlg2= (endLocation?.lng ?: 0.0) + 0.0001
+
+
         val marker1 =  MarkerOptions()
-            .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
-            .title("From")
-            .snippet(location[0].address.substring(0..5))
+            .position(LatLng(sLl, sLlg))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc1, img = R.drawable.ic_driver_pick)))
 
         val marker2 =  MarkerOptions()
+            .position(LatLng(sLl2, sLlg2))
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, img = R.drawable.ic_driver_dest)))
+
+
+        val marker3 =  MarkerOptions()
+            .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
+            .icon(bitmapFromVector(R.drawable.ic_driver_pick))
+
+        val marker4 =  MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-            .title("To")
-            .snippet(location[1].address.substring(0..5))
-        // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_pick))
+            .icon(bitmapFromVector(R.drawable.ic_driver_dest))
+
+        gMap.addMarker(marker1)
+        gMap.addMarker(marker2)
+        gMap.addMarker(marker3)
+        gMap.addMarker(marker4)
 
 
-        gMap.addMarker(marker1).showInfoWindow()
-        gMap.addMarker(marker2).showInfoWindow()
 
 
-        /*  gMap.addMarker(
-              MarkerOptions()
-                  .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-                  .title("1111")
-                  .snippet("33333")
-              // .icon(BitmapFromVector(context!!, R.drawable.ic_marker_drop))
-          ).showInfoWindow()*/
 
     }
 
+    private fun createClusterBitmap(add: String, img: Int): Bitmap {
+        val cluster: View = LayoutInflater.from(context).inflate(
+            R.layout.make_payment_marker,
+            null
+        )
+        val clusterSizeText = cluster.findViewById<View>(R.id.address) as TextView
+        clusterSizeText.text = add
+        val clusterSizeText2 = cluster.findViewById<View>(R.id.type_image) as ImageView
 
-    private fun decodePolyline(encoded: String): ArrayList<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
+        clusterSizeText2.setImageResource(img)
 
-            val position = LatLng(lat.toDouble() / 1E5, lng.toDouble() / 1E5)
-            poly.add(position)
-        }
-        return poly
+
+        //  clusterSizeText.text = clusterSize.toString()
+        cluster.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        cluster.layout(0, 0, cluster.measuredWidth, cluster.measuredHeight)
+        val clusterBitmap = Bitmap.createBitmap(
+            cluster.measuredWidth,
+            cluster.measuredHeight, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(clusterBitmap)
+        cluster.draw(canvas)
+        return clusterBitmap
     }
+
+
+
+
+
+
 
 
     override fun onMapReady(p0: GoogleMap?) {
@@ -230,6 +216,23 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             gMap = p0
         }
         MapsInitializer.initialize(context?.applicationContext)
+
+        getGeoLocation(location, gMap) {
+            geoDirections = it
+            addMarkerToPolyLines()
+        }
+
+        location = arguments?.let { PaymentFragmentArgs.fromBundle(it).location }!!
+        if (location.isNotEmpty()){
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(15.5.toFloat())
+                .build()
+            gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
+
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
@@ -245,23 +248,33 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         p0?.isMyLocationEnabled = true
 
 
-        getLocationProvider()?.lastLocation?.addOnSuccessListener {
-            val location = it
-            if (location != null) {
-                val currentLocation = LatLng(location.latitude, location.longitude)
-                val cameraPosition = CameraPosition.Builder()
-                    .bearing(0.toFloat())
-                    .target(currentLocation)
-                    .zoom(15.toFloat())
-                    .build()
-                gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 
-            } else { displayLocationSettingsRequest() }
-        }
-            ?.addOnFailureListener {
-                it.printStackTrace()
+    }
+
+    fun getCards(){
+        viewModel.getACards().observe(viewLifecycleOwner, androidx.lifecycle.Observer  {
+            it.let {  res ->
+                when(res){
+
+                    is  GenericStatus.Success ->{
+
+                        adapter = res.data?.success?.data?.let { it1 -> PaymentAdapter(this, it1, 1) }!!
+                        data = res.data.success.data
+                        binding.mevronPayBottom.recyclerView.adapter = adapter
+
+                    }
+
+                    is  GenericStatus.Error ->{
+
+                        Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
+                    }
+
+                    is GenericStatus.Unaunthenticated -> {
+
+                    }
+                }
             }
-
+        })
     }
 
     fun getLocationProvider(): FusedLocationProviderClient? {
@@ -275,38 +288,21 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         }
     }
 
-    fun getGeoLocation(){
-        val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}"+
-                "&destination=" + "${location[1].lat}" + "," + "${location[1].lng}" +
-                "&sensor=false&units=metric&mode=driving"+ "&key=" + "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
-        val call: Call<GeoDirectionsResponse> = apiInterface.getGeoDirections(directionsEndpoint)
-        call.enqueue(object : Callback<GeoDirectionsResponse?> {
-            override fun onResponse(call: Call<GeoDirectionsResponse?>?, response: Response<GeoDirectionsResponse?>) {
-                if (response.isSuccessful) {
-                    response.body().let {
-                        val directionsPayload = it
-                        if (directionsPayload != null) {
-                            geoDirections = directionsPayload
-                            plotPolyLines()
-                        }
-                        else {
-
-                        }
-                    }
-                }
-                else {
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<GeoDirectionsResponse?>, t: Throwable?) {
-                call.cancel()
-            }
-        })
+    override fun selected(pos: Int) {
+        findNavController().navigate(R.id.action_paymentFragment2_to_paymentMethodFragment)
     }
 
-    override fun selected() {
-        findNavController().navigate(R.id.action_paymentFragment2_to_paymentMethodFragment)
+    override fun selectedMethod(isCard: Boolean, uiid: String, method: String, pos: Int) {
+        this.isCard = isCard
+        this.uiid = uiid
+        this.method = method
+        if (isCard){
+            binding.payCash.text = "Pay with Card"
+        }else{
+            binding.payCash.text = "Pay with Cash"
+        }
+
+        adapter = PaymentAdapter(this, data, pos)
+        binding.mevronPayBottom.recyclerView.adapter = adapter
     }
 }

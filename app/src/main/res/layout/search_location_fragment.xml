@@ -99,6 +99,7 @@
     <ImageButton
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
+        android:visibility="gone"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="@id/stopAddressLayout"
         app:layout_constraintBottom_toBottomOf="@id/stopAddressLayout"

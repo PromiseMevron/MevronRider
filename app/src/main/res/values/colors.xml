@@ -17,4 +17,5 @@
     <color name="red">#FF0000</color>
     <color name="red_14">#24FF0000</color>
     <color name="field_color">#383838</color>
+    <color name="dashColor">#2A2A72</color>
 </resources>

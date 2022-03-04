@@ -83,5 +83,6 @@
     <string name="card_details">Card Details</string>
     <string name="tap_here_to_cancel_this_ride_if_rider_don_t_show_up">Tap here to cancel this ride, if rider don’t show up.</string>
     <string name="waiting_for_the_rider">Waiting for the rider</string>
+    <string name="confirming_your_ride">Confirming your ride</string>
 
 </resources>

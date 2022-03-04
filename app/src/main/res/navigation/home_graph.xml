@@ -84,6 +84,12 @@
         <argument
             android:name="location"
             app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+        <argument
+            android:name="isCard"
+            app:argType="boolean" />
+        <argument
+            android:name="uiid"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -144,7 +150,11 @@
         android:id="@+id/bookedFragment"
         android:name="com.mevron.rides.rider.home.booked.BookedFragment"
         android:label="booked_fragment"
-        tools:layout="@layout/booked_fragment" /><action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
+        tools:layout="@layout/booked_fragment" >
+        <argument
+            android:name="location"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+    </fragment><action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
     <fragment
         android:id="@+id/savedpaymentFragment"
         android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"

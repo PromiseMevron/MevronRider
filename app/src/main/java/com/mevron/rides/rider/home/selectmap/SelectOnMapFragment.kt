@@ -1,14 +1,13 @@
 package com.mevron.rides.rider.home.selectmap
 
 import android.Manifest
-import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,37 +17,25 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
-import com.mevron.rides.rider.util.Constants
-import com.google.android.gms.maps.model.Marker
-import java.util.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-
-import com.google.android.gms.maps.model.MarkerOptions
-
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener
-import java.io.IOException
-import java.lang.StringBuilder
-import android.graphics.Bitmap
-import android.graphics.Canvas
-
-import android.graphics.drawable.Drawable
-import android.util.Log
-import androidx.navigation.fragment.findNavController
-
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.util.bitmapFromVector
+import com.mevron.rides.rider.util.Constants
+import java.util.*
 
 
 class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, OnMapClickListener, GoogleMap.OnMapLongClickListener {
@@ -183,7 +170,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                 val cameraPosition = CameraPosition.Builder()
                     .bearing(0.toFloat())
                     .target(currentLocation)
-                    .zoom(15.toFloat())
+                    .zoom(15.5.toFloat())
                     .build()
                 googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
                 //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
@@ -301,51 +288,23 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         //remove previously placed Marker
         marker?.remove()
 
+        var id = 0
+        id = if (locationField == binding.startAddressField){
+            R.drawable.ic_marker_pick
+        }else{
+            R.drawable.ic_marker_drop
+        }
+
         //place marker where user just clicked
         marker = gMap.addMarker(
             p0?.let {
                 MarkerOptions().position(it).title("")
-                    .icon(context?.let { it1 -> BitmapFromVector(it1) })
+                    .icon(context?.let { bitmapFromVector(id) })
             }
         )
     }
 
 
-    private fun BitmapFromVector(context: Context): BitmapDescriptor? {
-        // below line is use to generate a drawable.
-        var id = 0
-        if (locationField == binding.startAddressField){
-            id = R.drawable.ic_marker_pick
-        }else{
-            id = R.drawable.ic_marker_drop
-        }
-        val vectorDrawable = ContextCompat.getDrawable(context, id)
 
-        // below line is use to set bounds to our vector drawable.
-        vectorDrawable!!.setBounds(
-            0,
-            0,
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight
-        )
-
-        // below line is use to create a bitmap for our
-        // drawable which we have added.
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
-
-        // below line is use to add bitmap in our canvas.
-        val canvas = Canvas(bitmap)
-
-        // below line is use to draw our
-        // vector drawable in canvas.
-        vectorDrawable.draw(canvas)
-
-        // after generating our bitmap we are returning our bitmap.
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
 
 }

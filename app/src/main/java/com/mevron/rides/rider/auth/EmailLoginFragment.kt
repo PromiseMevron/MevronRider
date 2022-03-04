@@ -57,8 +57,9 @@ class EmailLoginFragment : Fragment() {
         }
 
         binding.nextButton.setOnClickListener {
-            validateEmail()
             submit = true
+            validateEmail()
+
 
             //moveToHome()
         }
@@ -129,8 +130,8 @@ class EmailLoginFragment : Fragment() {
         for (i in 1 until (fullName.size)){
             lName += fullName[i]
         }
-      //  val data = SaveDetailsRequest(email = email, firstName = fName, lastName = lName)
-        val data = SaveDetailsRequest(email = email, fullName = name)
+        val data = SaveDetailsRequest(email = email, firstName = fName, lastName = lName)
+        //val data = SaveDetailsRequest(email = email, fullName = name)
         viewModel.sendDetail(data).observe(viewLifecycleOwner, Observer {
             it.let { res ->
                 when(res){

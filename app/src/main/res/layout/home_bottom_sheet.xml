@@ -9,14 +9,34 @@
         android:layout_height="wrap_content"
         app:behavior_hideable="false"
         android:id="@+id/bottomSheet"
-        app:behavior_peekHeight="300dp"
+
+        app:behavior_peekHeight="260dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="@android:color/transparent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/schedule_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_schedule"
+                android:layout_marginStart="@dimen/_14sdp"
+                app:layout_constraintStart_toStartOf="parent" />
+
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
+    android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/schedule_button"
+        android:layout_marginTop="@dimen/_15sdp"
     android:background="@drawable/rounded_corner">
 
         <ImageView
@@ -64,7 +84,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/destAddressLayout"
         android:hint="@string/search_your_destination"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/where_go"
@@ -96,7 +116,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/destAddressLayout"
-            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             tools:listitem="@layout/address_item"
             android:id="@+id/recycler_view"
             android:paddingBottom="@dimen/_50sdp"
@@ -159,5 +179,9 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 </layout>

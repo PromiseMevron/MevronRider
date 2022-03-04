@@ -101,6 +101,17 @@
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_remove_card"
+        android:background="@android:color/transparent"
+        android:id="@+id/remove_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/_20sdp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

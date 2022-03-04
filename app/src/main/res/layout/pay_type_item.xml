@@ -7,6 +7,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="@dimen/_50sdp"
+    android:id="@+id/root_view"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
@@ -28,7 +29,7 @@
         android:lineHeight="@dimen/_24sdp"
         app:layout_constraintStart_toEndOf="@id/image"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_8ssp"
+        android:textSize="@dimen/_10ssp"
         android:textColor="#383838"
         android:textFontWeight="500"
         android:layout_marginStart="@dimen/_16sdp"

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="4dp"
+    android:elevation="10dp"
+    app:cardMaxElevation="10dp"
+    android:layout_height="wrap_content">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/marker"
+    android:padding="10dp">
+
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="jdcdkcdcdkc"
+        android:id="@+id/address"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_7ssp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/_2sdp"
+        app:layout_constraintStart_toEndOf="@+id/type_image" />
+
+    <ImageView
+        android:layout_width="@dimen/_7sdp"
+        android:layout_height="@dimen/_7sdp"
+        tools:src="@drawable/ic_driver_pick"
+        android:id="@+id/type_image"
+        app:layout_constraintBottom_toBottomOf="@id/address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/address" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

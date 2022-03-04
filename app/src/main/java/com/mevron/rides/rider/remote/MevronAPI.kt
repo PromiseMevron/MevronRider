@@ -13,12 +13,11 @@ import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
 import com.mevron.rides.rider.home.model.getAddress.SaveAddressRequest
 import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
 import com.mevron.rides.rider.home.model.getCard.GetCardResponse
+import com.mevron.rides.rider.home.ride.model.ConfirmRideResponse
 import com.mevron.rides.rider.remote.model.GeneralResponse
+import com.mevron.rides.rider.remote.model.RideRequest
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 
 interface MevronAPI {
@@ -52,5 +51,11 @@ interface MevronAPI {
 
     @GET("api/v1/rider/auth/payment-method")
     suspend fun getCards(): Response<GetCardResponse>
+
+    @POST("api/v1/rider/auth/requestRide")
+    suspend fun makeARideRequest(@Body data: RideRequest): Response<ConfirmRideResponse>
+
+    @DELETE("api/v1/rider/auth/payment-method/{uiid}/remove")
+    suspend fun deleteCard(@Path("uiid") identifier: String): Response<GeneralResponse>
 
 }

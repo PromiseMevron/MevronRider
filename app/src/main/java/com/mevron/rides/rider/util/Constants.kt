@@ -5,7 +5,8 @@ object Constants {
     const val BASE_URL = "http://staging.mevron.com:8081/"
     const val DATABASE_NAME = "alphally_db"
     const val SHARED_PREF_KEY = "alphally"
-    const val TOKEN = "token"
+    const val TOKEN = "TOKEN"
+    const val UUID = "UUID"
     const val LOCATION_REQUEST_CODE = 4555
 
     fun isNewNumberType(number: String): Boolean {

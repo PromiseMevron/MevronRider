@@ -41,7 +41,7 @@ android {
 dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    def nav_version = "2.5.0-alpha02"
+    def nav_version = "2.5.0-alpha03"
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
@@ -100,10 +100,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
     //room
-    implementation "androidx.room:room-runtime:2.4.1"
-    kapt "androidx.room:room-compiler:2.4.1"
+    implementation "androidx.room:room-runtime:2.4.2"
+    kapt "androidx.room:room-compiler:2.4.2"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-    implementation "androidx.room:room-ktx:2.4.1"
+    implementation "androidx.room:room-ktx:2.4.2"
 
 
 
@@ -128,6 +128,10 @@ dependencies {
 
     //slider button
     implementation "com.ncorti:slidetoact:0.9.0"
+
+    //google map util
+    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
+
 
     //socket.io
     implementation ('io.socket:socket.io-client:2.0.0') {

@@ -14,9 +14,11 @@ import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
 import com.mevron.rides.rider.home.model.getAddress.SaveAddressRequest
 import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
 import com.mevron.rides.rider.home.model.getCard.GetCardResponse
+import com.mevron.rides.rider.home.ride.model.ConfirmRideResponse
 import com.mevron.rides.rider.localdb.MevronDao
 import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.model.GeneralResponse
+import com.mevron.rides.rider.remote.model.RideRequest
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -75,5 +77,13 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     suspend fun getCards(): Response<GetCardResponse>{
         return  api.getCards()
+    }
+
+    suspend fun createRide(data: RideRequest) : Response<ConfirmRideResponse>{
+        return api.makeARideRequest(data)
+    }
+
+    suspend fun deleteCard(id: String) : Response<GeneralResponse>{
+        return api.deleteCard(id)
     }
 }
