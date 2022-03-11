@@ -23,7 +23,8 @@ object SocketHandler {
 
             val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
             val uuid = sPref.getString(Constants.UUID, null)
-            mSocket = IO.socket("http://staging.mevron.com:8081/?uuid=${uuid}&lat=${lat}&long=${lng}")
+            mSocket = IO.socket("http://staging.mevron.com:8081/?uuid=fcab6503-3dd0-43e4-ad4c-79331a5a9ca1&lat=6.6039714&long=3.2419436")
+          //  mSocket = IO.socket("http://staging.mevron.com:8081/?uuid=${uuid}&lat=${lat}&long=${lng}")
         } catch (e: URISyntaxException) {
 
         }

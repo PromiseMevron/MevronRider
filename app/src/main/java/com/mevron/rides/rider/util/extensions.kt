@@ -1,8 +1,10 @@
 package com.mevron.rides.rider.util
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.IntentSender
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Patterns
@@ -10,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
@@ -47,9 +51,9 @@ fun EditText.getString(): String{
     return this.text.toString()
 }
 
-fun Fragment.mixpanel(): MixpanelAPI {
+/*fun Fragment.mixpanel(): MixpanelAPI {
     return MixpanelAPI.getInstance(context, "YOUR_TOKEN")
-}
+}*/
 
 fun Fragment.bitmapFromVector(id: Int): BitmapDescriptor {
     val vectorDrawable = ContextCompat.getDrawable(requireContext(), id)
@@ -109,7 +113,7 @@ fun Fragment.displayLocationSettingsRequest(binding: ViewDataBinding){
     }
 }
 
-fun Fragment.getGeoLocation(location: Array<LocationModel>, gMap: GoogleMap, isArrival: Boolean = false, addMarker: (GeoDirectionsResponse) -> Unit){
+fun Fragment.getGeoLocation(location: Array<LocationModel>, gMap: GoogleMap, isArrival: Boolean = false, onTrip: Boolean = false, addMarker: (GeoDirectionsResponse) -> Unit){
 
     val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}"+
             "&destination=" + "${location[1].lat}" + "," + "${location[1].lng}" +
@@ -121,10 +125,18 @@ fun Fragment.getGeoLocation(location: Array<LocationModel>, gMap: GoogleMap, isA
                 response.body().let {
                     val directionsPayload = it
                     if (directionsPayload != null) {
-                        if (isArrival)
-                        plotPolyLinesForDriverArrival(directionsPayload, gMap, addMarker)
-                        else
-                            plotPolyLines(directionsPayload, gMap, addMarker)
+                        if (isArrival){
+                            plotPolyLinesForDriverArrival(directionsPayload, gMap, addMarker)
+                        }
+                        else{
+                            if (onTrip){
+                                plotPolyLinesForOnTrip(directionsPayload, gMap, addMarker)
+                            }else{
+                                plotPolyLines(directionsPayload, gMap, addMarker)
+                            }
+                        }
+
+
                     }
                     else {
 
@@ -169,7 +181,7 @@ fun Fragment.plotPolyLines(geoDirections: GeoDirectionsResponse, gMap: GoogleMap
 
     //   val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
     //   gMap.animateCamera(boundsUpdate)
-    val rectLine = PolylineOptions().width(20f).color(ContextCompat.getColor(requireContext(), R.color.primary))
+    val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
     for (step in steps) { rectLine.add(step) }
     // gMap.clear()
     gMap.addPolyline(rectLine)
@@ -224,23 +236,105 @@ fun Fragment.plotPolyLinesForDriverArrival(geoDirections: GeoDirectionsResponse,
     )
 
     if (geoSteps.size > 2){
-        val rectLine = PolylineOptions().width(20f).color(ContextCompat.getColor(requireContext(), R.color.primary))
+        val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
         for (step in steps) { rectLine.add(step) }
         gMap.addPolyline(rectLine)
         val marker =  MarkerOptions()
             .position(LatLng(steps[(steps.size - 1)].latitude, steps[(steps.size - 1)].longitude))
             .icon(bitmapFromVector(R.drawable.ic_driver_pick))
         gMap.addMarker(marker)
+
+
+
+        val cluster: View = LayoutInflater.from(context).inflate(
+            R.layout.make_payment_marker,
+            null
+        )
+        val clusterSizeText = cluster.findViewById<View>(R.id.address) as TextView
+        clusterSizeText.text = "Pick-up Spot"
+        val clusterSizeText2 = cluster.findViewById<View>(R.id.type_image) as ImageView
+        clusterSizeText2.visibility = View.GONE
+
+        //  clusterSizeText.text = clusterSize.toString()
+        cluster.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        cluster.layout(0, 0, cluster.measuredWidth, cluster.measuredHeight)
+        val clusterBitmap = Bitmap.createBitmap(
+            cluster.measuredWidth,
+            cluster.measuredHeight, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(clusterBitmap)
+        cluster.draw(canvas)
+
+        val marker1 =  MarkerOptions()
+            .position(LatLng(steps[(steps.size - 1)].latitude, steps[(steps.size - 1)].longitude))
+            .anchor(1.0f,1.05f)
+            .icon(BitmapDescriptorFactory.fromBitmap(clusterBitmap))
+        gMap.addMarker(marker1)
+
     }
     val marker3 =  MarkerOptions()
         .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
         .icon(bitmapFromVector( R.drawable.group))
     gMap.addMarker(marker3)
 
-    val rectLine2 = PolylineOptions().width(12f).color(ContextCompat.getColor(requireContext(), R.color.dashColor)).pattern(pattern)
+    val rectLine2 = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.dashColor)).pattern(pattern)
     for (step in steps2) { rectLine2.add(step) }
     gMap.addPolyline(rectLine2)
 }
+
+
+fun Fragment.plotPolyLinesForOnTrip(geoDirections: GeoDirectionsResponse, gMap: GoogleMap,  addMarker: (GeoDirectionsResponse) -> Unit){
+    val steps: ArrayList<LatLng> = ArrayList()
+
+    if (geoDirections.routes.isNullOrEmpty()) {
+        return
+    }
+    addMarker(geoDirections)
+
+    val geoBounds = geoDirections.routes?.get(0)?.bounds
+    val geoSteps = geoDirections.routes?.get(0)?.legs?.get(0)?.steps
+    geoSteps?.forEach { geoStep ->
+        steps.addAll(decodePolyline(geoStep.polyline?.points!!))
+    }
+
+    val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+    steps.add(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+
+    val builder = LatLngBounds.Builder()
+    builder.include(LatLng(geoBounds?.northeast?.lat ?: 0.0, geoBounds?.northeast?.lng ?: 0.0))
+    builder.include(LatLng(geoBounds?.southwest?.lat ?: 0.0, geoBounds?.southwest?.lng ?: 0.0))
+
+    val bounds = builder.build()
+    val width = resources.displayMetrics.widthPixels
+    val height = resources.displayMetrics.heightPixels
+    val padding = (width * 0.3).toInt()
+
+    //   val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+    //   gMap.animateCamera(boundsUpdate)
+    val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
+    for (step in steps) { rectLine.add(step) }
+    // gMap.clear()
+    gMap.addPolyline(rectLine)
+
+
+
+
+  //  val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+    val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+
+
+
+    val marker3 =  MarkerOptions()
+        .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
+        .icon(bitmapFromVector( R.drawable.group))
+    gMap.addMarker(marker3)
+
+}
+
+
 
 private fun decodePolyline(encoded: String): ArrayList<LatLng> {
     val poly = ArrayList<LatLng>()
@@ -291,6 +385,19 @@ private fun decodePolyline(encoded: String): ArrayList<LatLng> {
         mDialog.show()
     }else{
         mDialog?.dismiss()
+    }
+}
+
+
+fun Fragment.checkPermission(){
+    if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+        != PackageManager.PERMISSION_GRANTED && context?.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+        } != PackageManager.PERMISSION_GRANTED) {
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+        return
     }
 }
 

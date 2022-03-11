@@ -2,7 +2,6 @@ package com.mevron.rides.rider.home.ride
 
 import android.Manifest
 import android.app.Dialog
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -11,40 +10,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.ConfirmRideFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.home.ride.model.rideconfirm.TripManagementDataClass
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.remote.model.RideRequest
 import com.mevron.rides.rider.remote.socket.SocketHandler
-import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.displayLocationSettingsRequest
 import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 @AndroidEntryPoint
 class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
@@ -236,12 +229,36 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
 
         location = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).location }!!
 
+        if (location.isNotEmpty()){
+
+            val builder = LatLngBounds.Builder()
+            builder.include(LatLng(location[0].lat, location[0].lng))
+            builder.include(LatLng(location[1].lat, location[1].lng))
+            val bounds = builder.build()
+            val width = resources.displayMetrics.widthPixels;
+            val  height = resources.displayMetrics.heightPixels;
+            val padding =(width * 0.40).toInt()
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
+
+            //  gMap.setPadding(20,20,20,20)
+            gMap.animateCamera(cu)
+
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(15.5.toFloat())
+                .build()
+            // gMap.animateCamera(cu)
+        }
+
+
         getGeoLocation(location, gMap) {
             geoDirections = it
             addMarkerToPolyLines()
         }
 
-        if (location.isNotEmpty()){
+     /*   if (location.isNotEmpty()){
             val currentLocation = LatLng(location[0].lat, location[0].lng)
             val cameraPosition = CameraPosition.Builder()
                 .bearing(0.toFloat())
@@ -249,7 +266,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                 .zoom(15.5.toFloat())
                 .build()
             gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-        }
+        }*/
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {

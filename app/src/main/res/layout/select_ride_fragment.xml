@@ -18,9 +18,8 @@
         android:id="@+id/mapView"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-197dp" />
+        android:layout_marginBottom="285dp"
+        android:layout_height="match_parent"/>
 
     <ImageButton
         android:contentDescription="@string/back_button"
@@ -38,6 +37,7 @@
         <include
             android:visibility="visible"
             android:id="@+id/mevron_ride_bottom"
+
             layout="@layout/ride_bottom_sheet" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

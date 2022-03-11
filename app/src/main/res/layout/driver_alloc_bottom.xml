@@ -9,7 +9,7 @@
         app:behavior_hideable="false"
         android:id="@+id/bottomSheet"
         android:background="@drawable/rounded_corner"
-        app:behavior_peekHeight="@dimen/_110sdp"
+        app:behavior_peekHeight="110dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 

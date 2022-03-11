@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         app:behavior_hideable="false"
         android:id="@+id/bottomSheet"
-        app:behavior_peekHeight="@dimen/_300sdp"
+        app:behavior_peekHeight="110dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 

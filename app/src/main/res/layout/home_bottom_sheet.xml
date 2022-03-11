@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:behavior_hideable="false"
+        android:visibility="visible"
         android:id="@+id/bottomSheet"
 
         app:behavior_peekHeight="260dp"
@@ -29,6 +30,24 @@
                 android:src="@drawable/ic_schedule"
                 android:layout_marginStart="@dimen/_14sdp"
                 app:layout_constraintStart_toStartOf="parent" />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="@dimen/_40sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_height="@dimen/_40sdp"
+                app:cardCornerRadius="@dimen/_20sdp"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_14sdp"
+                android:id="@+id/my_location">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_location"/>
+
+            </androidx.cardview.widget.CardView>
 
 
 

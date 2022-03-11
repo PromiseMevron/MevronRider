@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/rounded_corner"
     app:behavior_hideable="false"
-    android:paddingBottom="@dimen/_150sdp"
+    android:paddingBottom="150dp"
     app:behavior_peekHeight="350dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 

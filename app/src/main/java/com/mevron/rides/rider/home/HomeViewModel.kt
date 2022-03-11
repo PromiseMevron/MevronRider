@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor (private val repository: MevronRepo) : V
                             val add = SavedAddress(type = d.type, name = d.name, lat = d.latitude,
                                 lng = d.longitude, address = d.address, uiid = d.uuid
                                 )
-                            repository.saveAddressInDb(add)
+                          //  repository.saveAddressInDb(add)
                         }
                     }
                 }

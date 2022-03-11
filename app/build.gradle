@@ -132,6 +132,9 @@ dependencies {
     //google map util
     implementation 'com.google.maps.android:android-maps-utils:2.2.3'
 
+    //date range picker
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
+
 
     //socket.io
     implementation ('io.socket:socket.io-client:2.0.0') {

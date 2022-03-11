@@ -35,6 +35,7 @@ import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.checkPermission
 import java.util.*
 
 
@@ -46,7 +47,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
     private lateinit var viewModel: SelectOnMapViewModel
     private lateinit var binding: SelectOnMapFragmentBinding
-    private lateinit var gMap: GoogleMap
+    private var gMap: GoogleMap? = null
     private lateinit var mapView: SupportMapFragment
     private var marker: Marker? = null
     private lateinit var locationField: EditText
@@ -71,6 +72,10 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()
+        }
+
+        binding.myLocation.setOnClickListener {
+            myLocation(gMap)
         }
 
         binding.pickMe.setOnClickListener {
@@ -128,40 +133,38 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         if (googleMap != null) {
             gMap = googleMap
 
-            gMap.setOnMapClickListener(this)
-            gMap.setOnMapLongClickListener(this)
+            gMap?.setOnMapClickListener(this)
+            gMap?.setOnMapLongClickListener(this)
         }
 
 
         MapsInitializer.initialize(activity?.applicationContext)
 
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
-            != PackageManager.PERMISSION_GRANTED && context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
-            } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
-            return
-        }
-
      /*   googleMap?.setOnMapClickListener {
             Toast.makeText(context, "ww", Toast.LENGTH_LONG).show()
             getAddressFromLocation(it)
         }*/
-        val gMapView = mapView.view
+    /*    val gMapView = mapView.view
         if (gMapView?.findViewById<View>("1".toInt()) != null) {
             val locationButton = (gMapView.findViewById<View>("1".toInt()).parent as View).findViewById<View>("2".toInt())
             val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
             layoutParams.setMargins(0, 0, 30, 850)
-        }
-
+        }*/
+        checkPermission()
         googleMap?.isMyLocationEnabled = true
         googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+        googleMap?.uiSettings?.isMyLocationButtonEnabled = false
 
+        myLocation(googleMap)
+
+
+    }
+
+
+    fun myLocation(googleMap: GoogleMap?){
+        checkPermission()
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
 
             val location = it
@@ -173,14 +176,13 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                     .zoom(15.5.toFloat())
                     .build()
                 googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                mapClicked(currentLocation)
                 //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
             } else { displayLocationSettingsRequest() }
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
             }
-
-
     }
 
     private fun displayLocationSettingsRequest() {
@@ -296,7 +298,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         }
 
         //place marker where user just clicked
-        marker = gMap.addMarker(
+        marker = gMap?.addMarker(
             p0?.let {
                 MarkerOptions().position(it).title("")
                     .icon(context?.let { bitmapFromVector(id) })

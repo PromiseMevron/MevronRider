@@ -84,5 +84,22 @@
     <string name="tap_here_to_cancel_this_ride_if_rider_don_t_show_up">Tap here to cancel this ride, if rider don’t show up.</string>
     <string name="waiting_for_the_rider">Waiting for the rider</string>
     <string name="confirming_your_ride">Confirming your ride</string>
+    <string name="share_the_reason_for_cancelling_the_ride">Share the reason for cancelling the ride</string>
+    <string name="help_us_to_improve_the_services_better">Help us to improve the services better</string>
+    <string name="inefficient_route">Inefficient Route</string>
+    <string name="booked_by_mistake">Booked by mistake</string>
+    <string name="change_in_plan">Change in plan</string>
+    <string name="other">Other</string>
+    <string name="submit_feedback">Submit Feedback</string>
+    <string name="your_trip_is_verified">Your trip is verified.</string>
+    <string name="schedule_ride">Schedule Ride</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_ride_is_scheduled">Your Ride is scheduled</string>
+    <string name="this_is_just_an_approximate_fare_cost_may_differ_refer_terms_amp_conditions_for_more_information"><![CDATA[This is just an approximate fare, cost may differ. Refer Terms & Conditions for more information.]]></string>
+    <string name="rate_your_experience_with_the_driver">Rate your experience with the driver</string>
+    <string name="add_a_tip_to_the_driver">Add a tip to the driver</string>
+    <string name="we_share_the_full_tip_amount_to_the_driver">We share the full tip amount to the driver</string>
+
 
 </resources>

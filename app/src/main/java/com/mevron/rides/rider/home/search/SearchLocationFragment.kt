@@ -78,9 +78,9 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val props = JSONObject()
+     /*   val props = JSONObject()
         props.put("Search Screen", true)
-        mixpanel().track("Android Search Screen", props)
+        mixpanel().track("Android Search Screen", props)*/
         getAddress()
         val sessionToken = AutocompleteSessionToken.newInstance()
         selectedField = binding.startAddressField

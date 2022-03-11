@@ -2,7 +2,6 @@ package com.mevron.rides.rider.home.select_ride
 
 import android.Manifest
 import android.app.Dialog
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -20,14 +19,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
+import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SelectRideFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
@@ -36,12 +30,8 @@ import com.mevron.rides.rider.home.model.cars.Ride
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
-import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import com.mevron.rides.rider.R
 import com.mevron.rides.rider.util.*
+import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
@@ -186,19 +176,21 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
             loc2 = location[1].address.substring(0..20)
         }
 
-        val sLl= (startLocation?.lat ?: 0.0) - 0.00025
-        val sLlg= (startLocation?.lng ?: 0.0) - 0.00025
+        val sLl= (startLocation?.lat ?: 0.0)
+        val sLlg= (startLocation?.lng ?: 0.0)
 
-        val sLl2= (endLocation?.lat ?: 0.0) + 0.0001
-        val sLlg2= (endLocation?.lng ?: 0.0) + 0.0001
+        val sLl2= (endLocation?.lat ?: 0.0)
+        val sLlg2= (endLocation?.lng ?: 0.0)
 
 
         val marker1 =  MarkerOptions()
             .position(LatLng(sLl, sLlg))
+            .anchor(1.05f,1.05f)
             .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc1, loc = "Start", color = "#F57519")))
 
         val marker2 =  MarkerOptions()
             .position(LatLng(sLl2, sLlg2))
+            .anchor(1.05f,1.05f)
             .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, loc = "To", color = "#F9170F")))
 
 
@@ -254,6 +246,8 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
             gMap = p0
         }
         MapsInitializer.initialize(context?.applicationContext)
+       // gMap.setMaxZoomPreference(15.5F)
+       // gMap.setMinZoomPreference(5.5F)
 
 
         location = arguments?.let { SelectRideFragmentArgs.fromBundle(it).location }!!
@@ -263,13 +257,26 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         }
 
         if (location.isNotEmpty()){
+
+            val builder = LatLngBounds.Builder()
+            builder.include(LatLng(location[0].lat, location[0].lng))
+            builder.include(LatLng(location[1].lat, location[1].lng))
+            val bounds = builder.build()
+           val width = resources.displayMetrics.widthPixels;
+          val  height = resources.displayMetrics.heightPixels;
+           val padding =(width * 0.40).toInt()
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+
+          //  gMap.setPadding(20,20,20,20)
+            gMap.animateCamera(cu)
+
             val currentLocation = LatLng(location[0].lat, location[0].lng)
             val cameraPosition = CameraPosition.Builder()
                 .bearing(0.toFloat())
                 .target(currentLocation)
                 .zoom(15.5.toFloat())
                 .build()
-            gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+           // gMap.animateCamera(cu)
         }
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
@@ -283,7 +290,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         }
 
 
-        p0?.isMyLocationEnabled = true
+       // p0?.isMyLocationEnabled = true
 
 
     }

@@ -63,7 +63,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<NestedScrollView>
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
-    private lateinit var gMap: GoogleMap
+    private  var gMap: GoogleMap? = null
     private lateinit var mapView: SupportMapFragment
 
     private lateinit var adapter: HomeAdapter
@@ -94,9 +94,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val props = JSONObject()
-        props.put("Home Screen", true)
-        mixpanel().track("Android Home Screen", props)
+      //  val props = JSONObject()
+     //   props.put("Home Screen", true)
+      //  mixpanel().track("Android Home Screen", props)
 
 
         add = arrayListOf()
@@ -116,6 +116,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             findNavController().navigate(R.id.action_global_addSavedPlaceFragment)
         }
 
+        binding.mevronHomeBottom.myLocation.setOnClickListener {
+            animateToCurrentPosi(gMap)
+        }
+
 
       //  bottomSheetBehavior.peekHeight
 
@@ -130,6 +134,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.VISIBLE
                         binding.mevronHomeBottom.scheduleButton.visibility = View.GONE
+                        binding.mevronHomeBottom.myLocation.visibility = View.GONE
                     }
 
 
@@ -137,10 +142,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
                         binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                        binding.mevronHomeBottom.myLocation.visibility = View.VISIBLE
                     }
                     else ->{
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
                         binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                        binding.mevronHomeBottom.myLocation.visibility = View.VISIBLE
                     }
                 }
             }
@@ -154,7 +161,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             .position(LatLng(lat, lng))
             .icon(bitmapFromVector(R.drawable.group))
            // .rotation()
-        gMap.addMarker(marker)
+        gMap?.addMarker(marker)
     }
 
 
@@ -180,10 +187,42 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
         if (googleMap != null) {
             gMap = googleMap
+            return
 
         }
         MapsInitializer.initialize(activity?.applicationContext)
+        checkPermission()
 
+        googleMap?.isMyLocationEnabled = true
+        googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+      //  googleMap?.isMyLocationEnabled = true
+
+        /*   val mLocationManager = context?.let {
+              it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+          }
+
+
+         mLocationManager?.requestLocationUpdates(
+              LocationManager.GPS_PROVIDER,
+              LOCATION_REFRESH_TIME.toLong(),
+              LOCATION_REFRESH_DISTANCE.toFloat(),
+              this
+          )*/
+        animateToCurrentPosi(googleMap)
+
+       /// Toast.makeText(context, "11", Toast.LENGTH_LONG).show()
+      //  val currentShipment = context.viewModel.currentShipment
+      //  if (currentShipment.senderAddress.isNullOrEmpty() && currentShipment.receiverAddress.isNullOrEmpty()) {
+
+      //  }
+
+    }
+
+
+
+
+    fun animateToCurrentPosi(googleMap: GoogleMap?){
+      //  checkPermission()
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
@@ -193,28 +232,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
             return
         }
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.isMyLocationEnabled = true
 
-        val mLocationManager = context?.let {
-            it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
 
-        mLocationManager?.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            LOCATION_REFRESH_TIME.toLong(),
-            LOCATION_REFRESH_DISTANCE.toFloat(),
-            this
-        )
-
-       /// Toast.makeText(context, "11", Toast.LENGTH_LONG).show()
-      //  val currentShipment = context.viewModel.currentShipment
-      //  if (currentShipment.senderAddress.isNullOrEmpty() && currentShipment.receiverAddress.isNullOrEmpty()) {
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
-          //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+            //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
             val location = it
             if (location != null) {
-
                 val currentLocation = LatLng(location.latitude, location.longitude)
                 SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = currentLocation.longitude.toString(), lat = currentLocation.latitude.toString())
                 SocketHandler.establishConnection()
@@ -226,7 +249,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
                         //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
                         val data = it[0] as JSONObject
                         val locations = data["locations"] as JSONArray
-                        gMap.clear()
+                        gMap?.clear()
                         for (l in 0 until locations.length()){
                             val latLng = locations[l] as JSONObject
                             val lat = (latLng["latitude"] as String).toDouble()
@@ -251,8 +274,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             ?.addOnFailureListener {
                 it.printStackTrace()
             }
-      //  }
-
     }
 
 
@@ -272,8 +293,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         //move map camera
 
         //move map camera
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(p0.latitude, p0.longitude)))
-        gMap.animateCamera(CameraUpdateFactory.zoomTo(18.5f))
+        gMap?.moveCamera(CameraUpdateFactory.newLatLng(LatLng(p0.latitude, p0.longitude)))
+        gMap?.animateCamera(CameraUpdateFactory.zoomTo(18.5f))
     }
 
     override fun onStop() {

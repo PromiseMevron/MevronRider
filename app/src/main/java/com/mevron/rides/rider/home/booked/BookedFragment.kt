@@ -3,6 +3,8 @@ package com.mevron.rides.rider.home.booked
 import android.Manifest
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
@@ -12,12 +14,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,6 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
+import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.home.ride.ConfirmRideFragmentDirections
 import com.mevron.rides.rider.remote.socket.SocketHandler
@@ -59,11 +60,13 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
     private lateinit var gMap: GoogleMap
+    private lateinit var geoDirections: GeoDirectionsResponse
     private lateinit var mapView: SupportMapFragment
     private var mCircle: Circle? = null
     var stateee = 0
 
     var timer: Timer? = null
+    var theStatus = "accepted"
 
 
 
@@ -135,10 +138,6 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             rechedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-
-
-
-
     }
 
 
@@ -208,6 +207,10 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         emergBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         rechedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
+        binding.okayRide.setOnClickListener {
+            binding.verifiedCode.visibility = View.GONE
+        }
+
 
         binding.scheduleButton.setOnClickListener {
             emergBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -235,12 +238,16 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         s?.on("trip_status") { it1 ->
             Log.i("getAddressFromApi 33", "getAddressFromApi 33: ${it1[0]}")
             activity?.runOnUiThread {
-
                 val dt = it1[0] as? JSONObject
                 val trip = dt?.get("trip") as? JSONObject
                 val status = trip?.get("status") as? String
                 stimulateWebsocket(status = status ?: "")
+                theStatus = status ?: ""
             }
+        }
+
+        s?.on("start_ride"){
+            binding.verifiedCode.visibility = View.VISIBLE
         }
         mapView.getMapAsync(this)
 
@@ -257,9 +264,87 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
         location = arguments?.let { BookedFragmentArgs.fromBundle(it).location }!!
+
+
+
+        if (location.isNotEmpty()){
+
+            val builder = LatLngBounds.Builder()
+            builder.include(LatLng(location[0].lat, location[0].lng))
+            builder.include(LatLng(location[1].lat, location[1].lng))
+            val bounds = builder.build()
+            val width = resources.displayMetrics.widthPixels;
+            val  height = resources.displayMetrics.heightPixels;
+            val padding =(width * 0.40).toInt()
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
+
+            //  gMap.setPadding(20,20,20,20)
+            gMap.animateCamera(cu)
+
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(15.5.toFloat())
+                .build()
+            // gMap.animateCamera(cu)
+        }
+
+
         getGeoLocation(location, gMap, true) {
           //  geoDirections = it
            // addMarkerToPolyLines()
+        }
+
+        val s = SocketHandler.getSocket()
+        s?.on("driver_pickup_eta") { it1 ->
+            Log.i("getAddressFromApi 44", "getAddressFromApi 44: ${it1[0]}")
+            activity?.runOnUiThread {
+                Toast.makeText(context, theStatus, Toast.LENGTH_SHORT).show()
+
+                if (theStatus == "accepted"){
+                    Toast.makeText(context, "11", Toast.LENGTH_SHORT).show()
+                    val data = it1[0] as JSONObject
+
+                    val lat = (data["driverLatitude"] as String).toDouble()
+                    val lng = (data["driverLongitude"] as String).toDouble()
+                    val location1 = LocationModel(lat, lng, "")
+                    val location2 = LocationModel(location[0].lat, location[0].lng, location[0].address)
+                    val locations = arrayListOf<LocationModel>()
+                    locations.add(location1)
+                    locations.add(location2)
+                    var ads = arrayOf<LocationModel>()
+                    for (a in locations){
+                        ads += a
+                    }
+                    gMap.clear()
+                    getGeoLocation(ads, gMap, true) {
+                        //  geoDirections = it
+                        // addMarkerToPolyLines()
+                    }
+                }
+
+               if (theStatus == "trip_began"){
+                   val data = it1[0] as JSONObject
+                   Toast.makeText(context, "22", Toast.LENGTH_SHORT).show()
+                   val lat = (data["driverLatitude"] as String).toDouble()
+                   val lng = (data["driverLongitude"] as String).toDouble()
+                   val location2 = LocationModel(lat, lng, "")
+                   val location1 = LocationModel(location[1].lat, location[1].lng, location[1].address)
+                   val locations = arrayListOf<LocationModel>()
+                   locations.add(location1)
+                   locations.add(location2)
+                   var ads = arrayOf<LocationModel>()
+                   for (a in locations){
+                       ads += a
+                   }
+                   gMap.clear()
+                   getGeoLocation(ads,gMap, isArrival = false, onTrip = true){
+                       geoDirections = it
+                       addMarkerToPolyLines()
+                   }
+               }
+            }
         }
 
             // Toast.makeText(context, "${it1[0]}", Toast.LENGTH_LONG).show()
@@ -267,16 +352,6 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             // val dat = Gson().fromJson(dt.toString(), TripManagementDataClass::class.java)
 
 
-
-        if (location.isNotEmpty()){
-            val currentLocation = LatLng(location[0].lat, location[0].lng)
-            val cameraPosition = CameraPosition.Builder()
-                .bearing(0.toFloat())
-                .target(currentLocation)
-                .zoom(18.5.toFloat())
-                .build()
-            gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-        }
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
@@ -297,7 +372,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+      //  googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         /// Toast.makeText(context, "11", Toast.LENGTH_LONG).show()
         //  val currentShipment = context.viewModel.currentShipment
         //  if (currentShipment.senderAddress.isNullOrEmpty() && currentShipment.receiverAddress.isNullOrEmpty()) {
@@ -323,6 +398,94 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         //  }
 
     }
+
+    private fun addMarkerToPolyLines() {
+
+        val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+        val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+
+
+
+        var loc2 = location[1].address
+        if (loc2.length > 20){
+            loc2 = location[1].address.substring(0..20)
+        }
+
+
+        val sLl= (startLocation?.lat ?: 0.0)
+        val sLlg= (startLocation?.lng ?: 0.0)
+
+        val sLl2= (endLocation?.lat ?: 0.0)
+        val sLlg2= (endLocation?.lng ?: 0.0)
+
+        var sec = 0L
+        geoDirections.routes?.forEach {
+            it.legs?.forEach { it1 ->
+               val sec2 = it1.duration?.value ?: 0L
+                sec += sec2
+            }
+        }
+        val mSec = sec.toInt()
+        var tim = ""
+        var min = mSec/60
+        tim = min.toString() + "min"
+
+        if (min > 60){
+            min /= 60
+            tim = min.toString() + "hr"
+        }
+
+
+        val marker2 =  MarkerOptions()
+            .position(LatLng(sLl2, sLlg2))
+            .anchor(1.05f,1.05f)
+            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, tim)))
+
+
+        val marker4 =  MarkerOptions()
+            .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
+            .icon(bitmapFromVector(R.drawable.ic_drop_blue))
+
+
+        gMap.addMarker(marker2)
+
+        gMap.addMarker(marker4)
+
+
+
+
+
+    }
+
+    private fun createClusterBitmap(add: String, min: String): Bitmap {
+        val cluster: View = LayoutInflater.from(context).inflate(
+            R.layout.on_trip_marker,
+            null
+        )
+        val clusterSizeText = cluster.findViewById<View>(R.id.address) as TextView
+        clusterSizeText.text = add
+
+        val clusterSizeText2 = cluster.findViewById<View>(R.id.min) as TextView
+        clusterSizeText2.text = min
+
+
+
+        //  clusterSizeText.text = clusterSize.toString()
+        cluster.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        cluster.layout(0, 0, cluster.measuredWidth, cluster.measuredHeight)
+        val clusterBitmap = Bitmap.createBitmap(
+            cluster.measuredWidth,
+            cluster.measuredHeight, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(clusterBitmap)
+        cluster.draw(canvas)
+        return clusterBitmap
+    }
+
+
 
     private fun displayLocationSettingsRequest() {
         val locationRequest = LocationRequest.create()

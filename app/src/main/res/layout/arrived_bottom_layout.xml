@@ -11,7 +11,7 @@
         android:id="@+id/bottomSheet"
         android:background="@drawable/rounded_corner"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="400dp"
+        app:behavior_peekHeight="110dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
