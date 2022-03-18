@@ -145,7 +145,7 @@ class SavedPaymentFragment : Fragment(), PaySelected2 {
 
                     is  GenericStatus.Error ->{
 
-                        Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, res.error?.error?.message ?: "Error in fetching cards", Toast.LENGTH_LONG).show()
                     }
 
                     is GenericStatus.Unaunthenticated -> {

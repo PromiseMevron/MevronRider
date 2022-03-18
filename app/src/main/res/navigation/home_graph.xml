@@ -95,7 +95,17 @@
         android:id="@+id/settingsFragment"
         android:name="com.mevron.rides.rider.settings.SettingsFragment"
         android:label="settings_fragment"
-        tools:layout="@layout/settings_fragment" />
+        tools:layout="@layout/settings_fragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_promoFragment"
+            app:destination="@id/promoFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_referalFragment"
+            app:destination="@id/referalFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_emergencyFragment"
+            app:destination="@id/emergencyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/saveAddressFragment"
         tools:layout="@layout/save_address_fragment"
@@ -173,4 +183,62 @@
             android:name="card"
             app:argType="com.mevron.rides.rider.home.model.getCard.Data" />
     </fragment>
+    <fragment
+        android:id="@+id/my_rides_fragment"
+        android:name="com.mevron.rides.rider.settings.myrides.MyRidesFragment"
+        android:label="my_rides_fragment"
+        tools:layout="@layout/my_rides_fragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.mevron.rides.rider.settings.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_faceLivenessDetectionFragment"
+            app:destination="@id/faceLivenessDetectionFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/rideDetailsFragment"
+        android:name="com.mevron.rides.rider.settings.myrides.RideDetailsFragment"
+        android:label="ride_details_fragment"
+        tools:layout="@layout/ride_details_fragment" /><action android:id="@+id/action_global_rideDetailsFragment" app:destination="@id/rideDetailsFragment"/>
+    <fragment
+        android:id="@+id/referalFragment"
+        tools:layout="@layout/referal_fragment"
+        android:name="com.mevron.rides.rider.settings.referal.ReferalFragment"
+        android:label="ReferalFragment" >
+        <action
+            android:id="@+id/action_referalFragment_to_referalDetailFragment"
+            app:destination="@id/referalDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/referalDetailFragment"
+        tools:layout="@layout/referal_detail_fragment"
+        android:name="com.mevron.rides.rider.settings.referal.ReferalDetailFragment"
+        android:label="ReferalDetailFragment" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/promoFragment"
+        tools:layout="@layout/promo_fragment"
+        android:name="com.mevron.rides.rider.settings.promos.PromoFragment"
+        android:label="PromoFragment" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.mevron.rides.rider.settings.HelpFragment"
+        android:label="help_fragment"
+        tools:layout="@layout/help_fragment" />
+    <fragment
+        android:id="@+id/emergencyFragment"
+        android:name="com.mevron.rides.rider.settings.emerg.EmergencyFragment"
+        android:label="emergency_fragment"
+        tools:layout="@layout/emergency_fragment" />
+    <fragment
+        android:id="@+id/faceLivenessDetectionFragment"
+        android:name="com.mevron.rides.rider.livedetect.FaceLivenessDetectionFragment"
+        android:label="fragment_facial_recognition"
+        tools:layout="@layout/fragment_facial_recognition" />
 </navigation>

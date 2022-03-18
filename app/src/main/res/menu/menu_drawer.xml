@@ -5,7 +5,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/myRideFragment"
+            android:id="@+id/my_rides_fragment"
             android:title="@string/my_rides" />
         <item
             android:id="@+id/notificationFragment"

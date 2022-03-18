@@ -267,8 +267,9 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
            val padding =(width * 0.40).toInt()
             val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
 
-          //  gMap.setPadding(20,20,20,20)
-            gMap.animateCamera(cu)
+          //  gMap.setPadding(50,50,50,50)
+          //  gMap.animateCamera(cu)
+            gMap.moveCamera(cu)
 
             val currentLocation = LatLng(location[0].lat, location[0].lng)
             val cameraPosition = CameraPosition.Builder()

@@ -21,4 +21,14 @@ interface MevronDao {
 
     @Query("SELECT * FROM saved_address ORDER BY id DESC")
     fun getAllAddress(): LiveData<MutableList<SavedAddress>>
+
+
+    @Query("SELECT * FROM referral_detail ORDER BY dbId DESC")
+    fun getAllReferal(): LiveData<MutableList<ReferalDetail>>
+
+    @Query("DELETE FROM referral_detail")
+    suspend fun deleteAllReferral()
+
+    @Insert
+    suspend fun insertRefer(add: ReferalDetail)
 }

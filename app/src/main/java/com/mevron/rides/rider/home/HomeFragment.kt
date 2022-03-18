@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.home
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.IntentSender
@@ -24,6 +25,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
@@ -69,6 +71,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     private lateinit var adapter: HomeAdapter
     private var add: ArrayList<LocationModel> = arrayListOf()
     private var mDialog: Dialog? = null
+    private var loca: MutableLiveData<LatLng> = MutableLiveData()
 
     var LOCATION_REFRESH_TIME = 4000 // 4 seconds. The Minimum Time to get location update
     var LOCATION_REFRESH_DISTANCE = 0 // 0 meters. The Minimum Distance to be changed to get location update
@@ -116,9 +119,76 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             findNavController().navigate(R.id.action_global_addSavedPlaceFragment)
         }
 
-        binding.mevronHomeBottom.myLocation.setOnClickListener {
-            animateToCurrentPosi(gMap)
+        binding.mevronHomeBottom.scheduleButton.setOnClickListener {
+            binding.mevronHomeBottom.bottomSheet.visibility = View.GONE
+            binding.mevronScheduleBottom.scheduleLayout.visibility = View.VISIBLE
         }
+
+        binding.mevronScheduleBottom.scheduleTheRide.setOnClickListener {
+            binding.mevronHomeBottom.bottomSheet.visibility = View.VISIBLE
+            binding.mevronScheduleBottom.scheduleLayout.visibility = View.GONE
+        }
+
+        binding.mevronHomeBottom.myLocation.setOnClickListener {
+           // animateToCurrentPosi(gMap)
+
+          //  checkPermission()
+            if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+                != PackageManager.PERMISSION_GRANTED && context?.let {
+                    ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                } != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+                return@setOnClickListener
+            }
+            getLocationProvider()?.lastLocation?.addOnSuccessListener {
+                //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+                val location = it
+                if (location != null) {
+                    val currentLocation = LatLng(location.latitude, location.longitude)
+                    loca.postValue(currentLocation)
+                    /* */
+
+                    getAddressFromLocation(currentLocation)
+                    val cameraPosition = CameraPosition.Builder()
+                        .bearing(0.toFloat())
+                        .target(currentLocation)
+                        .zoom(18.5.toFloat())
+                        .build()
+                 //   gMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                    gMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                    //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
+                } else { displayLocationSettingsRequest(binding) }
+            }
+                ?.addOnFailureListener {
+                    it.printStackTrace()
+                }
+
+        }
+        loca.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = it.longitude.toString(), lat = it.latitude.toString())
+              SocketHandler.establishConnection()
+              val s = SocketHandler.getSocket()
+            s?.on("nearby_drivers"){
+                 Log.i("socket io", it.toString())
+                 Log.i("socket io 2", it[0].toString())
+                 activity?.runOnUiThread {
+                      //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
+                      val data = it[0] as JSONObject
+                      val locations = data["locations"] as JSONArray
+                      gMap?.clear()
+                         for (l in 0 until locations.length()){
+                           val latLng = locations[l] as JSONObject
+                           val lat = (latLng["latitude"] as String).toDouble()
+                           val lng = (latLng["longitude"] as String).toDouble()
+                              // addMarkerToMap(lat, lng)
+                       }
+
+                   }
+
+             }
+        })
 
 
       //  bottomSheetBehavior.peekHeight
@@ -128,6 +198,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
+
+
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                when (newState) {
@@ -183,15 +255,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         mapView.getMapAsync(this)
     }
 
+   // @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
-
+   //     Toast.makeText(context, "44444", Toast.LENGTH_SHORT).show()
         if (googleMap != null) {
+       //     Toast.makeText(context, "5555", Toast.LENGTH_SHORT).show()
             gMap = googleMap
-            return
+           // return
 
         }
+       // Toast.makeText(context, "66666", Toast.LENGTH_SHORT).show()
+
         MapsInitializer.initialize(activity?.applicationContext)
-        checkPermission()
+       if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+           != PackageManager.PERMISSION_GRANTED && context?.let {
+               ContextCompat.checkSelfPermission(
+                   it,
+                   Manifest.permission.ACCESS_COARSE_LOCATION)
+           } != PackageManager.PERMISSION_GRANTED) {
+           requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+           return
+       }
 
         googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled = false
@@ -221,8 +305,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
 
 
+   // @SuppressLint("MissingPermission")
     fun animateToCurrentPosi(googleMap: GoogleMap?){
-      //  checkPermission()
+        //checkPermission()
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
@@ -233,33 +318,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             return
         }
 
+       // return
 
+      //  Toast.makeText(context, "12121", Toast.LENGTH_SHORT).show()
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
             //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
             val location = it
             if (location != null) {
                 val currentLocation = LatLng(location.latitude, location.longitude)
-                SocketHandler.setSocket(uiid = "0e66aea8-569f-4adc-953e-27f65eec4e7e", lng = currentLocation.longitude.toString(), lat = currentLocation.latitude.toString())
-                SocketHandler.establishConnection()
-                val s = SocketHandler.getSocket()
-                s?.on("nearby_drivers"){
-                    Log.i("socket io", it.toString())
-                    Log.i("socket io 2", it[0].toString())
-                    activity?.runOnUiThread {
-                        //  Toast.makeText(context, it[0].toString(), Toast.LENGTH_LONG).show()
-                        val data = it[0] as JSONObject
-                        val locations = data["locations"] as JSONArray
-                        gMap?.clear()
-                        for (l in 0 until locations.length()){
-                            val latLng = locations[l] as JSONObject
-                            val lat = (latLng["latitude"] as String).toDouble()
-                            val lng = (latLng["longitude"] as String).toDouble()
-                            addMarkerToMap(lat, lng)
-                        }
-
-                    }
-
-                }
+                loca.postValue(currentLocation)
+               /* */
 
                 getAddressFromLocation(currentLocation)
                 val cameraPosition = CameraPosition.Builder()

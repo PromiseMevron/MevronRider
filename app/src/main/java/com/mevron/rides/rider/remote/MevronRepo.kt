@@ -16,14 +16,18 @@ import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
 import com.mevron.rides.rider.home.model.getCard.GetCardResponse
 import com.mevron.rides.rider.home.ride.model.ConfirmRideResponse
 import com.mevron.rides.rider.localdb.MevronDao
+import com.mevron.rides.rider.localdb.ReferalDetail
 import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.model.GeneralResponse
 import com.mevron.rides.rider.remote.model.RideRequest
+import com.mevron.rides.rider.remote.model.getprofile.GetProfileResponse
+import com.mevron.rides.rider.settings.referal.model.GetReferalHistory
+import com.mevron.rides.rider.settings.referal.model.ReferalReport
+import com.mevron.rides.rider.settings.referal.model.SetReferal
 import retrofit2.Response
 import javax.inject.Inject
 
 class MevronRepo @Inject constructor (private val api: MevronAPI, private val dao: MevronDao) {
-
 
 
     suspend fun registerPhone(data: RegisterBody): Response<RegisterResponse> {
@@ -51,39 +55,78 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
         return api.getCars(data)
     }
 
-    suspend fun saveAddressInDb(add: SavedAddress){
+    suspend fun saveAddressInDb(add: SavedAddress) {
         dao.insert(add)
     }
 
-    suspend fun deleteAllAdd(){
+    suspend fun deleteAllAdd() {
         dao.deleteAllAddress()
     }
 
-    suspend fun updataAddInDB(add: SavedAddress){
+    suspend fun updataAddInDB(add: SavedAddress) {
         dao.update(add)
     }
 
-    suspend fun updataAdd(path: String, add: UpdateAddress): Response<GeneralResponse>{
-       return api.updateAddress(path, add)
+    suspend fun updataAdd(path: String, add: UpdateAddress): Response<GeneralResponse> {
+        return api.updateAddress(path, add)
     }
 
-    fun getllAddress(): LiveData<MutableList<SavedAddress>>{
+    fun getllAddress(): LiveData<MutableList<SavedAddress>> {
         return dao.getAllAddress()
     }
 
-    suspend fun addCard(data: AddCard): Response<GeneralResponse>{
+    suspend fun addCard(data: AddCard): Response<GeneralResponse> {
         return api.addCard(data)
     }
 
-    suspend fun getCards(): Response<GetCardResponse>{
-        return  api.getCards()
+    suspend fun getCards(): Response<GetCardResponse> {
+        return api.getCards()
     }
 
-    suspend fun createRide(data: RideRequest) : Response<ConfirmRideResponse>{
+    suspend fun createRide(data: RideRequest): Response<ConfirmRideResponse> {
         return api.makeARideRequest(data)
     }
 
-    suspend fun deleteCard(id: String) : Response<GeneralResponse>{
+    suspend fun deleteCard(id: String): Response<GeneralResponse> {
         return api.deleteCard(id)
     }
+
+    suspend fun getProfile(): Response<GetProfileResponse> {
+        return api.getProfile()
+    }
+
+    suspend fun updateProfile(data: SaveDetailsRequest): Response<SaveResponse> {
+        return api.updateProfile(data)
+    }
+
+    suspend fun resendEmailVerify(): Response<SaveResponse> {
+        return api.resendEmailLink()
+    }
+
+    suspend fun getReferralHistory(): Response<GetReferalHistory> {
+        return api.getReferralHistory()
+    }
+
+    suspend fun setReferral(data: SetReferal): Response<GeneralResponse> {
+        return api.setReferral(data)
+    }
+
+    suspend fun getReferralReport(data: ReferalReport): Response<GeneralResponse> {
+        return api.getReferralReport(data = data)
+    }
+
+    suspend fun saveReferInDb(add: ReferalDetail) {
+        dao.insertRefer(add)
+    }
+
+    suspend fun deleteAllRefer() {
+        dao.deleteAllReferral()
+    }
+
+
+    fun getllReferal(): LiveData<MutableList<ReferalDetail>> {
+        return dao.getAllReferal()
+    }
+
+
 }

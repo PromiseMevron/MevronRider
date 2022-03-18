@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unmesh Gite"
+            tools:text="Unmesh Gite"
             android:lineHeight="@dimen/_32sdp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_14sdp"
@@ -67,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unmesh Gite"
+            tools:text="Unmesh Gite"
             android:lineHeight="@dimen/_22sdp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_14sdp"
@@ -86,7 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/_40sdp"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:src="@drawable/profile"
+            android:src="@drawable/ic_logo"
             app:civ_border_width="1dp"
             app:civ_border_color="@color/white"
             android:id="@+id/profile_image"/>
@@ -112,10 +112,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.5"
+                tools:text="4.5"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
-
                 android:fontFamily="@font/poppins_regular"
                 android:textSize="@dimen/_12ssp"
                 android:textColor="#000000"
@@ -175,7 +174,7 @@
         android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginEnd="@dimen/_14sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="#80383838"/>
+        android:background="#f2f2f2"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -226,7 +225,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -277,7 +276,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -329,7 +328,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -380,7 +379,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -431,7 +430,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -486,7 +485,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -543,7 +542,7 @@
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="#80383838"/>
+            android:background="#f2f2f2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 

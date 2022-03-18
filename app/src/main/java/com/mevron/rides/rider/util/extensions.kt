@@ -389,7 +389,7 @@ private fun decodePolyline(encoded: String): ArrayList<LatLng> {
 }
 
 
-fun Fragment.checkPermission(){
+fun Fragment.checkPermission2(){
     if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
         != PackageManager.PERMISSION_GRANTED && context?.let {
             ContextCompat.checkSelfPermission(

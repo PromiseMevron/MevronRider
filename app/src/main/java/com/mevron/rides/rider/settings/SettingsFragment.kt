@@ -1,7 +1,9 @@
 package com.mevron.rides.rider.settings
 
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,8 +13,13 @@ import android.view.Window
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
+import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SettingsFragmentBinding
+import com.mevron.rides.rider.remote.model.getprofile.Data
+import com.mevron.rides.rider.util.Constants
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,6 +32,9 @@ class SettingsFragment : Fragment() {
 
     private lateinit var viewModel: SettingsViewModel
 
+    val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,10 +43,39 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
+        }
+
+        val gson = Gson()
+        val json = sPref.getString(Constants.PROFILE, null)
+        json?.let {
+            val user = gson.fromJson(it, Data::class.java)
+            binding.userName.text = "${user.firstName}  ${user.lastName}"
+            binding.userEmail.text = user.email.toString()
+            binding.userRating.text = user.rating.toString()
+            Picasso.get().load(user.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(binding.profileImage)
+
+        }
+
+
+        binding.profileImage.setOnClickListener {
+            findNavController().navigate(R.id.action_global_profileFragment)
+        }
+
+        binding.promos.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_promoFragment)
+        }
+
+        binding.addEmerg.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_emergencyFragment)
+        }
+
+        binding.referal.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_referalFragment)
         }
 
         binding.addHome.setOnClickListener {

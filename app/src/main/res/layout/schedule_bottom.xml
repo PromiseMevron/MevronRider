@@ -9,6 +9,7 @@
         android:layout_height="390dp"
         android:background="@drawable/rounded_corner"
         app:behavior_hideable="true"
+        android:id="@+id/schedule_layout"
         android:visibility="gone"
         android:paddingBottom="40dp"
         app:behavior_peekHeight="370dp"

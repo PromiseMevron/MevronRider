@@ -28,6 +28,14 @@
         <item name="colorControlActivated">@color/primary</item>
     </style>
 
+    <style name="myTabLayout" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="text_size">16sp</item>
+        <item name="android:fontWeight" tools:targetApi="o">500</item>
+        <item name="lineHeight">24dp</item>
+
+    </style>
+
 
 
     <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">

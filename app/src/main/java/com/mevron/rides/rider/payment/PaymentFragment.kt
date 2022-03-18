@@ -234,10 +234,13 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             val width = resources.displayMetrics.widthPixels;
             val  height = resources.displayMetrics.heightPixels;
             val padding =(width * 0.40).toInt()
-            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
+           // val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 300)
 
+           // gMap.setPadding(50,50,50,50)
             //  gMap.setPadding(20,20,20,20)
-            gMap.animateCamera(cu)
+          //  gMap.animateCamera(cu)
+            gMap.moveCamera(cu)
 
             val currentLocation = LatLng(location[0].lat, location[0].lng)
             val cameraPosition = CameraPosition.Builder()

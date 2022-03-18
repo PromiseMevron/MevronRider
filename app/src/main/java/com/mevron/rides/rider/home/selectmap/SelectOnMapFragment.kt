@@ -35,7 +35,6 @@ import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.Constants
-import com.mevron.rides.rider.util.checkPermission
 import java.util.*
 
 
@@ -152,7 +151,16 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
             layoutParams.setMargins(0, 0, 30, 850)
         }*/
-        checkPermission()
+      //  checkPermission()
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+            != PackageManager.PERMISSION_GRANTED && context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+            } != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            return
+        }
         googleMap?.isMyLocationEnabled = true
         googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled = false
@@ -164,7 +172,16 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
 
     fun myLocation(googleMap: GoogleMap?){
-        checkPermission()
+        //checkPermission()
+        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+            != PackageManager.PERMISSION_GRANTED && context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+            } != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            return
+        }
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
 
             val location = it

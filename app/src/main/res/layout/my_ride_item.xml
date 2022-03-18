@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginBottom="@dimen/_7sdp"
+        app:cardCornerRadius="4dp"
+        android:elevation="10dp"
+        app:cardElevation="10dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_250sdp">
+    <ImageView
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:src="@drawable/street_map"
+        android:scaleType="centerCrop"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:id="@+id/bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/date_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Mon 22 Feb, 4:10 PM"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:textFontWeight="600"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_15ssp"
+            tools:targetApi="p" />
+
+
+        <TextView
+            android:id="@+id/car_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Honda Civic • LHC-8595"
+            android:textColor="#666666"
+            app:layout_constraintTop_toBottomOf="@id/date_display"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:textFontWeight="500"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_10ssp"
+            tools:targetApi="p" />
+
+
+        <TextView
+            android:id="@+id/amount_display"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="$23.32"
+            android:textColor="#0B973A"
+            app:layout_constraintTop_toBottomOf="@id/car_display"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:textFontWeight="500"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_10ssp"
+            tools:targetApi="p" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/_48sdp"
+        android:layout_height="@dimen/_48sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:id="@+id/profile_image"
+        app:layout_constraintBottom_toTopOf="@id/bottom"
+        android:layout_marginBottom="@dimen/_minus24sdp"
+        android:src="@drawable/ic_logo"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+
+
+</layout>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginBottom="@dimen/_7sdp"
+        app:cardCornerRadius="4dp"
+        android:elevation="10dp"
+        app:cardElevation="10dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_280sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:background="#1AF57519"
+        android:orientation="horizontal"
+        android:id="@+id/approximate_start"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal|center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_my_schedule"/>
+
+        <TextView
+            android:id="@+id/start_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride in 2 Hrs 23 Min"
+            android:textColor="#F57519"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:textFontWeight="700"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_16ssp"
+            tools:targetApi="p" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/date_display"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Mon 22 Feb, 4:10 PM"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/approximate_start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:textFontWeight="600"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_15ssp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:id="@+id/car_display"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Honda Civic • LHC-8595"
+        android:textColor="#666666"
+        app:layout_constraintTop_toBottomOf="@id/date_display"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:textFontWeight="500"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_10ssp"
+        tools:targetApi="p" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f2f2f2"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:id="@+id/divider"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/car_display"/>
+
+
+    <ImageView
+        android:layout_width="@dimen/_4sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@drawable/ic_rectangle_schedule"
+        android:id="@+id/drop_line"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="@+id/drop_logo"
+        app:layout_constraintEnd_toEndOf="@+id/drop_logo"
+        app:layout_constraintTop_toTopOf="@+id/pick_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/drop_logo" />
+
+    <ImageView
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_driver_pick"
+        android:id="@+id/pick_logo"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        android:layout_marginTop="1dp"/>
+
+    <ImageView
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_driver_dest"
+        android:id="@+id/drop_logo"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@+id/pick_logo"
+        android:layout_marginTop="@dimen/_60sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PICK-UP FROM"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="400"
+        android:textSize="@dimen/_10ssp"
+        android:lineHeight="@dimen/_20sdp"
+        android:id="@+id/pick_text"
+        app:layout_constraintStart_toEndOf="@id/pick_logo"
+        app:layout_constraintTop_toTopOf="@id/pick_logo"
+        android:layout_marginStart="@dimen/_14sdp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fairmont Cafe"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_12ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/pick_name"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="@id/pick_text"
+        app:layout_constraintTop_toBottomOf="@id/pick_text"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DROP-OFF AT"
+        android:textAllCaps="false"
+        android:textColor="#F9170F"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="400"
+        android:textSize="@dimen/_10ssp"
+        android:lineHeight="@dimen/_20sdp"
+        android:id="@+id/drop_text"
+        app:layout_constraintStart_toEndOf="@id/drop_logo"
+        app:layout_constraintTop_toTopOf="@id/drop_logo"
+        android:layout_marginStart="@dimen/_14sdp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fairmont Cafe"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_12ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/drop_name"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="@id/drop_text"
+        app:layout_constraintTop_toBottomOf="@id/drop_text"
+        tools:targetApi="p" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f2f2f2"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:id="@+id/divider1"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        app:layout_constraintTop_toBottomOf="@id/drop_name"/>
+
+
+
+    <TextView
+        android:id="@+id/amount_display"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="$23.32"
+        android:textColor="#0B973A"
+        app:layout_constraintTop_toBottomOf="@id/divider1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:textFontWeight="500"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_10ssp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:id="@+id/approx_display"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Honda Civic • LHC-8595"
+        android:textColor="#666666"
+        app:layout_constraintTop_toBottomOf="@id/amount_display"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:textFontWeight="500"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_10ssp"
+        tools:targetApi="p" />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
