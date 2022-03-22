@@ -2,6 +2,8 @@ package com.mevron.rides.rider.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.mevron.rides.rider.App
 import com.mevron.rides.rider.localdb.MevronDao
 import com.mevron.rides.rider.localdb.MevronDatabase
@@ -9,7 +11,6 @@ import com.mevron.rides.rider.remote.MevronAPI
 import com.mevron.rides.rider.remote.MevronRepo
 import com.mevron.rides.rider.util.Constants.BASE_URL
 import com.mevron.rides.rider.util.Constants.SHARED_PREF_KEY
-import com.mevron.rides.rider.util.Constants.TOKEN
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,18 +19,16 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
 
 
     @Singleton
@@ -45,7 +44,7 @@ object AppModule {
             .addInterceptor(Interceptor { chain ->
                   val sPref= App.ApplicationContext.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE)
                  //  val token = sPref.getString(TOKEN, null)
-                val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiIiLCJuYW1lIjoiIiwidXVpZCI6ImZjYWI2NTAzLTNkZDAtNDNlNC1hZDRjLTc5MzMxYTVhOWNhMSIsInBob25lTnVtYmVyIjoiMjM0NzAzMzUwNTAwNCIsInR5cGUiOiJyaWRlciIsImlhdCI6MTY0NjM1NzAxMH0.tLvawk9BZUI5uBk3c_xx1zfy9-4LX8kxiVNNAs8VuRI"
+                val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoiIiwibmFtZSI6IiIsInV1aWQiOiI5ODI4MDM0MC05MDk0LTRkMjktOTFiOC05M2Q1MWNhZTkzYzAiLCJwaG9uZU51bWJlciI6IjIzNDcwMzM1MDUwMTMiLCJ0eXBlIjoicmlkZXIiLCJpYXQiOjE2NDc2MDE4NDd9.thST-kg2lNieEF8LkbeTvp-U6kS_jhQCRJ9_XaEeF9U"
                 val newRequest: Request = chain.request().newBuilder()
                      .addHeader("Authorization", "Bearer $token")
                     .addHeader("Accept", "application/json")

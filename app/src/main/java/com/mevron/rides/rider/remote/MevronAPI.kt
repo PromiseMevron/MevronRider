@@ -45,11 +45,13 @@ interface MevronAPI {
     @POST("api/v1/rider/auth/resend-verification")
     suspend fun resendEmailLink(): Response<SaveResponse>
 
-    @POST("api/v1/rider/auth/savedPlaces")
-    suspend fun saveAddress(@Body data: SaveAddressRequest):Response<GeneralResponse>
+
 
     @POST("api/v1/rider/auth/carCategories")
     suspend fun getCars(@Body data: GetCarRequests):Response<GetCarsCategory>
+
+    @POST("api/v1/rider/auth/savedPlaces")
+    suspend fun saveAddress(@Body data: SaveAddressRequest):Response<GeneralResponse>
 
     @GET("api/v1/rider/auth/savedPlaces")
     suspend fun getAddress():Response<GetSavedAddresss>

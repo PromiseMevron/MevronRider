@@ -35,6 +35,7 @@
         <entry key="app/src/main/res/drawable/ic_gog_pay.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_gradient_black.xml" value="0.18645833333333334" />
         <entry key="app/src/main/res/drawable/ic_gradient_splash.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_hamburger.xml" value="0.169" />
         <entry key="app/src/main/res/drawable/ic_home_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_home_black.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_image_68.xml" value="0.25625" />
@@ -49,6 +50,7 @@
         <entry key="app/src/main/res/drawable/ic_next.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_open_drawer.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_other_adresss.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_pencil.xml" value="0.169" />
         <entry key="app/src/main/res/drawable/ic_people.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_people_black.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/ic_people_dark.xml" value="0.1395" />
@@ -136,7 +138,7 @@
         <entry key="app/src/main/res/layout/rate_rider_fragment.xml" value="0.125" />
         <entry key="app/src/main/res/layout/referal_bottom.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/referal_detail_fragment.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/referal_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/ride_bottom_sheet.xml" value="0.25" />
         <entry key="app/src/main/res/layout/ride_details_fragment.xml" value="0.1" />

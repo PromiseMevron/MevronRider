@@ -22,18 +22,18 @@ class ReferalAdapter(val sel: SelectedReferal, val data: List<ReferalDetail>): R
 
     override fun onBindViewHolder(holder: ReferalHolder, position: Int) {
 //[ home, work or others ]
-        val dt = data[position]
-        holder.binding.referalHeading.text = dt.title
+   //     val dt = data[position]
+      /*  holder.binding.referalHeading.text = dt.title
         holder.binding.referalSub.text = dt.description
-        holder.binding.promoDate.text = dt.createAt
+        holder.binding.promoDate.text = dt.createAt*/
         holder.binding.root.setOnClickListener {
-            sel.select(dt.id)
+            sel.select("ssssss")
         }
 
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return 7
     }
 }
 

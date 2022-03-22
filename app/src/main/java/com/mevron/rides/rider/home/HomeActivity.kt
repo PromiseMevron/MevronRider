@@ -74,11 +74,13 @@ class HomeActivity : AppCompatActivity() {
         val json = sPref.getString(Constants.PROFILE, null)
         json?.let {
             val user = gson.fromJson(it, Data::class.java)
-            name.text = user.firstName.toString()
+       /*     name.text = user.firstName.toString()
             phone.text = user.phoneNumber
             rating.rating = user.rating.toString().toFloat()
             Picasso.get().load(user.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(image)
             // name.text = user.firstName.toString()
+            */
+
         }
 
         viewModel.getProfile().observe(this, Observer {
@@ -89,7 +91,7 @@ class HomeActivity : AppCompatActivity() {
                         val user = res.data?.success?.data
                         name.text = user?.firstName.toString()
                         phone.text = user?.phoneNumber
-                        rating.rating = user?.rating.toString().toFloat()
+                     //   rating.rating = user?.rating.toString().toFloat()
                         Picasso.get().load(user?.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(image)
                     }
 
