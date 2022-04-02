@@ -12,6 +12,7 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -32,6 +33,7 @@ import com.mevron.rides.ridertest.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.ridertest.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import com.mevron.rides.ridertest.R
+import com.mevron.rides.ridertest.home.select_ride.model.Data
 
 
 @AndroidEntryPoint
@@ -50,7 +52,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
     private lateinit var location:Array<LocationModel>
     private var mDialog: Dialog? = null
     private lateinit var adapter: CarsAdapter
-    private lateinit var cars: List<Ride>
+    private lateinit var cars: List<Data>
     var pos = 0
 
     override fun onCreateView(
@@ -116,12 +118,12 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
 
                     is  GenericStatus.Success ->{
                         toggleBusyDialog(false)
-                        cars = res.data?.success?.data?.rides!!
+                        cars = res.data?.success?.data!!
                         if (cars.isNotEmpty()){
                             binding.mevronRideBottom.destAddres.text = "Confirm ${cars[pos].name}"
                         }
 
-                        adapter = context?.let { it1 -> CarsAdapter(res.data.success.data.rides, it1, pos, this) }!!
+                        adapter = context?.let { it1 -> CarsAdapter(res.data.success.data, it1, pos, this) }!!
 
                         binding.mevronRideBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
                             RecyclerView.VERTICAL, false)
@@ -207,6 +209,19 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         gMap.addMarker(marker3)
         gMap.addMarker(marker4)
 
+        val builder = LatLngBounds.Builder()
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.northeast?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.northeast?.lng ?: 0.0))
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0))
+
+        val bounds = builder.build()
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.1).toInt()
+
+        val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+      //  gMap.animateCamera(boundsUpdate)
+        Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+
 
 
     }
@@ -244,6 +259,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
     override fun onMapReady(p0: GoogleMap?) {
         if (p0 != null) {
             gMap = p0
+            Toast.makeText(context, "33", Toast.LENGTH_LONG).show()
         }
         MapsInitializer.initialize(context?.applicationContext)
        // gMap.setMaxZoomPreference(15.5F)
@@ -252,6 +268,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
 
         location = arguments?.let { SelectRideFragmentArgs.fromBundle(it).location }!!
         getGeoLocation(location, gMap) {
+            Toast.makeText(context, "44", Toast.LENGTH_LONG).show()
             geoDirections = it
             addMarkerToPolyLines()
         }

@@ -235,10 +235,36 @@
         android:id="@+id/emergencyFragment"
         android:name="com.mevron.rides.ridertest.settings.emerg.EmergencyFragment"
         android:label="emergency_fragment"
-        tools:layout="@layout/emergency_fragment" />
+        tools:layout="@layout/emergency_fragment" >
+        <action
+            android:id="@+id/action_emergencyFragment_to_addEmergencyFragment"
+            app:destination="@id/addEmergencyFragment" />
+        <action
+            android:id="@+id/action_emergencyFragment_to_updateEmergencyFragment"
+            app:destination="@id/updateEmergencyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/faceLivenessDetectionFragment"
         android:name="com.mevron.rides.ridertest.livedetect.FaceLivenessDetectionFragment"
         android:label="fragment_facial_recognition"
         tools:layout="@layout/fragment_facial_recognition" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.mevron.rides.ridertest.settings.NotificationFragment"
+        android:label="notification_fragment"
+        tools:layout="@layout/notification_fragment" />
+    <fragment
+        android:id="@+id/addEmergencyFragment"
+        tools:layout="@layout/add_emergency_fragment"
+        android:name="com.mevron.rides.ridertest.settings.emerg.AddEmergencyFragment"
+        android:label="AddEmergencyFragment" />
+    <fragment
+        android:id="@+id/updateEmergencyFragment"
+        android:name="com.mevron.rides.ridertest.settings.emerg.UpdateEmergencyFragment"
+        android:label="update_emergency_fragment"
+        tools:layout="@layout/update_emergency_fragment" >
+        <argument
+            android:name="data"
+            app:argType="com.mevron.rides.ridertest.settings.emerg.model.Data" />
+    </fragment>
 </navigation>

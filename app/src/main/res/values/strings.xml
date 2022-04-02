@@ -275,5 +275,14 @@
     <string name="keep_your_friends_and_family_informed_by_sharing_your_trip_status">Keep your friends and family informed, by sharing your trip status.</string>
     <string name="add_contacts">Add Contacts</string>
 
+    <string name="search_contacts">Search contacts</string>
+    <string name="delete">Delete</string>
+    <string name="select_when_to_share_your_ride_status_with">Select when to share your ride status with Alex Sood.</string>
+    <string name="saved_payment_methods">Saved Payment Methods</string>
+    <string name="start_using_mevron_for_business_trips">Start using Mevron for business trips</string>
+    <string name="before_every_trip">Before every trip</string>
+    <string name="at_night_9pm_6am">At Night (9PM - 6AM)</string>
+    <string name="i_ll_share_it_manually">I’ll share it manually</string>
+
 
 </resources>

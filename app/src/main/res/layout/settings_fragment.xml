@@ -15,8 +15,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
-        android:background="@color/primary"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         android:id="@+id/header"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_back_white"
+            android:src="@drawable/ic_back_button"
             android:id="@+id/back_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,86 +42,201 @@
             android:fontFamily="@font/poppins_regular"
             android:textSize="@dimen/_12ssp"
             android:textFontWeight="500"
-            android:textColor="#ffffff"
+            android:textColor="#383838"
             app:layout_constraintTop_toTopOf="@id/back_button"
             app:layout_constraintBottom_toBottomOf="@id/back_button"
             android:id="@+id/text"
             tools:targetApi="p" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Unmesh Gite"
-            android:lineHeight="@dimen/_32sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/_14sdp"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_18ssp"
-            android:textFontWeight="600"
-            android:textColor="#ffffff"
-            android:layout_marginTop="@dimen/_50sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_button"
-            android:id="@+id/user_name"
-            tools:targetApi="p" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Unmesh Gite"
-            android:lineHeight="@dimen/_22sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/_14sdp"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_12ssp"
-            android:textColor="#ffffff"
-            android:layout_marginTop="@dimen/_2sdp"
-            app:layout_constraintTop_toBottomOf="@id/user_name"
-            android:id="@+id/user_email"
-            tools:targetApi="p" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:id="@+id/setting_home"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:src="@drawable/ic_logo"
-            app:civ_border_width="1dp"
-            app:civ_border_color="@color/white"
-            android:id="@+id/profile_image"/>
+            android:layout_marginStart="@dimen/_14sdp"
+            app:layout_constraintTop_toBottomOf="@id/back_button"
+            app:cardCornerRadius="@dimen/_15sdp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_120sdp"
+                android:background="#40C4C4C4"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_60sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:src="@drawable/profile"
+                    android:layout_marginBottom="@dimen/_33sdp"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@color/white"
+                    android:id="@+id/profile_image"/>
+
+                <LinearLayout
+                    android:layout_width="@dimen/_66sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/rounded_corner_rating"
+                    app:layout_constraintStart_toStartOf="@id/profile_image"
+                    app:layout_constraintEnd_toEndOf="@id/profile_image"
+                    app:layout_constraintTop_toBottomOf="@id/profile_image"
+                    android:layout_marginTop="-10dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/ic_star"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="2sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="4.5"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="#000000"
+                        android:id="@+id/user_rating"
+                        tools:targetApi="p" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Unmesh Gite"
+                    android:lineHeight="@dimen/_32sdp"
+                    app:layout_constraintStart_toEndOf="@id/profile_image"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="@dimen/_18ssp"
+                    android:textFontWeight="600"
+                    android:textColor="#383838"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/user_name"
+                    tools:targetApi="p" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Unmesh Gite"
+                    android:lineHeight="@dimen/_22sdp"
+                    app:layout_constraintStart_toEndOf="@id/profile_image"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/primary"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    app:layout_constraintTop_toBottomOf="@id/user_name"
+                    android:id="@+id/user_email"
+                    tools:targetApi="p" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            app:layout_constraintTop_toBottomOf="@id/setting_home"
+            app:cardCornerRadius="@dimen/_15sdp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            android:background="#40C4C4C4"
+            app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="@dimen/_66sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@drawable/rounded_corner_rating"
-            app:layout_constraintStart_toStartOf="@id/profile_image"
-            app:layout_constraintEnd_toEndOf="@id/profile_image"
-            app:layout_constraintTop_toBottomOf="@id/profile_image"
-            android:layout_marginTop="-10dp">
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:src="@drawable/ic_star"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="2sp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_bussiness_ride"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="4.5"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/poppins_regular"
-                android:textSize="@dimen/_12ssp"
-                android:textColor="#000000"
-                android:id="@+id/user_rating"
-                tools:targetApi="p" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_weight="1">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_using_mevron_for_business_trips"
+                    android:gravity="start"
+                    android:layout_gravity="start"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:textColor="#383838"
+                    android:maxLines="2"
+                    android:textFontWeight="600"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    app:layout_constraintStart_toEndOf="@id/home_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:targetApi="p" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+
+                    app:backgroundTint="#383838"
+                    app:cornerRadius="4dp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:text="Get Started"
+                    android:textAllCaps="false"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

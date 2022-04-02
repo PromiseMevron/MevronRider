@@ -172,7 +172,17 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         gMap.addMarker(marker3)
         gMap.addMarker(marker4)
 
+        val builder = LatLngBounds.Builder()
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.northeast?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.northeast?.lng ?: 0.0))
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0))
 
+        val bounds = builder.build()
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.3).toInt()
+
+        val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+        gMap.moveCamera(boundsUpdate)
 
 
 
@@ -235,7 +245,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             val  height = resources.displayMetrics.heightPixels;
             val padding =(width * 0.40).toInt()
            // val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
-            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 300)
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 200)
 
            // gMap.setPadding(50,50,50,50)
             //  gMap.setPadding(20,20,20,20)

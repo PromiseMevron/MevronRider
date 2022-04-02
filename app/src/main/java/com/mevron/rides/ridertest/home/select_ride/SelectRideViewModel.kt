@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mevron.rides.ridertest.home.model.cars.GetCarRequests
 import com.mevron.rides.ridertest.home.model.cars.GetCarsCategory
+import com.mevron.rides.ridertest.home.select_ride.model.GetCarsCategory2
 import com.mevron.rides.ridertest.remote.GenericStatus
 import com.mevron.rides.ridertest.remote.HTTPErrorHandler
 import com.mevron.rides.ridertest.remote.MevronRepo
@@ -20,8 +21,8 @@ class SelectRideViewModel @Inject constructor (private val repository: MevronRep
     //getCars GetCarRequests GetCarsCategory
 
 
-    fun getCars(data: GetCarRequests): LiveData<GenericStatus<GetCarsCategory>> {
-        val result = MutableLiveData<GenericStatus<GetCarsCategory>>()
+    fun getCars(data: GetCarRequests): LiveData<GenericStatus<GetCarsCategory2>> {
+        val result = MutableLiveData<GenericStatus<GetCarsCategory2>>()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

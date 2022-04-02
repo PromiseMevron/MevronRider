@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.ridertest.R
 import com.mevron.rides.ridertest.databinding.VehicleItemBinding
 import com.mevron.rides.ridertest.home.model.cars.Ride
+import com.mevron.rides.ridertest.home.select_ride.model.Data
 import com.squareup.picasso.Picasso
 
-class CarsAdapter(val cars: List<Ride>, val ctx: Context, val posi: Int, val selected: CarSelected): RecyclerView.Adapter<CarsAdapter.CarsHolder>() {
+class CarsAdapter(val cars: List<Data>, val ctx: Context, val posi: Int, val selected: CarSelected): RecyclerView.Adapter<CarsAdapter.CarsHolder>() {
     class CarsHolder(val binding: VehicleItemBinding): RecyclerView.ViewHolder(binding.root) {
 
     }

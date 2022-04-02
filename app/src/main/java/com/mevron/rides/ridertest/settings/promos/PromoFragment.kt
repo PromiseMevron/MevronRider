@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.mevron.rides.ridertest.R
 import com.mevron.rides.ridertest.databinding.PromoFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class PromoFragment : Fragment() {
 
     companion object {
@@ -36,6 +40,10 @@ class PromoFragment : Fragment() {
             activity?.onBackPressed()
         }
         binding.recyclerView.adapter = adapter
+
+        viewModel.getPromo().observe(viewLifecycleOwner, Observer {
+
+        })
     }
 
 

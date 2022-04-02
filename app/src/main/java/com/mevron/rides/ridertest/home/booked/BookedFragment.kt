@@ -262,8 +262,6 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         location = arguments?.let { BookedFragmentArgs.fromBundle(it).location }!!
 
-
-
         if (location.isNotEmpty()){
 
             val builder = LatLngBounds.Builder()
@@ -281,7 +279,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
           //  gMap.setPadding(50,50,50,50)
             //  gMap.setPadding(20,20,20,20)
-            gMap.animateCamera(cu)
+          //  gMap.animateCamera(cu)
             gMap.moveCamera(cu)
 
             val currentLocation = LatLng(location[0].lat, location[0].lng)
@@ -295,8 +293,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
         getGeoLocation(location, gMap, true) {
-          //  geoDirections = it
-           // addMarkerToPolyLines()
+            geoDirections = it
+            addMarkerToPolyLines()
         }
 
         val s = SocketHandler.getSocket()
@@ -454,7 +452,17 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         gMap.addMarker(marker4)
 
+        val builder = LatLngBounds.Builder()
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.northeast?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.northeast?.lng ?: 0.0))
+        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0))
 
+        val bounds = builder.build()
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.3).toInt()
+
+        val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+        gMap.moveCamera(boundsUpdate)
 
 
 

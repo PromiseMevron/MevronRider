@@ -15,15 +15,20 @@ import com.mevron.rides.ridertest.home.model.getAddress.SaveAddressRequest
 import com.mevron.rides.ridertest.home.model.getAddress.UpdateAddress
 import com.mevron.rides.ridertest.home.model.getCard.GetCardResponse
 import com.mevron.rides.ridertest.home.ride.model.ConfirmRideResponse
+import com.mevron.rides.ridertest.home.select_ride.model.GetCarsCategory2
 import com.mevron.rides.ridertest.localdb.MevronDao
 import com.mevron.rides.ridertest.localdb.ReferalDetail
 import com.mevron.rides.ridertest.localdb.SavedAddress
 import com.mevron.rides.ridertest.remote.model.GeneralResponse
 import com.mevron.rides.ridertest.remote.model.RideRequest
 import com.mevron.rides.ridertest.remote.model.getprofile.GetProfileResponse
+import com.mevron.rides.ridertest.settings.emerg.AddContactRequest
+import com.mevron.rides.ridertest.settings.emerg.model.GetContactsResponse
+import com.mevron.rides.ridertest.settings.emerg.model.UpdateEmergencyContact
 import com.mevron.rides.ridertest.settings.referal.model.GetReferalHistory
 import com.mevron.rides.ridertest.settings.referal.model.ReferalReport
 import com.mevron.rides.ridertest.settings.referal.model.SetReferal
+import com.mevron.rides.ridertest.settings.referal.model.notif.NotificationResponse
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -51,7 +56,7 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
         return api.getAddress()
     }
 
-    suspend fun getCars(data: GetCarRequests): Response<GetCarsCategory> {
+    suspend fun getCars(data: GetCarRequests): Response<GetCarsCategory2> {
         return api.getCars(data)
     }
 
@@ -126,6 +131,31 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     fun getllReferal(): LiveData<MutableList<ReferalDetail>> {
         return dao.getAllReferal()
+    }
+
+    suspend fun saveEmergency(data: AddContactRequest): Response<GeneralResponse> {
+        return api.saveEmergency(data)
+    }
+
+    suspend fun updateEmergency(data: UpdateEmergencyContact, id: String): Response<GeneralResponse> {
+        return api.updateEmergency(id = id, data = data)
+    }
+
+    suspend fun deleteEmergency(id: String): Response<GeneralResponse> {
+        return api.deleteEmergency(id = id)
+    }
+
+    suspend fun getEmergency(): Response<GetContactsResponse> {
+        return api.getEmergency()
+    }
+
+    suspend fun getPromo(): Response<GeneralResponse> {
+        return api.getPromo()
+    }
+
+
+    suspend fun getNotification(): Response<NotificationResponse> {
+        return api.getNotifications()
     }
 
 

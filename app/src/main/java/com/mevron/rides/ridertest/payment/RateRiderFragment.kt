@@ -23,10 +23,6 @@ class RateRiderFragment : Fragment() {
         return inflater.inflate(R.layout.rate_rider_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RateRiderViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
+
 
 }

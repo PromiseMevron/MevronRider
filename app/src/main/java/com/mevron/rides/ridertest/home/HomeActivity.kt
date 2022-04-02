@@ -24,6 +24,7 @@ import com.mevron.rides.ridertest.R
 import com.mevron.rides.ridertest.remote.GenericStatus
 import com.mevron.rides.ridertest.remote.model.getprofile.Data
 import com.mevron.rides.ridertest.util.Constants
+import com.mevron.rides.ridertest.util.Screen
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
@@ -51,6 +52,9 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
+        val widthOfNav = (Screen.width) * 0.7
+        navView.layoutParams.width = widthOfNav.toInt()
+        navView.requestLayout()
 
         navController = findNavController(R.id.nav_host_fragment)
         val navHostFragment = supportFragmentManager

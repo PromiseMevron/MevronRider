@@ -15,12 +15,18 @@ import com.mevron.rides.ridertest.home.model.getAddress.UpdateAddress
 import com.mevron.rides.ridertest.home.model.getCard.GetCardResponse
 import com.mevron.rides.ridertest.home.model.schedule.ScheduleRequest
 import com.mevron.rides.ridertest.home.ride.model.ConfirmRideResponse
+import com.mevron.rides.ridertest.home.select_ride.model.GetCarsCategory2
 import com.mevron.rides.ridertest.remote.model.GeneralResponse
 import com.mevron.rides.ridertest.remote.model.RideRequest
 import com.mevron.rides.ridertest.remote.model.getprofile.GetProfileResponse
+import com.mevron.rides.ridertest.settings.emerg.AddContactRequest
+import com.mevron.rides.ridertest.settings.emerg.model.GetContactsResponse
+import com.mevron.rides.ridertest.settings.emerg.model.UpdateEmergencyContact
+import com.mevron.rides.ridertest.settings.emerg.model.pref.UpdatePrefrenceRequest
 import com.mevron.rides.ridertest.settings.referal.model.GetReferalHistory
 import com.mevron.rides.ridertest.settings.referal.model.ReferalReport
 import com.mevron.rides.ridertest.settings.referal.model.SetReferal
+import com.mevron.rides.ridertest.settings.referal.model.notif.NotificationResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -48,7 +54,7 @@ interface MevronAPI {
 
 
     @POST("api/v1/rider/auth/carCategories")
-    suspend fun getCars(@Body data: GetCarRequests):Response<GetCarsCategory>
+    suspend fun getCars(@Body data: GetCarRequests):Response<GetCarsCategory2>
 
     @POST("api/v1/rider/auth/savedPlaces")
     suspend fun saveAddress(@Body data: SaveAddressRequest):Response<GeneralResponse>
@@ -88,5 +94,32 @@ interface MevronAPI {
 
     @POST("api/v1/rider/auth/scheduleRide")
     suspend fun scheduleARide(@Body data: ScheduleRequest): Response<ConfirmRideResponse>
+
+    @POST("api/v1/rider/auth/emergency-contacts")
+    suspend fun saveEmergency(@Body data: AddContactRequest): Response<GeneralResponse>
+
+    @GET("api/v1/rider/auth/emergency-contacts")
+    suspend fun getEmergency(): Response<GetContactsResponse>
+
+    @POST("api/v1/rider/auth/emergency-contacts/{uiid}")
+    suspend fun updateEmergency(@Path("uiid") id: String, data: UpdateEmergencyContact): Response<GeneralResponse>
+
+
+    @DELETE("api/v1/rider/auth/emergency-contacts/{uiid}")
+    suspend fun deleteEmergency(@Path("uiid") id: String): Response<GeneralResponse>
+
+    @GET("/api/v1/rider/auth/promo-code")
+    suspend fun getPromo(): Response<GeneralResponse>
+
+    @GET("/api/v1/rider/auth/notifications?page=1")
+    suspend fun getNotifications(): Response<NotificationResponse>
+
+
+
+
+
+
+
+
 
 }
