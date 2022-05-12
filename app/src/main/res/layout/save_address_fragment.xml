@@ -10,7 +10,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".settings.SaveAddressFragment">
+    tools:context=".savedplaces.ui.saveaddress.SaveAddressFragment">
 
     <ImageButton
         android:layout_width="@dimen/_20sdp"

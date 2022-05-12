@@ -8,7 +8,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".auth.OTPFragment">
+    tools:context=".authentication.ui.verifyotp.OTPFragment">
 
     <ImageButton
         android:layout_width="@dimen/_45sdp"

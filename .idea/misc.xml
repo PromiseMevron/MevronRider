@@ -53,6 +53,10 @@
         <entry key="app/src/main/res/drawable/ic_mevon_log_new.xml" value="0.186" />
         <entry key="app/src/main/res/drawable/ic_minus.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_next.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/ic_notifi_other.xml" value="0.142" />
+        <entry key="app/src/main/res/drawable/ic_notificatio_payment.xml" value="0.142" />
+        <entry key="app/src/main/res/drawable/ic_notification_coupon.xml" value="0.142" />
+        <entry key="app/src/main/res/drawable/ic_notification_other.xml" value="0.142" />
         <entry key="app/src/main/res/drawable/ic_okay.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/ic_open_drawer.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_other_adresss.xml" value="0.2490740740740741" />

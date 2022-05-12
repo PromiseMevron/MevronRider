@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".settings.SaveAddressDetailsFragment">
+    tools:context=".savedplaces.ui.addressdetails.SaveAddressDetailsFragment">
 
     <ImageButton
         android:layout_width="@dimen/_20sdp"

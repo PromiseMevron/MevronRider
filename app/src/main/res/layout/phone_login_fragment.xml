@@ -9,7 +9,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".auth.PhoneLoginFragment">
+    tools:context=".authentication.ui.registerphone.PhoneLoginFragment">
 
     <ImageButton
         android:layout_width="@dimen/_45sdp"
