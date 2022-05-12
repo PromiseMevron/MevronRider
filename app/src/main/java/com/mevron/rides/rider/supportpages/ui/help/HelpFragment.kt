@@ -1,4 +1,4 @@
-package com.mevron.rides.ridertest.settings
+package com.mevron.rides.rider.supportpages.ui.help
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,13 +9,13 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.mevron.rides.ridertest.R
+import com.mevron.rides.rider.R
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.ActivityCompat
 
-import com.mevron.rides.ridertest.databinding.HelpFragmentBinding
+import com.mevron.rides.rider.databinding.HelpFragmentBinding
 
 class HelpFragment : Fragment() {
 
@@ -23,7 +23,6 @@ class HelpFragment : Fragment() {
         fun newInstance() = HelpFragment()
     }
 
-    private lateinit var viewModel: HelpViewModel
     private lateinit var binding: HelpFragmentBinding
     private val requestCall = 1
 
@@ -46,30 +45,25 @@ class HelpFragment : Fragment() {
         }
     }
 
-
     private fun makePhoneCall() {
-
-            if (activity?.let {
-                    ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.CALL_PHONE
-                    )
-                } != PackageManager.PERMISSION_GRANTED
-            ) {
-                activity?.let {
-                    ActivityCompat.requestPermissions(
-                        it,
-                        arrayOf(Manifest.permission.CALL_PHONE),
-                        requestCall
-                    )
-                }
-            } else {
-                val dial = "tel:08033214929"
-                startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
+        if (activity?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.CALL_PHONE
+                )
+            } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.CALL_PHONE),
+                    requestCall
+                )
             }
-
+        } else {
+            val dial = "tel:08033214929"
+            startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
+        }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -84,6 +78,5 @@ class HelpFragment : Fragment() {
             }
         }
     }
-
 
 }

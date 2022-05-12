@@ -1,32 +1,30 @@
-package com.mevron.rides.ridertest.remote
+package com.mevron.rides.rider.remote
 
-import com.mevron.rides.ridertest.auth.model.details.SaveDetailsRequest
-import com.mevron.rides.ridertest.auth.model.details.SaveResponse
-import com.mevron.rides.ridertest.auth.model.otp.OTPResponse
-import com.mevron.rides.ridertest.auth.model.otp.ValidateOTPRequest
-import com.mevron.rides.ridertest.auth.model.register.RegisterBody
-import com.mevron.rides.ridertest.auth.model.register.RegisterResponse
-import com.mevron.rides.ridertest.home.model.AddCard
-import com.mevron.rides.ridertest.home.model.cars.GetCarRequests
-import com.mevron.rides.ridertest.home.model.cars.GetCarsCategory
-import com.mevron.rides.ridertest.home.model.getAddress.GetSavedAddresss
-import com.mevron.rides.ridertest.home.model.getAddress.SaveAddressRequest
-import com.mevron.rides.ridertest.home.model.getAddress.UpdateAddress
-import com.mevron.rides.ridertest.home.model.getCard.GetCardResponse
-import com.mevron.rides.ridertest.home.model.schedule.ScheduleRequest
-import com.mevron.rides.ridertest.home.ride.model.ConfirmRideResponse
-import com.mevron.rides.ridertest.home.select_ride.model.GetCarsCategory2
-import com.mevron.rides.ridertest.remote.model.GeneralResponse
-import com.mevron.rides.ridertest.remote.model.RideRequest
-import com.mevron.rides.ridertest.remote.model.getprofile.GetProfileResponse
-import com.mevron.rides.ridertest.settings.emerg.AddContactRequest
-import com.mevron.rides.ridertest.settings.emerg.model.GetContactsResponse
-import com.mevron.rides.ridertest.settings.emerg.model.UpdateEmergencyContact
-import com.mevron.rides.ridertest.settings.emerg.model.pref.UpdatePrefrenceRequest
-import com.mevron.rides.ridertest.settings.referal.model.GetReferalHistory
-import com.mevron.rides.ridertest.settings.referal.model.ReferalReport
-import com.mevron.rides.ridertest.settings.referal.model.SetReferal
-import com.mevron.rides.ridertest.settings.referal.model.notif.NotificationResponse
+import com.mevron.rides.rider.authentication.data.models.createaccount.SaveDetailsRequest
+import com.mevron.rides.rider.auth.model.details.SaveResponse
+import com.mevron.rides.rider.auth.model.otp.OTPResponse
+import com.mevron.rides.rider.authentication.data.models.verifyotp.ValidateOTPRequest
+import com.mevron.rides.rider.authentication.data.models.registerphone.RegisterBody
+import com.mevron.rides.rider.auth.model.register.RegisterResponse
+import com.mevron.rides.rider.home.model.AddCard
+import com.mevron.rides.rider.home.model.cars.GetCarRequests
+import com.mevron.rides.rider.home.model.getAddress.GetSavedAddresss
+import com.mevron.rides.rider.home.model.getAddress.SaveAddressRequest
+import com.mevron.rides.rider.home.model.getAddress.UpdateAddress
+import com.mevron.rides.rider.home.model.getCard.GetCardResponse
+import com.mevron.rides.rider.home.model.schedule.ScheduleRequest
+import com.mevron.rides.rider.home.ride.model.ConfirmRideResponse
+import com.mevron.rides.rider.home.select_ride.model.GetCarsCategory2
+import com.mevron.rides.rider.remote.model.GeneralResponse
+import com.mevron.rides.rider.remote.model.RideRequest
+import com.mevron.rides.rider.authentication.data.models.profile.GetProfileResponse
+import com.mevron.rides.rider.settings.emerg.AddContactRequest
+import com.mevron.rides.rider.settings.emerg.model.GetContactsResponse
+import com.mevron.rides.rider.settings.emerg.model.UpdateEmergencyContact
+import com.mevron.rides.rider.settings.referal.model.GetReferalHistory
+import com.mevron.rides.rider.settings.referal.model.ReferalReport
+import com.mevron.rides.rider.settings.referal.model.SetReferal
+import com.mevron.rides.rider.supportpages.data.model.NotificationResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -50,8 +48,6 @@ interface MevronAPI {
 
     @POST("api/v1/rider/auth/resend-verification")
     suspend fun resendEmailLink(): Response<SaveResponse>
-
-
 
     @POST("api/v1/rider/auth/carCategories")
     suspend fun getCars(@Body data: GetCarRequests):Response<GetCarsCategory2>

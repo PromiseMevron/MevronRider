@@ -1,12 +1,12 @@
-package com.mevron.rides.ridertest.settings
+package com.mevron.rides.rider.supportpages.ui.notification
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.mevron.rides.ridertest.R
-import com.mevron.rides.ridertest.databinding.NotificationSubItemBinding
+import com.mevron.rides.rider.R
+import com.mevron.rides.rider.databinding.NotificationSubItemBinding
 
 class NotificationSubAdapter(val context: Context): RecyclerView.Adapter<NotificationSubAdapter.SubNotifiHolder>() {
 
