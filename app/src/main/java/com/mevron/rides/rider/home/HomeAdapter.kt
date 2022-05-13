@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -11,7 +12,7 @@ import com.mevron.rides.rider.databinding.AddressItemBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.localdb.SavedAddress
 
-class HomeAdapter(val select: AddressSelected) :
+class HomeAdapter(val select: AddressSelected, val context: Context) :
     ListAdapter<SavedAddress, HomeAdapter.HomeViewHolder>(
         PlaceAdapterDiffUti()
     ) {
@@ -48,13 +49,14 @@ class HomeAdapter(val select: AddressSelected) :
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         val dt = getItem(position)
+
         if (dt.type == "home") {
             holder.binding.displayImage.setImageResource(R.drawable.ic_home_address)
-            holder.binding.destType.text = "Home"
+            holder.binding.destType.text = context.getString(R.string.home)
         }
         if (dt.type == "work") {
             holder.binding.displayImage.setImageResource(R.drawable.ic_work_address)
-            holder.binding.destType.text = "Work"
+            holder.binding.destType.text = context.getString(R.string.work)
         }
         if (dt.type == "others") {
             holder.binding.displayImage.setImageResource(R.drawable.ic_all_saved)

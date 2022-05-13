@@ -177,7 +177,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
                     binding.addWork.visibility = View.GONE
                 }
             }
-            homeAdapter = HomeAdapter( this)
+            homeAdapter = HomeAdapter( this, requireContext())
             binding.savedPlacesRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false)
             binding.savedPlacesRecyclerView.adapter = homeAdapter

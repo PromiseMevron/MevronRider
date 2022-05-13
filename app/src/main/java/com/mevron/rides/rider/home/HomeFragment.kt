@@ -424,7 +424,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-            adapter = HomeAdapter( this)
+            adapter = HomeAdapter( this, requireContext())
             binding.mevronHomeBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false)
             binding.mevronHomeBottom.recyclerView.adapter = adapter

@@ -90,6 +90,7 @@
     <string name="booked_by_mistake">Booked by mistake</string>
     <string name="change_in_plan">Change in plan</string>
     <string name="other">Other</string>
+    <string name="others">others</string>
     <string name="submit_feedback">Submit Feedback</string>
     <string name="your_trip_is_verified">Your trip is verified.</string>
     <string name="schedule_ride">Schedule Ride</string>
@@ -283,6 +284,8 @@
     <string name="before_every_trip">Before every trip</string>
     <string name="at_night_9pm_6am">At Night (9PM - 6AM)</string>
     <string name="i_ll_share_it_manually">I’ll share it manually</string>
+    <string name="save_a_place">Save a place</string>
+    <string name="enter_any_address">Enter any address</string>
 
 
 </resources>

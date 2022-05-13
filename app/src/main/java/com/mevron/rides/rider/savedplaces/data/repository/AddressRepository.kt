@@ -15,7 +15,7 @@ class AddressRepository(private val addressAPI: AddressAPI) : IAddressRepository
 
     override suspend fun getSavedAddresses(): DomainModel = addressAPI.getAddress().let {
         if (it.isSuccessful) {
-            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("No saved address found"))
         } else {
             DomainModel.Error(Throwable(it.errorBody().toString()))
         }
@@ -24,7 +24,7 @@ class AddressRepository(private val addressAPI: AddressAPI) : IAddressRepository
     override suspend fun addAnAddress(data: SaveAddressRequest): DomainModel =
         addressAPI.saveAddress(data).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Address not saved"))
             } else {
                 DomainModel.Error(Throwable(it.errorBody().toString()))
             }
@@ -33,7 +33,7 @@ class AddressRepository(private val addressAPI: AddressAPI) : IAddressRepository
     override suspend fun updateAnAddress(identifier: String, data: UpdateAddress): DomainModel =
         addressAPI.updateAddress(identifier = identifier, data = data).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Address not saved"))
             } else {
                 DomainModel.Error(Throwable(it.errorBody().toString()))
             }
