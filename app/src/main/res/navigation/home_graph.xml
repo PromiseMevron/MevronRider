@@ -186,7 +186,7 @@
     </fragment>
     <fragment
         android:id="@+id/my_rides_fragment"
-        android:name="com.mevron.rides.rider.settings.myrides.MyRidesFragment"
+        android:name="com.mevron.rides.rider.myrides.ui.MyRidesFragment"
         android:label="my_rides_fragment"
         tools:layout="@layout/my_rides_fragment" />
     <fragment
@@ -201,7 +201,7 @@
     <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
     <fragment
         android:id="@+id/rideDetailsFragment"
-        android:name="com.mevron.rides.rider.settings.myrides.RideDetailsFragment"
+        android:name="com.mevron.rides.rider.myrides.ui.RideDetailsFragment"
         android:label="ride_details_fragment"
         tools:layout="@layout/ride_details_fragment" /><action android:id="@+id/action_global_rideDetailsFragment" app:destination="@id/rideDetailsFragment"/>
     <fragment

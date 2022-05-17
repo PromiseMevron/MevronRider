@@ -1,4 +1,4 @@
-package com.mevron.rides.rider.settings.myrides
+package com.mevron.rides.rider.myrides.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyRidesFragmentBinding
+import com.mevron.rides.rider.myrides.ui.adapter.ViewPagerAdapter
 
 class MyRidesFragment : Fragment() {
 
@@ -19,7 +20,6 @@ class MyRidesFragment : Fragment() {
         "Past",
         "Upcoming"
     )
-    private lateinit var viewModel: MyRidesViewModel
     private lateinit var binding: MyRidesFragmentBinding
 
     override fun onCreateView(

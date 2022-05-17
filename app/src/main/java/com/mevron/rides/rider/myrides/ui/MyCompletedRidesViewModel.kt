@@ -1,7 +1,7 @@
-package com.mevron.rides.rider.settings.myrides
+package com.mevron.rides.rider.myrides.ui
 
 import androidx.lifecycle.ViewModel
 
 class MyCompletedRidesViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
 }

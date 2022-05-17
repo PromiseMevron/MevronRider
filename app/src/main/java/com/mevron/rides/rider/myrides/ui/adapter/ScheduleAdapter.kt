@@ -1,4 +1,4 @@
-package com.mevron.rides.rider.settings.myrides
+package com.mevron.rides.rider.myrides.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

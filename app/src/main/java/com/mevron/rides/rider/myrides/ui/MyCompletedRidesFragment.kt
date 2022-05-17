@@ -1,4 +1,4 @@
-package com.mevron.rides.rider.settings.myrides
+package com.mevron.rides.rider.myrides.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyCompletedRidesFragmentBinding
+import com.mevron.rides.rider.localdb.SavedAddress
+
+import com.mevron.rides.rider.myrides.ui.adapter.RideAdapter
+import com.mevron.rides.rider.myrides.ui.adapter.SelectedRide
 
 class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
@@ -17,7 +21,7 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
     }
 
     private lateinit var viewModel: MyCompletedRidesViewModel
-    private lateinit var binding:MyCompletedRidesFragmentBinding
+    private lateinit var binding: MyCompletedRidesFragmentBinding
 
 
     override fun onCreateView(
@@ -30,7 +34,7 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var adapter = RideAdapter(this)
+        var adapter = RideAdapter<SavedAddress>(this)
         binding.recyclerView.adapter = adapter
     }
 

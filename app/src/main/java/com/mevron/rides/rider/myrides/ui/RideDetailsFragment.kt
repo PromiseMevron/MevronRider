@@ -1,4 +1,4 @@
-package com.mevron.rides.rider.settings.myrides
+package com.mevron.rides.rider.myrides.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,30 +7,32 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.mevron.rides.rider.R
-import com.mevron.rides.rider.databinding.MyScheduleFragmentBinding
+import com.mevron.rides.rider.databinding.RideDetailsFragmentBinding
 
-class MyScheduleFragment : Fragment() {
+class RideDetailsFragment : Fragment() {
 
     companion object {
-        fun newInstance() = MyScheduleFragment()
+        fun newInstance() = RideDetailsFragment()
     }
 
-    private lateinit var viewModel: MyScheduleViewModel
-    private lateinit var binding: MyScheduleFragmentBinding
-    var adapter = ScheduleAdapter()
+    private lateinit var viewModel: RideDetailsViewModel
+    private lateinit var binding: RideDetailsFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.my_schedule_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.ride_details_fragment, container, false)
         return binding.root
-
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerView.adapter = adapter
+        binding.backButton.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
+
 
 }
