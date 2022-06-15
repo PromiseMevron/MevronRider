@@ -1,189 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/bottomSheet"
-    android:background="@drawable/rounded_corner"
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="300dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_handle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginBottom="@dimen/_5sdp"/>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="visible"
-    android:id="@+id/top_layer"
-    app:layout_constraintTop_toTopOf="parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:id="@+id/code_applied"
-        android:paddingBottom="@dimen/_10sdp"
-        android:background="#1A0B973A"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/rounded_corner"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="300dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
-            android:id="@+id/surge_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_code_icon"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:src="@drawable/ic_handle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/_24sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/_16sdp"
-            android:layout_marginStart="@dimen/_16sdp"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_layer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/code_applied"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#1A0B973A"
+                android:paddingBottom="@dimen/_10sdp"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/surge_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:layout_marginBottom="@dimen/_16sdp"
+                    android:src="@drawable/ic_code_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/code_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:lineHeight="@dimen/_20ssp"
+                    android:text="RIDE30 code is applied"
+                    android:textColor="#0B973A"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_10ssp"
+                    app:layout_constraintBottom_toBottomOf="@id/surge_image"
+                    app:layout_constraintStart_toEndOf="@id/surge_image"
+                    app:layout_constraintTop_toTopOf="@id/surge_image"
+                    tools:targetApi="p" />
+
+                <ImageView
+                    android:id="@+id/code_direction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:src="@drawable/ic_code_down"
+                    app:layout_constraintBottom_toBottomOf="@id/surge_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/surge_image" />
+
+                <TextView
+                    android:id="@+id/code_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:lineHeight="@dimen/_20ssp"
+                    android:text="You saved 40% on your ride"
+                    android:textColor="#000000"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/code_number"
+                    app:layout_constraintTop_toBottomOf="@id/code_number"
+                    tools:targetApi="p" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/code_number"
+            android:id="@+id/name_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RIDE30 code is applied"
-            android:textColor="#0B973A"
-            android:lineHeight="@dimen/_20ssp"
-            android:textFontWeight="600"
-            app:layout_constraintTop_toTopOf="@id/surge_image"
-            app:layout_constraintStart_toEndOf="@id/surge_image"
-            app:layout_constraintBottom_toBottomOf="@id/surge_image"
             android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_10ssp"
-            tools:targetApi="p" />
-
-        <ImageView
-            android:id="@+id/code_direction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_code_down"
-            android:layout_marginEnd="@dimen/_16sdp"
-            app:layout_constraintBottom_toBottomOf="@id/surge_image"
-            app:layout_constraintTop_toTopOf="@id/surge_image"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/code_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="You saved 40% on your ride"
-            android:textColor="#000000"
-            android:lineHeight="@dimen/_20ssp"
-            android:textFontWeight="600"
-            app:layout_constraintTop_toBottomOf="@id/code_number"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/code_number"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_9ssp"
-            tools:targetApi="p" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<TextView
-        android:id="@+id/name_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_your_ride"
-        android:textColor="#383838"
-    android:textAlignment="center"
-    android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/top_layer"
-        app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginStart="@dimen/_12sdp"
-        android:textStyle="bold"
-        android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_15ssp"/>
+            android:gravity="center"
+            android:text="@string/choose_your_ride"
+            android:textAlignment="center"
+            android:textColor="#383838"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_layer" />
 
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_display"
+            tools:itemCount="4"
+            tools:listitem="@layout/vehicle_item" />
 
-            tools:listitem="@layout/vehicle_item"
-            tools:itemCount="4"/>
-
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:visibility="visible"
-        android:id="@+id/all_saved_layout"
-        android:background="#ffffff"
-        android:padding="@dimen/_10sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp">
-
-        <ImageView
-            android:id="@+id/display_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_calendar"
-            android:layout_marginStart="@dimen/_12sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-
-        <Button
-            android:id="@+id/dest_addres"
-            android:layout_width="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="@dimen/_50sdp"
-            tools:text="@string/confirm_economy"
-            app:layout_constraintStart_toEndOf="@id/display_image"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:layout_marginStart="@dimen/_12sdp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_10ssp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/all_saved_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="#ffffff"
+            android:padding="@dimen/_10sdp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/display_image"
-            app:layout_constraintBottom_toBottomOf="@id/display_image"
-            android:src="@drawable/ic_next"/>
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/display_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:src="@drawable/ic_calendar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
+            <Button
+                android:id="@+id/dest_addres"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/display_image"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/confirm_economy" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_next"
+                app:layout_constraintBottom_toBottomOf="@id/display_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/display_image" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

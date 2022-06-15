@@ -3,7 +3,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 xmlns:app="http://schemas.android.com/apk/res-auto"
-tools:context=".settings.emerg.EmergencyFragment">
+tools:context=".emerg.ui.views.EmergencyFragment">
 
 
 <androidx.constraintlayout.widget.ConstraintLayout

@@ -81,6 +81,7 @@ class SaveAddressViewModel @Inject constructor(private val useCase: SaveAddressU
             listOf(Place.Field.NAME, Place.Field.ID, Place.Field.LAT_LNG, Place.Field.ADDRESS)
         val type = mutableState.value.type
         val fetchRequest = FetchPlaceRequest.builder(prediction.placeId, placeFilters).build()
+        // TODO: Add the user device country default to search parameter
         placesClient.fetchPlace(fetchRequest)
             .addOnSuccessListener {
                 val coordinates = it.place.latLng!!

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_240sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:id="@+id/divider_1"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:orientation="horizontal"
+        android:id="@+id/divider_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Trip Details"
+        android:textAllCaps="false"
+        android:textColor="#383838"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_18ssp"
+        android:lineHeight="@dimen/_32sdp"
+        android:id="@+id/trip_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_1"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        tools:targetApi="p" />
+
+
+    <ImageView
+        android:layout_width="@dimen/_4sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@drawable/ic_rectangle"
+        android:id="@+id/drop_line"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="@+id/drop_logo"
+        app:layout_constraintEnd_toEndOf="@+id/drop_logo"
+        app:layout_constraintTop_toTopOf="@+id/pick_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/drop_logo" />
+
+    <ImageView
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_driver_pick"
+        android:id="@+id/pick_logo"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@+id/trip_detail"
+        android:layout_marginTop="@dimen/_20sdp"/>
+
+    <ImageView
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_driver_dest"
+        android:id="@+id/drop_logo"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@+id/pick_logo"
+        android:layout_marginTop="@dimen/_90sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PICK-UP FROM"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="400"
+        android:textSize="@dimen/_10ssp"
+        android:lineHeight="@dimen/_20sdp"
+        android:id="@+id/pick_text"
+        app:layout_constraintStart_toEndOf="@id/pick_logo"
+        app:layout_constraintTop_toTopOf="@id/pick_logo"
+        android:layout_marginStart="@dimen/_14sdp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fairmont Cafe"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_12ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/pick_name"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="@id/pick_text"
+        app:layout_constraintTop_toBottomOf="@id/pick_text"
+        tools:targetApi="p" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="86706 Kuhic Trafficway, Phenix City, AL"
+        android:textAllCaps="false"
+        android:textColor="#9C9C9C"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:maxLines="1"
+        android:textSize="@dimen/_11ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/pick_address"
+        android:textAlignment="viewStart"
+        android:layout_marginTop="@dimen/_1sdp"
+        app:layout_constraintStart_toStartOf="@id/pick_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pick_name"
+        tools:targetApi="p" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DROP-OFF AT"
+        android:textAllCaps="false"
+        android:textColor="#F9170F"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="400"
+        android:textSize="@dimen/_10ssp"
+        android:lineHeight="@dimen/_20sdp"
+        android:id="@+id/drop_text"
+        app:layout_constraintStart_toEndOf="@id/drop_logo"
+        app:layout_constraintTop_toTopOf="@id/drop_logo"
+        android:layout_marginStart="@dimen/_14sdp"
+        tools:targetApi="p" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fairmont Cafe"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:textSize="@dimen/_12ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/drop_name"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="@id/drop_text"
+        app:layout_constraintTop_toBottomOf="@id/drop_text"
+        tools:targetApi="p" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="86706 Kuhic Trafficway, Phenix City, AL"
+        android:textAllCaps="false"
+        android:textColor="#9C9C9C"
+        android:fontFamily="@font/poppins_regular"
+        android:textFontWeight="500"
+        android:maxLines="1"
+        android:textSize="@dimen/_11ssp"
+        android:lineHeight="@dimen/_24sdp"
+        android:id="@+id/drop_address"
+        android:textAlignment="viewStart"
+        android:layout_marginTop="@dimen/_1sdp"
+        app:layout_constraintStart_toStartOf="@id/drop_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/drop_name"
+        tools:targetApi="p" />
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2"
+        app:layout_constraintTop_toBottomOf="@id/drop_address"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:id="@+id/divider_4"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
