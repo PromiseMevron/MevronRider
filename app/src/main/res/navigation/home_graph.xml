@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.mevron.rides.rider.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_selectRideFragment"
+            app:destination="@id/selectRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="com.mevron.rides.rider.home.search.SearchLocationFragment"
+        tools:layout="@layout/search_location_fragment"
+        android:label="SearchLocationFragment" >
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectOnMapFragment"
+            app:destination="@id/selectOnMapFragment" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectRideFragment"
+            app:destination="@id/selectRideFragment" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectRideFragment2"
+            app:destination="@id/selectRideFragment" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_selectRideFragment3"
+            app:destination="@id/selectRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectOnMapFragment"
+        android:name="com.mevron.rides.rider.home.selectmap.SelectOnMapFragment"
+        tools:layout="@layout/select_on_map_fragment"
+        android:label="SelectOnMapFragment" >
+        <action
+            android:id="@+id/action_selectOnMapFragment_to_selectRideFragment"
+            app:destination="@id/selectRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectRideFragment"
+        android:name="com.mevron.rides.rider.home.select_ride.SelectRideFragment"
+        android:label="select_ride_fragment"
+        tools:layout="@layout/select_ride_fragment" >
+
+        <action
+            android:id="@+id/action_selectRideFragment_to_paymentFragment2"
+            app:destination="@id/paymentFragment2" />
+        <argument
+            android:name="location"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="com.mevron.rides.rider.payment.PaymentMethodFragment"
+        android:label="payment_method_fragment"
+        tools:layout="@layout/payment_method_fragment" />
+    <fragment
+        android:id="@+id/paymentFragment2"
+        android:name="com.mevron.rides.rider.payment.PaymentFragment"
+        android:label="payment_fragment"
+        tools:layout="@layout/payment_fragment" >
+        <action
+            android:id="@+id/action_paymentFragment2_to_paymentMethodFragment"
+            app:destination="@id/paymentMethodFragment" />
+        <argument
+            android:name="location"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+        <action
+            android:id="@+id/action_paymentFragment2_to_confirmRideFragment"
+            app:destination="@id/confirmRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmRideFragment"
+        tools:layout="@layout/confirm_ride_fragment"
+        android:name="com.mevron.rides.rider.home.ride.ConfirmRideFragment"
+        android:label="ConfirmRideFragment" >
+        <argument
+            android:name="location"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+        <argument
+            android:name="isCard"
+            app:argType="boolean" />
+        <argument
+            android:name="uiid"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mevron.rides.rider.settings.SettingsFragment"
+        android:label="settings_fragment"
+        tools:layout="@layout/settings_fragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_promoFragment"
+            app:destination="@id/promoFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_referalFragment"
+            app:destination="@id/referalFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_emergencyFragment"
+            app:destination="@id/emergencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/saveAddressFragment"
+        tools:layout="@layout/save_address_fragment"
+        android:name="com.mevron.rides.rider.savedplaces.ui.saveaddress.SaveAddressFragment"
+        android:label="SaveAddressFragment" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="placeholder"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+    </fragment>
+
+
+    <action android:id="@+id/action_global_saveAddressFragment"
+        app:destination="@id/saveAddressFragment" />
+    <fragment
+        android:id="@+id/addSavedPlaceFragment"
+        tools:layout="@layout/add_saved_place_fragment"
+        android:name="com.mevron.rides.rider.savedplaces.ui.addaddress.AddSavedPlaceFragment"
+        android:label="AddSavedPlaceFragment" >
+        <action
+            android:id="@+id/action_addSavedPlaceFragment_to_updateSavedPlaceFragment"
+            app:destination="@id/updateSavedPlaceFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_addSavedPlaceFragment" app:destination="@id/addSavedPlaceFragment" />
+    <fragment
+        android:id="@+id/saveAddressDetailsFragment"
+        android:name="com.mevron.rides.rider.savedplaces.ui.addressdetails.SaveAddressDetailsFragment"
+        android:label="save_address_details_fragment"
+        tools:layout="@layout/save_address_details_fragment" >
+        <argument
+            android:name="addressModel"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel" />
+    </fragment>
+    <action android:id="@+id/action_global_saveAddressDetailsFragment"
+        app:destination="@id/saveAddressDetailsFragment" />
+
+    <fragment
+        android:id="@+id/updateSavedPlaceFragment"
+        tools:layout="@layout/update_address_fragment"
+        android:name="com.mevron.rides.rider.savedplaces.ui.updateaddress.UpdateAddressFragment"
+        android:label="UpdateSavedPlaceFragment" >
+        <argument
+            android:name="address"
+            app:argType="com.mevron.rides.rider.localdb.SavedAddress" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookedFragment"
+        android:name="com.mevron.rides.rider.home.booked.BookedFragment"
+        android:label="booked_fragment"
+        tools:layout="@layout/booked_fragment" >
+        <argument
+            android:name="location"
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+    </fragment><action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
+    <fragment
+        android:id="@+id/savedpaymentFragment"
+        android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"
+        android:label="saved_payment_fragment"
+        tools:layout="@layout/saved_payment_fragment" >
+        <action
+            android:id="@+id/action_savedpaymentFragment_to_cardDetailsFragment"
+            app:destination="@id/cardDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        tools:layout="@layout/card_details_fragment"
+        android:name="com.mevron.rides.rider.payment.CardDetailsFragment"
+        android:label="CardDetailsFragment" >
+        <argument
+            android:name="card"
+            app:argType="com.mevron.rides.rider.home.model.getCard.Data" />
+    </fragment>
+    <fragment
+        android:id="@+id/my_rides_fragment"
+        android:name="com.mevron.rides.rider.myrides.ui.MyRidesFragment"
+        android:label="my_rides_fragment"
+        tools:layout="@layout/my_rides_fragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.mevron.rides.rider.settings.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_faceLivenessDetectionFragment"
+            app:destination="@id/faceLivenessDetectionFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/rideDetailsFragment"
+        android:name="com.mevron.rides.rider.myrides.ui.RideDetailsFragment"
+        android:label="ride_details_fragment"
+        tools:layout="@layout/ride_details_fragment" /><action android:id="@+id/action_global_rideDetailsFragment" app:destination="@id/rideDetailsFragment"/>
+    <fragment
+        android:id="@+id/referalFragment"
+        tools:layout="@layout/referal_fragment"
+        android:name="com.mevron.rides.rider.settings.referal.ReferalFragment"
+        android:label="ReferalFragment" >
+        <action
+            android:id="@+id/action_referalFragment_to_referalDetailFragment"
+            app:destination="@id/referalDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/referalDetailFragment"
+        tools:layout="@layout/referal_detail_fragment"
+        android:name="com.mevron.rides.rider.settings.referal.ReferalDetailFragment"
+        android:label="ReferalDetailFragment" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/promoFragment"
+        tools:layout="@layout/promo_fragment"
+        android:name="com.mevron.rides.rider.supportpages.ui.promo.PromoFragment"
+        android:label="PromoFragment" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.mevron.rides.rider.supportpages.ui.help.HelpFragment"
+        android:label="help_fragment"
+        tools:layout="@layout/help_fragment" />
+    <fragment
+        android:id="@+id/emergencyFragment"
+        android:name="com.mevron.rides.rider.settings.emerg.EmergencyFragment"
+        android:label="emergency_fragment"
+        tools:layout="@layout/emergency_fragment" >
+        <action
+            android:id="@+id/action_emergencyFragment_to_addEmergencyFragment"
+            app:destination="@id/addEmergencyFragment" />
+        <action
+            android:id="@+id/action_emergencyFragment_to_updateEmergencyFragment"
+            app:destination="@id/updateEmergencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/faceLivenessDetectionFragment"
+        android:name="com.mevron.rides.rider.livedetect.FaceLivenessDetectionFragment"
+        android:label="fragment_facial_recognition"
+        tools:layout="@layout/fragment_facial_recognition" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.mevron.rides.rider.supportpages.ui.notification.NotificationFragment"
+        android:label="notification_fragment"
+        tools:layout="@layout/notification_fragment" />
+    <fragment
+        android:id="@+id/addEmergencyFragment"
+        tools:layout="@layout/add_emergency_fragment"
+        android:name="com.mevron.rides.rider.settings.emerg.AddEmergencyFragment"
+        android:label="AddEmergencyFragment" />
+    <fragment
+        android:id="@+id/updateEmergencyFragment"
+        android:name="com.mevron.rides.rider.settings.emerg.UpdateEmergencyFragment"
+        android:label="update_emergency_fragment"
+        tools:layout="@layout/update_emergency_fragment" >
+        <argument
+            android:name="data"
+            app:argType="com.mevron.rides.rider.settings.emerg.model.Data" />
+    </fragment>
+</navigation>

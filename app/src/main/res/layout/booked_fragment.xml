@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".home.booked.BookedFragment">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/mapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="90dp"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+
+            <ImageButton
+                android:id="@+id/schedule_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_260sdp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:src="@drawable/ic_schedule"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/drawer_button"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_260sdp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_hamburger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:visibility="visible"
+            android:id="@+id/booked_home_bottom"
+            layout="@layout/driver_alloc_bottom" />
+
+        <include
+            android:visibility="visible"
+            android:id="@+id/booked_onride_bottom"
+            layout="@layout/on_ride_bottom" />
+
+        <include
+            android:visibility="visible"
+            android:id="@+id/booked_arrived_bottom"
+            layout="@layout/arrived_bottom_layout" />
+
+        <include
+            android:visibility="visible"
+            android:id="@+id/booked_emergency_bottom"
+            layout="@layout/emergency_bottom_layout" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#66000000"
+            android:visibility="gone"
+            android:id="@+id/verified_code">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_240sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:background="@drawable/rounded_corner_all"
+                android:layout_marginEnd="@dimen/_14sdp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_verified_fill"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:id="@+id/verified"/>
+
+                <TextView
+                    android:id="@+id/name_display_general"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/your_trip_is_verified"
+                    android:textColor="#383838"
+                    android:textAlignment="center"
+                    android:textFontWeight="600"
+                    app:layout_constraintTop_toBottomOf="@id/verified"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="@dimen/_18ssp"
+                    tools:targetApi="p" />
+
+                <TextView
+                    android:id="@+id/name_display"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Barry has entered correct code. Enjoy your ride now!"
+                    android:textColor="#9C9C9C"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/name_display_general"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="@dimen/_10ssp"/>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_okay_ride"
+                    android:background="@android:color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="@dimen/_30sdp"
+                    android:id="@+id/okay_ride"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</layout>

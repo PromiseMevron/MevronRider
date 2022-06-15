@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    app:cardCornerRadius="@dimen/_4sdp">
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_20sdp">
+
+    <ImageView
+        android:id="@+id/cancel_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_cancel_img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_24sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_this_ride"
+        android:lineHeight="@dimen/_32sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="@dimen/_20ssp"
+        android:textFontWeight="600"
+        android:textColor="#383838"
+        android:layout_marginStart="@dimen/_16sdp"
+        app:layout_constraintTop_toBottomOf="@id/cancel_image"
+        android:id="@+id/cancel_name"
+        tools:targetApi="p" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="You can be charged of $1.20, after cancelling this ride."
+        android:lineHeight="@dimen/_24sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/poppins_regular"
+        android:textAlignment="center"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:textSize="@dimen/_12ssp"
+        android:textColor="#666666"
+        android:layout_marginStart="@dimen/_20sdp"
+        app:layout_constraintTop_toBottomOf="@id/cancel_name"
+        android:id="@+id/type_name"
+        tools:targetApi="p" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/type_name"
+        android:layout_marginTop="@dimen/_20sdp">
+
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dont"
+            app:cornerRadius="@dimen/_24sdp"
+            android:textSize="@dimen/_8ssp"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_48sdp"
+            android:text="Don’t Cancel"
+            android:layout_marginEnd="2dp"
+            android:textColor="#333333"
+            app:backgroundTint="#ffffff"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/do_cancel"
+            app:cornerRadius="@dimen/_24sdp"
+            android:textSize="@dimen/_8ssp"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_marginStart="2dp"
+           android:text="Yes, Cancel"
+            app:backgroundTint="#ff0000"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
