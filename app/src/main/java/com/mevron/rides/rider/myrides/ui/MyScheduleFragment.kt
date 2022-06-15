@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyScheduleFragmentBinding
-import com.mevron.rides.rider.myrides.ui.adapter.ScheduleAdapter
+//import com.mevron.rides.rider.myrides.ui.adapter.ScheduleAdapter
 
 class MyScheduleFragment : Fragment() {
 
@@ -18,7 +18,7 @@ class MyScheduleFragment : Fragment() {
 
     private lateinit var viewModel: MyScheduleViewModel
     private lateinit var binding: MyScheduleFragmentBinding
-    var adapter = ScheduleAdapter()
+  //  var adapter = ScheduleAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +31,7 @@ class MyScheduleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerView.adapter = adapter
+      //  binding.recyclerView.adapter = adapter
     }
 
 }

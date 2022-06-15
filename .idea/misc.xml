@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.16757246376811594" />
         <entry key="app/src/main/res/drawable/checked.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/custom_checkbox.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/gradient_background.xml" value="0.18072916666666666" />
@@ -128,18 +129,20 @@
         <entry key="app/src/main/res/layout/fragment_face_liveness_detection_item.xml" value="0.1019559902200489" />
         <entry key="app/src/main/res/layout/fragment_facial_recognition.xml" value="0.11484375" />
         <entry key="app/src/main/res/layout/help_fragment.xml" value="0.14241803278688525" />
-        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.25" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/logout_dialod.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/make_payment_marker.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/my_completed_rides_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/my_completed_rides_fragment.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/my_ride_detail_details.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/layout/my_ride_item.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/my_ride_map_image.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/layout/my_rides_fragment.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/my_schedule_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/my_schedule_fragment.xml" value="0.375" />
         <entry key="app/src/main/res/layout/my_schedule_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/notification_fragment.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/notification_fragment.xml" value="0.375" />
         <entry key="app/src/main/res/layout/notification_item.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/notification_sub_item.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.18468468468468469" />
@@ -159,7 +162,7 @@
         <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/referal_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/ride_bottom_sheet.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/ride_details_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/ride_details_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/save_address_details_fragment.xml" value="0.25660964230171074" />
         <entry key="app/src/main/res/layout/save_address_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/saved_payment_fragment.xml" value="0.165625" />

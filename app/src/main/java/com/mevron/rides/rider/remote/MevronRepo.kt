@@ -21,9 +21,9 @@ import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.remote.model.GeneralResponse
 import com.mevron.rides.rider.remote.model.RideRequest
 import com.mevron.rides.rider.authentication.data.models.profile.GetProfileResponse
-import com.mevron.rides.rider.settings.emerg.AddContactRequest
-import com.mevron.rides.rider.settings.emerg.model.GetContactsResponse
-import com.mevron.rides.rider.settings.emerg.model.UpdateEmergencyContact
+import com.mevron.rides.rider.emerg.data.model.AddContactRequest
+import com.mevron.rides.rider.emerg.data.model.GetContactsResponse
+import com.mevron.rides.rider.emerg.data.model.UpdateEmergencyContact
 import com.mevron.rides.rider.settings.referal.model.GetReferalHistory
 import com.mevron.rides.rider.settings.referal.model.ReferalReport
 import com.mevron.rides.rider.settings.referal.model.SetReferal

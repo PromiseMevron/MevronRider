@@ -234,7 +234,7 @@
         tools:layout="@layout/help_fragment" />
     <fragment
         android:id="@+id/emergencyFragment"
-        android:name="com.mevron.rides.rider.settings.emerg.EmergencyFragment"
+        android:name="com.mevron.rides.rider.emerg.ui.views.EmergencyFragment"
         android:label="emergency_fragment"
         tools:layout="@layout/emergency_fragment" >
         <action
@@ -257,15 +257,15 @@
     <fragment
         android:id="@+id/addEmergencyFragment"
         tools:layout="@layout/add_emergency_fragment"
-        android:name="com.mevron.rides.rider.settings.emerg.AddEmergencyFragment"
+        android:name="com.mevron.rides.rider.emerg.ui.views.AddEmergencyFragment"
         android:label="AddEmergencyFragment" />
     <fragment
         android:id="@+id/updateEmergencyFragment"
-        android:name="com.mevron.rides.rider.settings.emerg.UpdateEmergencyFragment"
+        android:name="com.mevron.rides.rider.emerg.ui.views.UpdateEmergencyFragment"
         android:label="update_emergency_fragment"
         tools:layout="@layout/update_emergency_fragment" >
         <argument
             android:name="data"
-            app:argType="com.mevron.rides.rider.settings.emerg.model.Data" />
+            app:argType="com.mevron.rides.rider.emerg.domain.model.GetContactDomainData" />
     </fragment>
 </navigation>
