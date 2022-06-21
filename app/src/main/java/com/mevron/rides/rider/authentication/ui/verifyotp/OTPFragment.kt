@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.authentication.ui.verifyotp.event.VerifyOTPEvent
 import com.mevron.rides.rider.databinding.OTFragmentBinding
-import com.mevron.rides.rider.home.HomeActivity
+import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect

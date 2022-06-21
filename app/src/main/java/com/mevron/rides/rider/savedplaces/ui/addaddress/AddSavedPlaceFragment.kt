@@ -87,14 +87,15 @@ class AddSavedPlaceFragment : Fragment(), AddressSelected {
         )
         binding.placesRecyclerView.adapter = adapter
         val dt = (data.map {
-            SavedAddress(
+            GetSavedAddressData(
                 type = it.type,
                 name = it.name,
                 lat = it.lat,
                 lng = it.lng,
                 address = it.address,
-                uiid = it.uuid,
-                id = null
+                uuid = it.uuid,
+                latitude = "",
+                longitude = ""
             )
         }).toMutableList()
         adapter.submitList(dt)
@@ -133,12 +134,11 @@ class AddSavedPlaceFragment : Fragment(), AddressSelected {
         }
     }
 
-    override fun selectedAddress(data: LocationModel, dt: SavedAddress) {
+    override fun selectedAddress(data: LocationModel, dt: GetSavedAddressData) {
         val action =
             AddSavedPlaceFragmentDirections.actionAddSavedPlaceFragmentToUpdateSavedPlaceFragment(
                 dt
             )
         findNavController().navigate(action)
     }
-
 }

@@ -18,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ConfirmRideViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
 
-
     fun confirmRider(data: RideRequest): LiveData<GenericStatus<ConfirmRideResponse>> {
 
         val result = MutableLiveData<GenericStatus<ConfirmRideResponse>>()
@@ -40,5 +39,4 @@ class ConfirmRideViewModel @Inject constructor (private val repository: MevronRe
         return result
 
     }
-
 }

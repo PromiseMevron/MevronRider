@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.mevron.rides.rider.home.HomeFragment"
+        android:name="com.mevron.rides.rider.home.ui.HomeFragment"
         android:label="home_fragment"
         tools:layout="@layout/home_fragment" >
         <action
@@ -155,7 +155,7 @@
         android:label="UpdateSavedPlaceFragment" >
         <argument
             android:name="address"
-            app:argType="com.mevron.rides.rider.localdb.SavedAddress" />
+            app:argType="com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData" />
     </fragment>
     <fragment
         android:id="@+id/bookedFragment"

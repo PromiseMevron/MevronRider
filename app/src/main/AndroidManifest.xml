@@ -39,7 +39,7 @@
 
         <activity
             android:windowSoftInputMode="adjustResize"
-            android:name="com.mevron.rides.rider.home.HomeActivity"
+            android:name="com.mevron.rides.rider.home.ui.HomeActivity"
 
             android:exported="false" />
         <activity

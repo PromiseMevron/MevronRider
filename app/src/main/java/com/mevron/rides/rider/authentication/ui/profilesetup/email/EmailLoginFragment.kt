@@ -17,7 +17,7 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.auth.AuthUtil
 import com.mevron.rides.rider.authentication.ui.profilesetup.email.event.RegisterEmailEvent
 import com.mevron.rides.rider.databinding.EmailLoginFragmentBinding
-import com.mevron.rides.rider.home.HomeActivity
+import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect

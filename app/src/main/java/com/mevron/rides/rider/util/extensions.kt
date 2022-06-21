@@ -45,7 +45,7 @@ fun View.hideKeyboard() {
 }
 
 
-fun EditText.getString(): String{
+fun EditText.getString(): String {
     return this.text.toString()
 }
 
@@ -82,7 +82,7 @@ fun Fragment.bitmapFromVector(id: Int): BitmapDescriptor {
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 
-fun Fragment.displayLocationSettingsRequest(binding: ViewDataBinding){
+fun Fragment.displayLocationSettingsRequest(binding: ViewDataBinding) {
     val locationRequest = LocationRequest.create()
     locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     locationRequest.interval = 4000
@@ -94,11 +94,20 @@ fun Fragment.displayLocationSettingsRequest(binding: ViewDataBinding){
     task?.addOnFailureListener { locationException: java.lang.Exception? ->
         if (locationException is ResolvableApiException) {
             try {
-                activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
+                activity?.let {
+                    locationException.startResolutionForResult(
+                        it,
+                        Constants.LOCATION_REQUEST_CODE
+                    )
+                }
             } catch (senderException: IntentSender.SendIntentException) {
                 senderException.printStackTrace()
                 val snackbar = Snackbar
-                    .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
+                    .make(
+                        binding.root,
+                        "Please enable location setting to use your current address.",
+                        Snackbar.LENGTH_LONG
+                    )
                     .setAction("Retry") {
                         displayLocationSettingsRequest(binding)
                     }
@@ -111,37 +120,45 @@ fun Fragment.displayLocationSettingsRequest(binding: ViewDataBinding){
     }
 }
 
-fun Fragment.getGeoLocation(location: Array<LocationModel>, gMap: GoogleMap, isArrival: Boolean = false, onTrip: Boolean = false, addMarker: (GeoDirectionsResponse) -> Unit){
+fun Fragment.getGeoLocation(
+    location: Array<LocationModel>,
+    gMap: GoogleMap,
+    isArrival: Boolean = false,
+    onTrip: Boolean = false,
+    addMarker: (GeoDirectionsResponse) -> Unit
+) {
 
-    val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}"+
+    val directionsEndpoint = "json?origin=" + "${location[0].lat}" + "," + "${location[0].lng}" +
             "&destination=" + "${location[1].lat}" + "," + "${location[1].lng}" +
-            "&sensor=false&units=metric&mode=driving"+ "&key=" + "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
-    val call: Call<GeoDirectionsResponse> = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!.getGeoDirections(directionsEndpoint)
+            "&sensor=false&units=metric&mode=driving" + "&key=" + "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
+    val call: Call<GeoDirectionsResponse> =
+        GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
+            .getGeoDirections(directionsEndpoint)
     call.enqueue(object : Callback<GeoDirectionsResponse?> {
-        override fun onResponse(call: Call<GeoDirectionsResponse?>?, response: Response<GeoDirectionsResponse?>) {
+        override fun onResponse(
+            call: Call<GeoDirectionsResponse?>?,
+            response: Response<GeoDirectionsResponse?>
+        ) {
             if (response.isSuccessful) {
                 response.body().let {
                     val directionsPayload = it
                     if (directionsPayload != null) {
-                        if (isArrival){
+                        if (isArrival) {
                             plotPolyLinesForDriverArrival(directionsPayload, gMap, addMarker)
-                        }
-                        else{
-                            if (onTrip){
+                        } else {
+                            if (onTrip) {
                                 plotPolyLinesForOnTrip(directionsPayload, gMap, addMarker)
-                            }else{
+                            } else {
                                 plotPolyLines(directionsPayload, gMap, addMarker)
                             }
                         }
 
 
-                    }
-                    else {
+                    } else {
 
                     }
                 }
-            }
-            else {
+            } else {
 
             }
 
@@ -153,7 +170,11 @@ fun Fragment.getGeoLocation(location: Array<LocationModel>, gMap: GoogleMap, isA
     })
 }
 
-fun Fragment.plotPolyLines(geoDirections: GeoDirectionsResponse, gMap: GoogleMap,  addMarker: (GeoDirectionsResponse) -> Unit){
+fun Fragment.plotPolyLines(
+    geoDirections: GeoDirectionsResponse,
+    gMap: GoogleMap,
+    addMarker: (GeoDirectionsResponse) -> Unit
+) {
     val steps: ArrayList<LatLng> = ArrayList()
     if (geoDirections.routes.isNullOrEmpty()) {
         return
@@ -179,15 +200,21 @@ fun Fragment.plotPolyLines(geoDirections: GeoDirectionsResponse, gMap: GoogleMap
 
     //   val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
     //   gMap.animateCamera(boundsUpdate)
-    val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
-    for (step in steps) { rectLine.add(step) }
+    val rectLine =
+        PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
+    for (step in steps) {
+        rectLine.add(step)
+    }
     // gMap.clear()
     gMap.addPolyline(rectLine)
 }
 
 
-
-fun Fragment.plotPolyLinesForDriverArrival(geoDirections: GeoDirectionsResponse, gMap: GoogleMap,  addMarker: (GeoDirectionsResponse) -> Unit){
+fun Fragment.plotPolyLinesForDriverArrival(
+    geoDirections: GeoDirectionsResponse,
+    gMap: GoogleMap,
+    addMarker: (GeoDirectionsResponse) -> Unit
+) {
     val steps: ArrayList<LatLng> = ArrayList()
     val steps2: ArrayList<LatLng> = ArrayList()
     if (geoDirections.routes.isNullOrEmpty()) {
@@ -198,18 +225,18 @@ fun Fragment.plotPolyLinesForDriverArrival(geoDirections: GeoDirectionsResponse,
     val geoBounds = geoDirections.routes?.get(0)?.bounds
     val geoSteps = geoDirections.routes?.get(0)?.legs?.get(0)?.steps
 
-    if (geoSteps?.size!! > 2){
+    if (geoSteps?.size!! > 2) {
 
-        for (i in 0 until (geoSteps.size - 2)){
+        for (i in 0 until (geoSteps.size - 2)) {
             steps.addAll(decodePolyline(geoSteps[i].polyline?.points!!))
         }
 
-        for (i in (geoSteps.size - 2) until (geoSteps.size)){
+        for (i in (geoSteps.size - 2) until (geoSteps.size)) {
             steps2.addAll(decodePolyline(geoSteps[i].polyline?.points!!))
         }
 
-    }else{
-        for (i in 0 until (geoSteps.size)){
+    } else {
+        for (i in 0 until (geoSteps.size)) {
             steps2.addAll(decodePolyline(geoSteps[i].polyline?.points!!))
         }
     }
@@ -230,18 +257,20 @@ fun Fragment.plotPolyLinesForDriverArrival(geoDirections: GeoDirectionsResponse,
     //   val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
     //   gMap.animateCamera(boundsUpdate)
     val pattern = listOf(
-       Dash(15F), Gap(12f)
+        Dash(15F), Gap(12f)
     )
 
-    if (geoSteps.size > 2){
-        val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
-        for (step in steps) { rectLine.add(step) }
+    if (geoSteps.size > 2) {
+        val rectLine = PolylineOptions().width(8f)
+            .color(ContextCompat.getColor(requireContext(), R.color.primary))
+        for (step in steps) {
+            rectLine.add(step)
+        }
         gMap.addPolyline(rectLine)
-        val marker =  MarkerOptions()
+        val marker = MarkerOptions()
             .position(LatLng(steps[(steps.size - 1)].latitude, steps[(steps.size - 1)].longitude))
             .icon(bitmapFromVector(R.drawable.ic_driver_pick))
         gMap.addMarker(marker)
-
 
 
         val cluster: View = LayoutInflater.from(context).inflate(
@@ -266,25 +295,32 @@ fun Fragment.plotPolyLinesForDriverArrival(geoDirections: GeoDirectionsResponse,
         val canvas = Canvas(clusterBitmap)
         cluster.draw(canvas)
 
-        val marker1 =  MarkerOptions()
+        val marker1 = MarkerOptions()
             .position(LatLng(steps[(steps.size - 1)].latitude, steps[(steps.size - 1)].longitude))
-            .anchor(1.0f,1.05f)
+            .anchor(1.0f, 1.05f)
             .icon(BitmapDescriptorFactory.fromBitmap(clusterBitmap))
         gMap.addMarker(marker1)
 
     }
-    val marker3 =  MarkerOptions()
+    val marker3 = MarkerOptions()
         .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
-        .icon(bitmapFromVector( R.drawable.group))
+        .icon(bitmapFromVector(R.drawable.group))
     gMap.addMarker(marker3)
 
-    val rectLine2 = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.dashColor)).pattern(pattern)
-    for (step in steps2) { rectLine2.add(step) }
+    val rectLine2 = PolylineOptions().width(8f)
+        .color(ContextCompat.getColor(requireContext(), R.color.dashColor)).pattern(pattern)
+    for (step in steps2) {
+        rectLine2.add(step)
+    }
     gMap.addPolyline(rectLine2)
 }
 
 
-fun Fragment.plotPolyLinesForOnTrip(geoDirections: GeoDirectionsResponse, gMap: GoogleMap,  addMarker: (GeoDirectionsResponse) -> Unit){
+fun Fragment.plotPolyLinesForOnTrip(
+    geoDirections: GeoDirectionsResponse,
+    gMap: GoogleMap,
+    addMarker: (GeoDirectionsResponse) -> Unit
+) {
     val steps: ArrayList<LatLng> = ArrayList()
 
     if (geoDirections.routes.isNullOrEmpty()) {
@@ -312,26 +348,25 @@ fun Fragment.plotPolyLinesForOnTrip(geoDirections: GeoDirectionsResponse, gMap: 
 
     //   val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
     //   gMap.animateCamera(boundsUpdate)
-    val rectLine = PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
-    for (step in steps) { rectLine.add(step) }
+    val rectLine =
+        PolylineOptions().width(8f).color(ContextCompat.getColor(requireContext(), R.color.primary))
+    for (step in steps) {
+        rectLine.add(step)
+    }
     // gMap.clear()
     gMap.addPolyline(rectLine)
 
 
-
-
-  //  val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+    //  val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
     val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
 
 
-
-    val marker3 =  MarkerOptions()
+    val marker3 = MarkerOptions()
         .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
-        .icon(bitmapFromVector( R.drawable.group))
+        .icon(bitmapFromVector(R.drawable.group))
     gMap.addMarker(marker3)
 
 }
-
 
 
 private fun decodePolyline(encoded: String): ArrayList<LatLng> {
@@ -367,34 +402,46 @@ private fun decodePolyline(encoded: String): ArrayList<LatLng> {
     return poly
 }
 
- fun Fragment.toggleBusyDialog(busy: Boolean, desc: String? = null){
-     var mDialog: Dialog? = null
-    if(busy){
-        if(mDialog == null){
+fun Fragment.toggleBusyDialog(busy: Boolean, desc: String? = null) {
+    var mDialog: Dialog? = null
+    if (busy) {
+        if (mDialog == null) {
             val view = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_busy_layout,null)
-          mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
-        }else{
-            if(!desc.isNullOrBlank()){
-                val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout,null)
-                mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+                .inflate(R.layout.dialog_busy_layout, null)
+            mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+        } else {
+            if (!desc.isNullOrBlank()) {
+                val view =
+                    LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
             }
         }
         mDialog.show()
-    }else{
+    } else {
         mDialog?.dismiss()
     }
 }
 
 
-fun Fragment.checkPermission2(){
-    if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+fun Fragment.checkPermission2() {
+    if (context?.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
         != PackageManager.PERMISSION_GRANTED && context?.let {
             ContextCompat.checkSelfPermission(
                 it,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         } != PackageManager.PERMISSION_GRANTED) {
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ), Constants.LOCATION_REQUEST_CODE
+        )
         return
     }
 }

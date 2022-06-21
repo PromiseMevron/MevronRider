@@ -11,25 +11,26 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.AddressItemBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.localdb.SavedAddress
+import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 
-class HomeAdapter(val select: AddressSelected, val context: Context) :
-    ListAdapter<SavedAddress, HomeAdapter.HomeViewHolder>(
-        PlaceAdapterDiffUti()
-    ) {
+class HomeAdapter(
+    val select: AddressSelected,
+    val context: Context
+) : ListAdapter<GetSavedAddressData, HomeAdapter.HomeViewHolder>(PlaceAdapterDiffUti()) {
 
     class HomeViewHolder(val binding: AddressItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    class PlaceAdapterDiffUti : DiffUtil.ItemCallback<SavedAddress>() {
+    class PlaceAdapterDiffUti : DiffUtil.ItemCallback<GetSavedAddressData>() {
         override fun areItemsTheSame(
-            oldItem: SavedAddress,
-            newItem: SavedAddress
+            oldItem: GetSavedAddressData,
+            newItem: GetSavedAddressData
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: SavedAddress,
-            newItem: SavedAddress
+            oldItem: GetSavedAddressData,
+            newItem: GetSavedAddressData
         ): Boolean {
             return areItemsTheSame(oldItem, newItem)
         }
@@ -76,5 +77,5 @@ class HomeAdapter(val select: AddressSelected, val context: Context) :
 }
 
 interface AddressSelected {
-    fun selectedAddress(data: LocationModel, dt: SavedAddress)
+    fun selectedAddress(data: LocationModel, dt: GetSavedAddressData)
 }

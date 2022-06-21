@@ -156,6 +156,4 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
     suspend fun getNotification(): Response<NotificationResponse> {
         return api.getNotifications()
     }
-
-
 }

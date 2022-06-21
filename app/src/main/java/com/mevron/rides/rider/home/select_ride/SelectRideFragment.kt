@@ -34,7 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.mevron.rides.rider.home.select_ride.model.Data
 import com.mevron.rides.rider.R
 
-
 @AndroidEntryPoint
 class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
 
@@ -160,9 +159,6 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         }
     }
 
-
-
-
     private fun addMarkerToPolyLines() {
 
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
@@ -220,11 +216,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
       //  gMap.animateCamera(boundsUpdate)
         Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
-
-
-
     }
-
 
     private fun createClusterBitmap(add: String, loc: String, color: String): Bitmap {
         val cluster: View = LayoutInflater.from(context).inflate(
@@ -251,9 +243,6 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         cluster.draw(canvas)
         return clusterBitmap
     }
-
-
-
 
     override fun onMapReady(p0: GoogleMap?) {
         if (p0 != null) {
@@ -306,12 +295,8 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
             return
         }
 
-
        // p0?.isMyLocationEnabled = true
-
-
     }
-
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -319,8 +304,6 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
             mapView.getMapAsync(this)
         }
     }
-
-
 
     override fun selectedCar(pos: Int, car: String) {
         adapter = context?.let { it1 -> CarsAdapter(cars, it1, pos, this) }!!
@@ -330,6 +313,4 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, CarSelected {
         binding.mevronRideBottom.recyclerView.adapter = adapter
         binding.mevronRideBottom.destAddres.text = "Confirm ${car}"
     }
-
-
 }

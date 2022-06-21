@@ -15,5 +15,5 @@ data class ReferalDetail(
     val title: String,
 
     @PrimaryKey(autoGenerate = true)
-val dbId: Int? = null
-): Parcelable
+    val dbId: Int? = null
+) : Parcelable

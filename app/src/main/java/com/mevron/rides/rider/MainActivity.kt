@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.mevron.rides.rider.home.HomeActivity
+import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.Constants
 
 class MainActivity : AppCompatActivity() {
