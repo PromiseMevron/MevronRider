@@ -19,10 +19,10 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class AddSavedPlaceViewModelTest {
 
-    val useCase = mockk<GetAddressUseCase>()
-    val viewModel = AddSavedPlaceViewModel(useCase)
+    private val useCase = mockk<GetAddressUseCase>()
+    private val viewModel = AddSavedPlaceViewModel(useCase)
 
-    val dispatcher = TestCoroutineDispatcher()
+    private val dispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setUp() {
@@ -69,6 +69,4 @@ class AddSavedPlaceViewModelTest {
         viewModel.handleEvent(AddSavedAddressEvent.GetNewAddress)
         coVerify { useCase() }
     }
-
-
 }

@@ -19,7 +19,6 @@ import javax.inject.Inject
 class SelectRideViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
     //getCars GetCarRequests GetCarsCategory
 
-
     fun getCars(data: GetCarRequests): LiveData<GenericStatus<GetCarsCategory2>> {
         val result = MutableLiveData<GenericStatus<GetCarsCategory2>>()
 
@@ -42,6 +41,5 @@ class SelectRideViewModel @Inject constructor (private val repository: MevronRep
             }
         }
         return result
-
     }
 }

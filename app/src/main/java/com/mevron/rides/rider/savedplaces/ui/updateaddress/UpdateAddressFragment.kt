@@ -22,6 +22,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 import com.mevron.rides.rider.util.getString
 import java.lang.Exception
 
@@ -34,18 +35,18 @@ class UpdateAddressFragment : Fragment() {
 
     private val viewModel: UpdateAddressViewModel by viewModels()
     private lateinit var binding: UpdateAddressFragmentBinding
-    private lateinit var add: SavedAddress
+    private lateinit var add: GetSavedAddressData
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.update_address_fragment, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.update_address_fragment, container, false)
 
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,9 +54,9 @@ class UpdateAddressFragment : Fragment() {
         add = UpdateAddressFragmentArgs.fromBundle(arguments!!).address
         binding.addressName.setText(add.name)
         binding.address.setText(add.address)
+
         context?.let {
             Places.initialize(it.applicationContext, "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE")
-
         }
 
         binding.backButton.setOnClickListener {
@@ -63,12 +64,12 @@ class UpdateAddressFragment : Fragment() {
         }
 
         binding.editAddress.setOnClickListener {
-            val fields = listOf(Place.Field.NAME, Place.Field.ID, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+            val fields =
+                listOf(Place.Field.NAME, Place.Field.ID, Place.Field.LAT_LNG, Place.Field.ADDRESS)
 
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(context)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-
         }
 
         binding.saveAddress.setOnClickListener {
@@ -76,7 +77,7 @@ class UpdateAddressFragment : Fragment() {
                 binding.addressName.setBackgroundResource(R.drawable.rounded_corner_field_red)
                 Toast.makeText(context, "Enter the name", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
-            }else{
+            } else {
                 binding.addressName.setBackgroundResource(R.drawable.rounded_border_update)
             }
 
@@ -84,9 +85,9 @@ class UpdateAddressFragment : Fragment() {
                 binding.address.setBackgroundResource(R.drawable.rounded_corner_field_red)
                 Toast.makeText(context, "Enter the address", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
-            }else{
-            binding.address.setBackgroundResource(R.drawable.rounded_border_update)
-        }
+            } else {
+                binding.address.setBackgroundResource(R.drawable.rounded_border_update)
+            }
         }
 
         binding.address.addTextChangedListener(object : TextWatcher {
@@ -101,7 +102,6 @@ class UpdateAddressFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 activateButton()
             }
-
         })
 
         binding.addressName.addTextChangedListener(object : TextWatcher {
@@ -116,51 +116,50 @@ class UpdateAddressFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 activateButton()
             }
-
         })
-
-
     }
 
-    fun activateButton(){
-        if(binding.addressName.getString().isNotEmpty() && binding.address.getString().isNotEmpty()){
+    fun activateButton() {
+        if (binding.addressName.getString().isNotEmpty() && binding.address.getString()
+                .isNotEmpty()
+        ) {
             binding.saveAddress.setTextColor(Color.parseColor("#ffffff"))
-         //   binding.saveAddress.setBackgroundColor(Color.parseColor("#FF9B04"))
-          //  binding.saveAddress.setBackgroundDrawable()
+            //   binding.saveAddress.setBackgroundColor(Color.parseColor("#FF9B04"))
+            //  binding.saveAddress.setBackgroundDrawable()
             binding.saveAddress.setBackgroundColor(Color.parseColor("#FF9B04"))
             binding.address.setBackgroundResource(R.drawable.rounded_border_update)
             binding.addressName.setBackgroundResource(R.drawable.rounded_border_update)
-        }else{
+        } else {
             binding.saveAddress.setTextColor(Color.parseColor("#999999"))
-           // binding.saveAddress.setBackgroundColor(Color.parseColor("#E6E6E6"))
+            // binding.saveAddress.setBackgroundColor(Color.parseColor("#E6E6E6"))
             binding.saveAddress.setBackgroundColor(Color.parseColor("#E6E6E6"))
         }
     }
 
-   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            when (resultCode) {
-                AutocompleteActivity.RESULT_OK -> {
-                    data?.let {
-                        val place = Autocomplete.getPlaceFromIntent(data)
-                        binding.address.setText(place.add)
+    /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+             when (resultCode) {
+                 AutocompleteActivity.RESULT_OK -> {
+                     data?.let {
+                         val place = Autocomplete.getPlaceFromIntent(data)
+                         binding.address.setText(place.add)
 
-                    }
-                }
-                AutocompleteActivity.RESULT_ERROR -> {
+                     }
+                 }
+                 AutocompleteActivity.RESULT_ERROR -> {
 
-                   binding.address.setText("")
-                }
-                AutocompleteActivity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
-                }
-            }
-            return
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
+                    binding.address.setText("")
+                 }
+                 AutocompleteActivity.RESULT_CANCELED -> {
+                     // The user canceled the operation.
+                 }
+             }
+             return
+         }
+         super.onActivityResult(requestCode, resultCode, data)
+     }*/
 
-     override fun onActivityResult(
+    override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent?
@@ -186,6 +185,4 @@ class UpdateAddressFragment : Fragment() {
             }
         }
     }
-
-
 }

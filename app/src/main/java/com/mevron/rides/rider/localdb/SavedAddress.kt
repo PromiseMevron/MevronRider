@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
 @Entity(tableName = "saved_address")
 data class SavedAddress(

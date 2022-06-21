@@ -19,9 +19,9 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class SaveAddressDetailsViewModelTest {
 
-    val useCase = mockk<SaveAddressUseCase>()
-    val viewModel = SaveAddressDetailsViewModel(useCase)
-    val dispatcher = TestCoroutineDispatcher()
+    private val useCase = mockk<SaveAddressUseCase>()
+    private val viewModel = SaveAddressDetailsViewModel(useCase)
+    private val dispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setUp() {
@@ -57,5 +57,4 @@ class SaveAddressDetailsViewModelTest {
                 )
             }
         }
-
 }

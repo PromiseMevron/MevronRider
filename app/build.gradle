@@ -70,13 +70,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
-
     //Dimension
     implementation 'com.intuit.ssp:ssp-android:1.0.5'
     implementation 'com.intuit.sdp:sdp-android:1.0.5'
 
     implementation 'com.github.flutterwave.rave-android:rave_android:2.1.38'
-
 
     //ui
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -85,18 +83,11 @@ dependencies {
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.0'
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 
-
-
-    //upload image
-    // image crop library in android
-
     //navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'com.google.android.material:material:1.5.0'
     apply plugin: "androidx.navigation.safeargs"
-
-
 
     //  Google Services Integration
     implementation 'com.google.android.libraries.places:places:2.5.0'
@@ -107,10 +98,6 @@ dependencies {
     kapt "androidx.room:room-compiler:2.4.2"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     implementation "androidx.room:room-ktx:2.4.2"
-
-
-
-
 
     implementation 'com.google.dagger:hilt-android:2.38.1'
     kapt 'com.google.dagger:hilt-compiler:2.38.1'
@@ -161,7 +148,6 @@ dependencies {
     implementation ('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
-
 }
 
 kapt {

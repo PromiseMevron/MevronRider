@@ -8,4 +8,11 @@ data class LocationModel(
     val lat: Double,
     val lng: Double,
     val address: String
-): Parcelable
+): Parcelable {
+    val isEmpty: Boolean
+        get() = lat == Double.MIN_VALUE || lng == Double.MIN_VALUE
+
+    companion object {
+        val EMPTY = LocationModel(Double.MIN_VALUE, Double.MIN_VALUE, "")
+    }
+}

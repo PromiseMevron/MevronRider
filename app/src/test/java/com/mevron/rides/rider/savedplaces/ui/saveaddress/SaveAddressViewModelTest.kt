@@ -16,12 +16,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-
 @ExperimentalCoroutinesApi
 class SaveAddressViewModelTest {
-    val useCase = mockk<SaveAddressUseCase>()
-    val viewModel = SaveAddressViewModel(useCase)
-    val dispatcher = TestCoroutineDispatcher()
+
+    private val useCase = mockk<SaveAddressUseCase>()
+    private val viewModel = SaveAddressViewModel(useCase)
+    private val dispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setUp() {
@@ -93,5 +93,4 @@ class SaveAddressViewModelTest {
                 )
             }
         }
-
 }
