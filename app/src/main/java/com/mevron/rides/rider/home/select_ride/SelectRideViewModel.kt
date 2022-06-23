@@ -40,6 +40,7 @@ class SelectRideViewModel @Inject constructor (private val repository: MevronRep
                 result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
             }
         }
+
         return result
     }
 }

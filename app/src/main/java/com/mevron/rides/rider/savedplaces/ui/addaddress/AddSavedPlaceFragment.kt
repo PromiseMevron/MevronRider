@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.AddSavedPlaceFragmentBinding
-import com.mevron.rides.rider.home.AddressSelected
+import com.mevron.rides.rider.home.OnAddressSelectedListener
 import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.localdb.SavedAddress
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
-class AddSavedPlaceFragment : Fragment(), AddressSelected {
+class AddSavedPlaceFragment : Fragment(), OnAddressSelectedListener {
     companion object {
         fun newInstance() = AddSavedPlaceFragment()
     }
@@ -134,7 +134,7 @@ class AddSavedPlaceFragment : Fragment(), AddressSelected {
         }
     }
 
-    override fun selectedAddress(data: LocationModel, dt: GetSavedAddressData) {
+    override fun onAddressSelected(data: LocationModel, dt: GetSavedAddressData) {
         val action =
             AddSavedPlaceFragmentDirections.actionAddSavedPlaceFragmentToUpdateSavedPlaceFragment(
                 dt

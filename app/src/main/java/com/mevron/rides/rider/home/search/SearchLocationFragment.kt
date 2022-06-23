@@ -30,7 +30,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SearchLocationFragmentBinding
-import com.mevron.rides.rider.home.AddressSelected
+import com.mevron.rides.rider.home.OnAddressSelectedListener
 import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
@@ -42,7 +42,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
 @AndroidEntryPoint
-class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSelected {
+class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener, OnAddressSelectedListener {
 
     companion object {
         fun newInstance() = SearchLocationFragment()
@@ -70,6 +70,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         getAddress()
         val sessionToken = AutocompleteSessionToken.newInstance()
         selectedField = binding.startAddressField
@@ -90,6 +91,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
                 }
             }
 
+        // TODO Refactor this!!!
         binding.addHome.setOnClickListener {
             val title = "Add Home"
             val holder = "Enter your home address"
@@ -102,6 +104,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
             findNavController().navigate(action)
         }
 
+        // TODO Refactor this!!!
         binding.addWork.setOnClickListener {
             val title = "Add Work"
             val holder = "Enter your work address"
@@ -178,11 +181,10 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
         binding.currentLocation.setOnClickListener {
             getCurrentLocation()
         }
-
     }
 
     private fun getAddress() {
-        viewModel.getAddressFromDB().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getAddressFromDB().observe(viewLifecycleOwner) {
             for (i in it) {
                 if (i.type == "home") {
                     binding.addHome.visibility = View.GONE
@@ -198,11 +200,11 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
                     RecyclerView.VERTICAL, false
                 )
             binding.savedPlacesRecyclerView.adapter = homeAdapter
-//            homeAdapter.submitList(it)
-        })
+            homeAdapter.submitList(it)
+        }
     }
 
-    fun getCurrentLocation(start: Boolean = false) {
+    private fun getCurrentLocation(start: Boolean = false) {
         itIsStart = start
         if (context?.let {
                 ContextCompat.checkSelfPermission(
@@ -240,11 +242,11 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
             }
     }
 
-    fun getLocationProvider(): FusedLocationProviderClient? {
+    private fun getLocationProvider(): FusedLocationProviderClient? {
         return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
     }
 
-    fun getAddressFromLocation(location: LatLng?) {
+    private fun getAddressFromLocation(location: LatLng?) {
 
         try {
             if (location != null) {
@@ -296,6 +298,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
                     adapter = context?.let { it1 -> PlaceAdapter(this) }!!
                     binding.placesRecyclerView.adapter = adapter
                     adapter.submitList(response.autocompletePredictions)
+                    //  context?.let { it1 -> PlaceAdapter(it1).setData(response.autocompletePredictions) }
 
                     binding.savedPlacesRecyclerView.visibility = View.GONE
                     binding.placesRecyclerView.visibility = View.VISIBLE
@@ -318,7 +321,6 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
         placesClient.fetchPlace(fetchRequest)
             .addOnSuccessListener {
                 val coordinates = it.place.latLng!!
-
                 var address = ""
                 address = if (it.place.name == it.place.address) {
                     it.place.name ?: ""
@@ -404,12 +406,12 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
         }
     }
 
-    override fun returnedPred(pred: AutocompletePrediction) {
+    override fun onPlaceSelected(pred: AutocompletePrediction) {
         processEventLocation(pred, selectedField)
         adapter.submitList(ArrayList())
     }
 
-    override fun selectedAddress(data: LocationModel, dt: GetSavedAddressData) {
+    override fun onAddressSelected(data: LocationModel, dt: GetSavedAddressData) {
         if (locations.isEmpty()) {
             Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
         } else {
@@ -426,5 +428,3 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnItemClicked, AddressSe
         }
     }
 }
-
-

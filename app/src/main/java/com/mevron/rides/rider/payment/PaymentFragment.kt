@@ -42,7 +42,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         fun newInstance() = PaymentFragment()
     }
 
-
     private val viewModel: PaymentViewModel by viewModels()
     private lateinit var binding:PaymentFragmentBinding
     private lateinit var mapView: SupportMapFragment
@@ -121,10 +120,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         }
     }
 
-
-
-
-
     private fun addMarkerToPolyLines() {
 
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
@@ -183,9 +178,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.moveCamera(boundsUpdate)
-
-
-
     }
 
     private fun createClusterBitmap(add: String, img: Int): Bitmap {
@@ -214,13 +206,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         cluster.draw(canvas)
         return clusterBitmap
     }
-
-
-
-
-
-
-
 
     override fun onMapReady(p0: GoogleMap?) {
         if (p0 != null) {
@@ -261,7 +246,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             // gMap.animateCamera(cu)
         }
 
-
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
@@ -271,12 +255,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
             return
         }
-
-
-      //  p0?.isMyLocationEnabled = true
-
-
-
     }
 
     fun getCards(){

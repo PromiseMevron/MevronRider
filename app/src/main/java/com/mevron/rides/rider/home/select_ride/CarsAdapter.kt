@@ -42,8 +42,6 @@ class CarsAdapter(val cars: List<Data>, val ctx: Context, val posi: Int, val sel
         holder.binding.root.setOnClickListener {
             selected.selectedCar(position, dt.name)
         }
-
-
     }
 
     override fun getItemCount(): Int {

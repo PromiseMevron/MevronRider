@@ -14,7 +14,7 @@ import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 
 class HomeAdapter(
-    val select: AddressSelected,
+    val select: OnAddressSelectedListener,
     val context: Context
 ) : ListAdapter<GetSavedAddressData, HomeAdapter.HomeViewHolder>(PlaceAdapterDiffUti()) {
 
@@ -45,7 +45,6 @@ class HomeAdapter(
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
@@ -63,6 +62,7 @@ class HomeAdapter(
             holder.binding.displayImage.setImageResource(R.drawable.ic_all_saved)
             holder.binding.destType.text = dt.name
         }
+
         holder.binding.destAddres.text = dt.address
 
         holder.binding.root.setOnClickListener {
@@ -71,11 +71,11 @@ class HomeAdapter(
                 lng = dt.lng.toDouble(),
                 address = dt.address
             )
-            select.selectedAddress(data, dt)
+            select.onAddressSelected(data, dt)
         }
     }
 }
 
-interface AddressSelected {
-    fun selectedAddress(data: LocationModel, dt: GetSavedAddressData)
+interface OnAddressSelectedListener {
+    fun onAddressSelected(locationModel: LocationModel, savedAddress: GetSavedAddressData)
 }

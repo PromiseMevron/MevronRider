@@ -34,7 +34,7 @@ import reactivecircus.flowbinding.android.widget.textChanges
 
 
 @AndroidEntryPoint
-class SaveAddressFragment : Fragment(), PlaceAdapter.OnItemClicked {
+class SaveAddressFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener {
 
     companion object {
         fun newInstance() = SaveAddressFragment()
@@ -175,7 +175,7 @@ class SaveAddressFragment : Fragment(), PlaceAdapter.OnItemClicked {
         }
     }
 
-    override fun returnedPred(pred: AutocompletePrediction) {
+    override fun onPlaceSelected(pred: AutocompletePrediction) {
         viewModel.processEventLocation(prediction = pred, placesClient = placesClient)
     }
 
