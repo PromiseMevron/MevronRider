@@ -35,6 +35,7 @@ import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
 import com.mevron.rides.rider.R
 
+// TODO Un-refactored yet. Will be done after socket implementation
 @AndroidEntryPoint
 class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
@@ -70,7 +71,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         if (this::gMap.isInitialized) {
             gMap.clear()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -191,7 +191,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
         clusterSizeText2.setImageResource(img)
 
-
         //  clusterSizeText.text = clusterSize.toString()
         cluster.measure(
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -263,7 +262,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
                 when(res){
 
                     is  GenericStatus.Success ->{
-
                         adapter = res.data?.success?.data?.let { it1 -> PaymentAdapter(this, it1, 1) }!!
                         data = res.data.success.data
                         binding.mevronPayBottom.recyclerView.adapter = adapter
@@ -271,13 +269,10 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
                     }
 
                     is  GenericStatus.Error ->{
-
                         Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
                     }
 
-                    is GenericStatus.Unaunthenticated -> {
-
-                    }
+                    is GenericStatus.Unaunthenticated -> {}
                 }
             }
         })

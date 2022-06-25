@@ -2,7 +2,6 @@ package com.mevron.rides.rider.home.search
 
 import android.Manifest
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.text.Editable
@@ -12,10 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,34 +29,43 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SearchLocationFragmentBinding
-import com.mevron.rides.rider.home.OnAddressSelectedListener
 import com.mevron.rides.rider.home.HomeAdapter
+import com.mevron.rides.rider.home.OnAddressSelectedListener
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.home.search.ui.SearchLocationEvent
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
+import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.displayLocationSettingsRequest
 import com.mevron.rides.rider.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener, OnAddressSelectedListener {
+class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
+    OnAddressSelectedListener {
 
     companion object {
         fun newInstance() = SearchLocationFragment()
     }
 
+    private val locationProcessor = LocationProcessor()
+
     private val viewModel: SearchLocationViewModel by viewModels()
     private lateinit var binding: SearchLocationFragmentBinding
     private lateinit var placesClient: PlacesClient
-    private lateinit var selectedField: EditText
     private lateinit var adapter: PlaceAdapter
     private var locations = arrayListOf<LocationModel>()
     var itIsStart = false
 
+    // TODO fetch saved addresses from api
     private lateinit var homeAdapter: HomeAdapter
     private var mDialog: Dialog? = null
+
+    private var selectedField: EditText? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,9 +79,26 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getAddress()
+        viewModel.setEvent(SearchLocationEvent.GetAddress)
+
         val sessionToken = AutocompleteSessionToken.newInstance()
-        selectedField = binding.startAddressField
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                toggleBusyDialog(busy = it.isLoading)
+                if (it.isAddressEntered) {
+                    showAddressList()
+                    initSearchConfig(it.destination, sessionToken)
+                } else {
+                    hideAddressList()
+                }
+
+                if (it.isSetLocationOnTheMapClicked) {
+                    findNavController().navigate(R.id.action_searchLocationFragment_to_selectOnMapFragment)
+                    viewModel.clearState()
+                }
+            }
+        }
 
         context?.let {
             Places.initialize(it.applicationContext, "AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE")
@@ -120,13 +145,11 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         binding.startAddressField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 selectedField = binding.startAddressField
-                if (binding.startAddressField.text.toString().trim().isNotEmpty()) {
-                    if (!itIsStart) {
-                        initSearchConfig(
-                            binding.startAddressField.text.toString().trim(),
-                            sessionToken
-                        )
-                    }
+
+                viewModel.setState {
+                    copy(
+                        origin = binding.startAddressField.text.toString().trim()
+                    )
                 }
             }
 
@@ -136,9 +159,9 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
 
         binding.destAddressField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                selectedField = binding.destAddressField
-                if (binding.startAddressField.text.toString().trim().isNotEmpty()) {
-                    initSearchConfig(binding.destAddressField.text.toString().trim(), sessionToken)
+                selectedField = binding.stopAddressField
+                viewModel.setState {
+                    copy(destination = binding.destAddressField.text.toString().trim())
                 }
             }
 
@@ -149,8 +172,8 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         binding.stopAddressField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 selectedField = binding.stopAddressField
-                if (binding.startAddressField.text.toString().trim().isNotEmpty()) {
-                    initSearchConfig(binding.stopAddressField.text.toString().trim(), sessionToken)
+                viewModel.setState {
+                    copy(destination = binding.stopAddressField.text.toString().trim())
                 }
             }
 
@@ -164,7 +187,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         }
 
         binding.selectOnMap.setOnClickListener {
-            findNavController().navigate(R.id.action_searchLocationFragment_to_selectOnMapFragment)
+            viewModel.setState { copy(isSetLocationOnTheMapClicked = true) }
         }
 
         binding.addStop.setOnClickListener {
@@ -183,50 +206,19 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         }
     }
 
-    private fun getAddress() {
-        viewModel.getAddressFromDB().observe(viewLifecycleOwner) {
-            for (i in it) {
-                if (i.type == "home") {
-                    binding.addHome.visibility = View.GONE
-                }
-                if (i.type == "work") {
-                    binding.addWork.visibility = View.GONE
-                }
-            }
-            homeAdapter = HomeAdapter(this, requireContext())
-            binding.savedPlacesRecyclerView.layoutManager =
-                androidx.recyclerview.widget.LinearLayoutManager(
-                    context,
-                    RecyclerView.VERTICAL, false
-                )
-            binding.savedPlacesRecyclerView.adapter = homeAdapter
-            homeAdapter.submitList(it)
-        }
-    }
-
     private fun getCurrentLocation(start: Boolean = false) {
         itIsStart = start
-        if (context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            }
-            != PackageManager.PERMISSION_GRANTED && context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED) {
+        locationProcessor.checkLocationPermission(context, onSuccess = { loadLocation() }) {
             requestPermissions(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ), Constants.LOCATION_REQUEST_CODE
             )
-            return
         }
+    }
 
+    private fun loadLocation() {
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
             //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
             val location = it
@@ -236,10 +228,9 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
             } else {
                 displayLocationSettingsRequest(binding)
             }
+        }?.addOnFailureListener {
+            it.printStackTrace()
         }
-            ?.addOnFailureListener {
-                it.printStackTrace()
-            }
     }
 
     private fun getLocationProvider(): FusedLocationProviderClient? {
@@ -295,21 +286,34 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
                             context,
                             RecyclerView.VERTICAL, false
                         )
-                    adapter = context?.let { it1 -> PlaceAdapter(this) }!!
-                    binding.placesRecyclerView.adapter = adapter
-                    adapter.submitList(response.autocompletePredictions)
-                    //  context?.let { it1 -> PlaceAdapter(it1).setData(response.autocompletePredictions) }
-
-                    binding.savedPlacesRecyclerView.visibility = View.GONE
-                    binding.placesRecyclerView.visibility = View.VISIBLE
-                    binding.addHome.visibility = View.GONE
-                    binding.addWork.visibility = View.GONE
-                    binding.currentLocation.visibility = View.GONE
+                    context?.let { _ ->
+                        PlaceAdapter(this)
+                    }?.let { theAdapter ->
+                        adapter = theAdapter
+                        binding.placesRecyclerView.adapter = adapter
+                        adapter.submitList(response.autocompletePredictions)
+                    }
                 }
             }
             .addOnFailureListener {
                 it.printStackTrace()
             }
+    }
+
+    private fun showAddressList() {
+        binding.savedPlacesRecyclerView.visibility = View.GONE
+        binding.placesRecyclerView.visibility = View.VISIBLE
+        binding.addHome.visibility = View.GONE
+        binding.addWork.visibility = View.GONE
+        binding.currentLocation.visibility = View.GONE
+    }
+
+    private fun hideAddressList() {
+        binding.savedPlacesRecyclerView.visibility = View.VISIBLE
+        binding.placesRecyclerView.visibility = View.GONE
+        binding.addHome.visibility = View.VISIBLE
+        binding.addWork.visibility = View.VISIBLE
+        binding.currentLocation.visibility = View.VISIBLE
     }
 
     private fun processEventLocation(prediction: AutocompletePrediction, view: EditText) {
@@ -406,8 +410,8 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         }
     }
 
-    override fun onPlaceSelected(pred: AutocompletePrediction) {
-        processEventLocation(pred, selectedField)
+    override fun onPlaceSelected(place: AutocompletePrediction) {
+        selectedField?.let { processEventLocation(place, it) }
         adapter.submitList(ArrayList())
     }
 

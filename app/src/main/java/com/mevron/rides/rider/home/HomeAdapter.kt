@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.AddressItemBinding
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.localdb.SavedAddress
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 
 class HomeAdapter(

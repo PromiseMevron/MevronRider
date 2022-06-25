@@ -14,7 +14,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.RelativeLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -26,10 +30,21 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
@@ -37,9 +52,10 @@ import com.mevron.rides.rider.remote.socket.SocketHandler
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.getGeoLocation
+import java.util.Locale
+import java.util.Timer
+import java.util.TimerTask
 import org.json.JSONObject
-import java.util.*
-import com.mevron.rides.rider.R
 
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -102,9 +118,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         timer?.schedule(task, 0, 30 * 1000.toLong()) // interval of one minute
-
     }
-
 
     fun stimulateWebsocket(status: String) {
         Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
