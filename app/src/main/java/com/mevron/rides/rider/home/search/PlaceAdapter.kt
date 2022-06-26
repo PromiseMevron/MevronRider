@@ -10,10 +10,9 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.AddressItemBinding
 
-class PlaceAdapter(private val itemClicked: OnItemClicked) :
-    ListAdapter<AutocompletePrediction, PlaceAdapter.PlaceViewHolder>(
-        PlaceAdapterDiffUti()
-    ) {
+class PlaceAdapter(private val itemClicked: OnPlaceSelectedListener) :
+    ListAdapter<AutocompletePrediction, PlaceAdapter.PlaceViewHolder>(PlaceAdapterDiffUti()) {
+
     inner class PlaceViewHolder(val binding: AddressItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -50,11 +49,13 @@ class PlaceAdapter(private val itemClicked: OnItemClicked) :
         holder.binding.destAddres.text = autoCompletePredictions.getSecondaryText(null).toString()
         holder.binding.destType.text = autoCompletePredictions.getPrimaryText(null).toString()
         holder.binding.root.setOnClickListener {
-            itemClicked.returnedPred(autoCompletePredictions)
+            itemClicked.onPlaceSelected(autoCompletePredictions)
         }
     }
 
-    interface OnItemClicked {
-        fun returnedPred(pred: AutocompletePrediction)
+    interface OnPlaceSelectedListener {
+
+        // TODO We cannot depend on data from google library! Refactor this!!
+        fun onPlaceSelected(place: AutocompletePrediction)
     }
 }

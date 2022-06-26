@@ -16,7 +16,8 @@ data class HomeState(
     val isLoading: Boolean,
     val isScheduleTheRideClicked: Boolean,
     val isMyLocationButtonClicked: Boolean,
-    val locationModel: LocationModel
+    val locationModel: LocationModel,
+    val isLocationAdded: Boolean
 ) {
 
     companion object {
@@ -32,7 +33,8 @@ data class HomeState(
             isLoading = false,
             isScheduleTheRideClicked = false,
             isMyLocationButtonClicked = false,
-            locationModel = LocationModel.EMPTY
+            locationModel = LocationModel.EMPTY,
+            isLocationAdded = false
         )
     }
 }

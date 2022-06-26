@@ -35,13 +35,13 @@ import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
 import com.mevron.rides.rider.R
 
+// TODO Un-refactored yet. Will be done after socket implementation
 @AndroidEntryPoint
 class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
     companion object {
         fun newInstance() = PaymentFragment()
     }
-
 
     private val viewModel: PaymentViewModel by viewModels()
     private lateinit var binding:PaymentFragmentBinding
@@ -71,7 +71,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         if (this::gMap.isInitialized) {
             gMap.clear()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,10 +119,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             }
         }
     }
-
-
-
-
 
     private fun addMarkerToPolyLines() {
 
@@ -183,9 +178,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.moveCamera(boundsUpdate)
-
-
-
     }
 
     private fun createClusterBitmap(add: String, img: Int): Bitmap {
@@ -198,7 +190,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         val clusterSizeText2 = cluster.findViewById<View>(R.id.type_image) as ImageView
 
         clusterSizeText2.setImageResource(img)
-
 
         //  clusterSizeText.text = clusterSize.toString()
         cluster.measure(
@@ -214,13 +205,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         cluster.draw(canvas)
         return clusterBitmap
     }
-
-
-
-
-
-
-
 
     override fun onMapReady(p0: GoogleMap?) {
         if (p0 != null) {
@@ -261,7 +245,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             // gMap.animateCamera(cu)
         }
 
-
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
@@ -271,12 +254,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
             return
         }
-
-
-      //  p0?.isMyLocationEnabled = true
-
-
-
     }
 
     fun getCards(){
@@ -285,7 +262,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
                 when(res){
 
                     is  GenericStatus.Success ->{
-
                         adapter = res.data?.success?.data?.let { it1 -> PaymentAdapter(this, it1, 1) }!!
                         data = res.data.success.data
                         binding.mevronPayBottom.recyclerView.adapter = adapter
@@ -293,13 +269,10 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
                     }
 
                     is  GenericStatus.Error ->{
-
                         Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
                     }
 
-                    is GenericStatus.Unaunthenticated -> {
-
-                    }
+                    is GenericStatus.Unaunthenticated -> {}
                 }
             }
         })

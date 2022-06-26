@@ -4,5 +4,5 @@ import com.mevron.rides.rider.domain.DomainModel
 
 interface IMobilityTypesRepository {
 
-   suspend fun getMobilityTypesData(): DomainModel
+    suspend fun getMobilityTypesData(request: MobilityTypesRequest): DomainModel
 }

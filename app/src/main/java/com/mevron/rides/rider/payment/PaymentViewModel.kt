@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class PaymentViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
 
@@ -36,7 +35,7 @@ class PaymentViewModel @Inject constructor (private val repository: MevronRepo) 
                 result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
             }
         }
-        return result
 
+        return result
     }
 }

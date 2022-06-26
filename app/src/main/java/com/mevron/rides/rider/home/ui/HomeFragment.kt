@@ -32,8 +32,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
-import com.mevron.rides.rider.home.AddressSelected
 import com.mevron.rides.rider.home.HomeAdapter
+import com.mevron.rides.rider.home.OnAddressSelectedListener
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
@@ -44,8 +44,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSelected {
+class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddressSelectedListener {
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -118,6 +119,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
 
                 if (it.isMyLocationButtonClicked) {
                     gotToMyLocation()
+                    viewModel.setState { copy(isMyLocationButtonClicked = false) }
+                }
+
+                if (it.isLocationAdded) {
+                    if (add.isEmpty()) {
+                        Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
+                    } else {
+                        add.add(it.locationModel)
+                        //  val ads = arrayListOf<LocationModel>()
+                        var ads: Array<LocationModel> = arrayOf()
+                        for (a in add) {
+                            ads += a
+                        }
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToSelectRideFragment(ads)
+                        findNavController().navigate(action)
+                    }
+
+                    viewModel.setState { copy(isLocationAdded = false) }
                 }
             }
         }
@@ -179,7 +199,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
                 (activity as AppCompatActivity),
                 googleMap,
                 {
-                    // TODO what should we do with this location
+                    val coordinate = LatLng(
+                        it.lat,
+                        it.lng
+                    ) //Store these lat lng values somewhere. These should be constant.
+
+                    val location = CameraUpdateFactory.newLatLngZoom(coordinate, 15f)
+                    googleMap?.animateCamera(location)
                 },
                 {
                     requestLocationPermissionIfnNotEnabled()
@@ -212,14 +238,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         }
 
         MapsInitializer.initialize(activity?.applicationContext)
-        requestLocationPermissionIfnNotEnabled()
-
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+        requestLocationPermissionIfnNotEnabled {
+            googleMap?.isMyLocationEnabled = true
+            googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+            gotToMyLocation()
+        }
     }
 
-    private fun HomeFragment.requestLocationPermissionIfnNotEnabled() {
-        locationProcessor.requestLocation(context) {
+    private fun HomeFragment.requestLocationPermissionIfnNotEnabled(callback: () -> Unit = {}) {
+        locationProcessor.checkLocationPermission(context, onSuccess = callback) {
             requestPermissions(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -230,8 +257,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     }
 
     override fun onLocationChanged(p0: Location) {
-        val currentLocation = LatLng(p0.latitude, p0.longitude)
-
         context?.let { getAddressFromLocation(context!!, p0) }
 
         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(LatLng(p0.latitude, p0.longitude)))
@@ -250,7 +275,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
     }
 
     private fun getAddress() {
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             viewModel.uiState.collect {
                 if (it.savedAddresses.isEmpty()) {
                     bottomSheetBehavior.peekHeight = 500
@@ -294,20 +319,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, AddressSe
         }
     }
 
-    override fun selectedAddress(data: LocationModel, dt: GetSavedAddressData) {
+    override fun onAddressSelected(data: LocationModel, dt: GetSavedAddressData) {
         // what's the plan for dt variable?
-        viewModel.setState { (copy(locationModel = data)) }
-        if (add.isEmpty()) {
-            Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
-        } else {
-            add.add(data)
-            //  val ads = arrayListOf<LocationModel>()
-            var ads: Array<LocationModel> = arrayOf()
-            for (a in add) {
-                ads += a
-            }
-            val action = HomeFragmentDirections.actionHomeFragmentToSelectRideFragment(ads)
-            findNavController().navigate(action)
-        }
+        viewModel.setState { (copy(locationModel = data, isLocationAdded = true)) }
     }
 }

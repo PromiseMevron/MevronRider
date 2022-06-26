@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/selectRideFragment"
-        android:name="com.mevron.rides.rider.home.select_ride.SelectRideFragment"
+        android:name="com.mevron.rides.rider.home.select_ride.ui.SelectRideFragment"
         android:label="select_ride_fragment"
         tools:layout="@layout/select_ride_fragment" >
 
