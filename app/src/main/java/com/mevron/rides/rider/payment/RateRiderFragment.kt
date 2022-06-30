@@ -21,7 +21,4 @@ class RateRiderFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.rate_rider_fragment, container, false)
     }
-
-
-
 }

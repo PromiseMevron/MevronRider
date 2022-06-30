@@ -134,14 +134,11 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
             loc2 = location[1].address.substring(0..20)
         }
 
-
         val sLl= (startLocation?.lat ?: 0.0)
         val sLlg= (startLocation?.lng ?: 0.0)
 
         val sLl2= (endLocation?.lat ?: 0.0)
         val sLlg2= (endLocation?.lng ?: 0.0)
-
-
 
         val marker1 =  MarkerOptions()
             .position(LatLng(sLl, sLlg))

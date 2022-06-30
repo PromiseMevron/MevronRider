@@ -28,5 +28,4 @@ class AddTipFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(AddTipViewModel::class.java)
         // TODO: Use the ViewModel
     }
-
 }

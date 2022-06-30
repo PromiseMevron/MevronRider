@@ -1,6 +1,9 @@
 package com.mevron.rides.rider.home.ui
 
+import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.domain.TripState
+import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.home.domain.GetProfileUseCase
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.savedplaces.domain.model.GetAddressDomainData
@@ -10,12 +13,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
-    private val getProfileUseCase: GetProfileUseCase
+    private val getProfileUseCase: GetProfileUseCase,
+    private val tripStateUseCase: GetTripStateUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY
@@ -69,6 +74,31 @@ class HomeViewModel @Inject constructor(
                 isScheduleTheRideClicked = true
             )
         }
+        HomeEvent.ObserveTripState -> loadTripState()
+    }
+
+    private fun loadTripState() {
+        viewModelScope.launch {
+            tripStateUseCase().collect { tripState ->
+                when (tripState) {
+                    is TripState.StateMachineState -> {}
+
+                    is TripState.TripStatusState -> {
+                        setState { copy(shouldOpenBookedRide = true) }
+                    }
+                    is TripState.DriverSearchState -> {
+                        setState { copy(shouldOpenConfirmRide = true) }
+                    }
+                    is TripState.NearByDriversState -> {
+                        // add markers showing the nearby drivers
+                        setState { copy(markerLocations = tripState.data.locations) }
+                    }
+                    TripState.Idle -> {
+                        /** Do nothing **/
+                    }
+                }
+            }
+        }
     }
 
     private fun getProfile() {
@@ -92,6 +122,14 @@ class HomeViewModel @Inject constructor(
                 setState { copy(isLoading = false, error = ex.toString()) }
             }
         }
+    }
+
+    fun resolveConfirmRide() {
+        setState { copy(shouldOpenConfirmRide = false) }
+    }
+
+    fun resolveOpenBookedRide() {
+        setState { copy(shouldOpenBookedRide = false) }
     }
 
     fun resolveSearchClicked() {

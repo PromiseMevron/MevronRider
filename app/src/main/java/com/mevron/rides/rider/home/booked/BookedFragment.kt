@@ -1,6 +1,5 @@
 package com.mevron.rides.rider.home.booked
 
-import android.Manifest
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,8 +8,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +15,12 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -36,7 +32,6 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
@@ -46,16 +41,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
+import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.remote.socket.SocketHandler
+import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.getGeoLocation
 import java.util.Locale
-import java.util.Timer
-import java.util.TimerTask
-import org.json.JSONObject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -66,21 +61,16 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var viewModel: BookedViewModel
     private lateinit var binding: BookedFragmentBinding
     private lateinit var driverAllBottomSheetBehavior: BottomSheetBehavior<ScrollView>
-    private lateinit var onrideBottomSheetBehavior: BottomSheetBehavior<ScrollView>
-    private lateinit var emergBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var rechedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var onRideBottomSheetBehavior: BottomSheetBehavior<ScrollView>
+    private lateinit var emergedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var reachedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
     private lateinit var gMap: GoogleMap
-    private lateinit var geoDirections: GeoDirectionsResponse
     private lateinit var mapView: SupportMapFragment
     private var mCircle: Circle? = null
-    var stateee = 0
-
-    var timer: Timer? = null
-    var theStatus = "accepted"
-
+    private val locationProcessor = LocationProcessor()
 
     var radiusInMeters = 100.0
     var strokeColor = -0x10000 //Color Code you want
@@ -98,54 +88,36 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         return binding.root
     }
 
-    override fun onStop() {
-        super.onStop()
-        // binding.player.player = null
-        timer?.cancel()
-
-    }
-
-    private fun setRepeatingAsyncTask() {
-        val handler = Handler()
-        timer = Timer()
-
-        val task: TimerTask = object : TimerTask() {
-            override fun run() {
-                handler.post {
-                    //   stimulateWebsocket()
-                }
-            }
-        }
-
-        timer?.schedule(task, 0, 30 * 1000.toLong()) // interval of one minute
-    }
-
-    fun stimulateWebsocket(status: String) {
-        Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-
+    private fun bindDriverArrived() {
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        if (status == "driver_arrived") {
-            binding.bookedHomeBottom.text1.visibility = View.GONE
-            binding.bookedHomeBottom.text2.visibility = View.GONE
-            binding.bookedHomeBottom.text11.visibility = View.VISIBLE
-            binding.bookedHomeBottom.text22.visibility = View.VISIBLE
-            binding.bookedHomeBottom.driverLinera.visibility = View.GONE
+        binding.bookedHomeBottom.text1.visibility = View.GONE
+        binding.bookedHomeBottom.text2.visibility = View.GONE
+        binding.bookedHomeBottom.text11.visibility = View.VISIBLE
+        binding.bookedHomeBottom.text22.visibility = View.VISIBLE
+        binding.verifiedCode.visibility = View.GONE
+        binding.bookedHomeBottom.driverLinera.visibility = View.GONE
+    }
 
-        }
-        if (status == "trip_began") {
-            driverAllBottomSheetBehavior.isHideable = true
-            onrideBottomSheetBehavior.isHideable = false
-            driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            onrideBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+    private fun bindTripStarted() {
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        driverAllBottomSheetBehavior.isHideable = true
+        onRideBottomSheetBehavior.isHideable = false
+        binding.verifiedCode.visibility = View.GONE
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
 
-        if (status == "completed") {
-            onrideBottomSheetBehavior.isHideable = true
-            rechedBottomSheetBehavior.isHideable = false
-            onrideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            rechedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+    private fun bindTripCompleted() {
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.verifiedCode.visibility = View.GONE
+        onRideBottomSheetBehavior.isHideable = true
+        reachedBottomSheetBehavior.isHideable = false
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
 
+    private fun bindStartRide() {
+        binding.verifiedCode.visibility = View.VISIBLE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -153,27 +125,44 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         driverAllBottomSheetBehavior =
             BottomSheetBehavior.from(binding.bookedHomeBottom.bottomSheet)
-        onrideBottomSheetBehavior = BottomSheetBehavior.from(binding.bookedOnrideBottom.bottomSheet)
-        emergBottomSheetBehavior =
+        onRideBottomSheetBehavior = BottomSheetBehavior.from(binding.bookedOnrideBottom.bottomSheet)
+        emergedBottomSheetBehavior =
             BottomSheetBehavior.from(binding.bookedEmergencyBottom.bottomSheet)
-        rechedBottomSheetBehavior =
+        reachedBottomSheetBehavior =
             BottomSheetBehavior.from(binding.bookedArrivedBottom.bottomSheet)
 
         mapView = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
-        onrideBottomSheetBehavior.isHideable = true
-        emergBottomSheetBehavior.isHideable = true
-        rechedBottomSheetBehavior.isHideable = true
+        onRideBottomSheetBehavior.isHideable = true
+        emergedBottomSheetBehavior.isHideable = true
+        reachedBottomSheetBehavior.isHideable = true
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        onrideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        emergBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        rechedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect { uiState ->
+                when (uiState.currentStatus) {
+                    TripStatus.DRIVER_ARRIVED -> bindDriverArrived()
+                    TripStatus.TRIP_STARTED -> bindTripStarted()
+                    TripStatus.TRIP_COMPLETED -> bindTripCompleted()
+                    TripStatus.START_RIDE -> bindStartRide()
+                    TripStatus.ACCEPTED -> {
+                        /** do nothing **/
+                    }
+                    TripStatus.UNKNOWN -> {
+                        /** Do nothing **/
+                    }
+                }
+            }
+        }
 
         binding.okayRide.setOnClickListener {
             binding.verifiedCode.visibility = View.GONE
         }
 
         binding.scheduleButton.setOnClickListener {
-            emergBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
@@ -192,25 +181,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
         }
 
-        val s = SocketHandler.getSocket()
-        s?.on("trip_status") { it1 ->
-            Log.i("getAddressFromApi 33", "getAddressFromApi 33: ${it1[0]}")
-            activity?.runOnUiThread {
-                val dt = it1[0] as? JSONObject
-                val trip = dt?.get("trip") as? JSONObject
-                val status = trip?.get("status") as? String
-                stimulateWebsocket(status = status ?: "")
-                theStatus = status ?: ""
-            }
-        }
-
-        s?.on("start_ride") {
-            binding.verifiedCode.visibility = View.VISIBLE
-        }
         mapView.getMapAsync(this)
-
     }
-
 
     override fun onMapReady(googleMap: GoogleMap?) {
 
@@ -219,116 +191,35 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
         MapsInitializer.initialize(activity?.applicationContext)
 
-        location = arguments?.let { BookedFragmentArgs.fromBundle(it).location }!!
-
-        if (location.isNotEmpty()) {
-
-            val builder = LatLngBounds.Builder()
-            builder.include(LatLng(location[0].lat, location[0].lng))
-            builder.include(LatLng(location[1].lat, location[1].lng))
-            val bounds = builder.build()
-            val width = resources.displayMetrics.widthPixels;
-            val height = resources.displayMetrics.heightPixels;
-            val padding = (width * 0.40).toInt()
-            //  val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
-
-            //  gMap.setPadding(20,20,20,20)
-            //  gMap.animateCamera(cu)
-            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 300)
-
-            //  gMap.setPadding(50,50,50,50)
-            //  gMap.setPadding(20,20,20,20)
-            //  gMap.animateCamera(cu)
-            gMap.moveCamera(cu)
-
-            val currentLocation = LatLng(location[0].lat, location[0].lng)
-            val cameraPosition = CameraPosition.Builder()
-                .bearing(0.toFloat())
-                .target(currentLocation)
-                .zoom(15.5.toFloat())
-                .build()
-            // gMap.animateCamera(cu)
-        }
-
-
-        getGeoLocation(location, gMap, true) {
-            geoDirections = it
-            addMarkerToPolyLines()
-        }
-
-        val s = SocketHandler.getSocket()
-        s?.on("driver_pickup_eta") { it1 ->
-            Log.i("getAddressFromApi 44", "getAddressFromApi 44: ${it1[0]}")
-            activity?.runOnUiThread {
-                Toast.makeText(context, theStatus, Toast.LENGTH_SHORT).show()
-
-                if (theStatus == "accepted") {
-                    Toast.makeText(context, "11", Toast.LENGTH_SHORT).show()
-                    val data = it1[0] as JSONObject
-
-                    val lat = (data["driverLatitude"] as String).toDouble()
-                    val lng = (data["driverLongitude"] as String).toDouble()
-                    val location1 = LocationModel(lat, lng, "")
-                    val location2 =
-                        LocationModel(location[0].lat, location[0].lng, location[0].address)
-                    val locations = arrayListOf<LocationModel>()
-                    locations.add(location1)
-                    locations.add(location2)
-                    var ads = arrayOf<LocationModel>()
-                    for (a in locations) {
-                        ads += a
-                    }
-                    gMap.clear()
-                    getGeoLocation(ads, gMap, true) {
-                        //  geoDirections = it
-                        // addMarkerToPolyLines()
-                    }
-                }
-
-                if (theStatus == "trip_began") {
-                    val data = it1[0] as JSONObject
-                    Toast.makeText(context, "22", Toast.LENGTH_SHORT).show()
-                    val lat = (data["driverLatitude"] as String).toDouble()
-                    val lng = (data["driverLongitude"] as String).toDouble()
-                    val location2 = LocationModel(lat, lng, "")
-                    val location1 =
-                        LocationModel(location[1].lat, location[1].lng, location[1].address)
-                    val locations = arrayListOf<LocationModel>()
-                    locations.add(location1)
-                    locations.add(location2)
-                    var ads = arrayOf<LocationModel>()
-                    for (a in locations) {
-                        ads += a
-                    }
-                    gMap.clear()
-                    getGeoLocation(ads, gMap, isArrival = false, onTrip = true) {
-                        geoDirections = it
-                        addMarkerToPolyLines()
+        lifecycleScope.launch {
+            viewModel.uiState.collect { uiState ->
+                if (!uiState.isLocationProcessed && uiState.hasValidCoordinates) {
+                    var locationModels = arrayOf<LocationModel>()
+                    locationModels += LocationModel(
+                        lat = uiState.pickupLatitude,
+                        lng = uiState.pickupLongitude,
+                        address = uiState.pickupAddress
+                    )
+                    locationModels += LocationModel(
+                        lat = uiState.dropOffLatitude,
+                        lng = uiState.dropOffLongitude,
+                        address = uiState.destinationAddress
+                    )
+                    getGeoLocation(locationModels, gMap, true) {
+                        gMap.clear()
+                        addMarkerToPolyLines(it)
                     }
                 }
             }
         }
 
-        if (context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            }
-            != PackageManager.PERMISSION_GRANTED && context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), Constants.LOCATION_REQUEST_CODE
-            )
-            return
+        // what is driver_pickup_eta
+        // trip_began
+
+        locationProcessor.checkLocationPermission(context) {
+            locationProcessor.requestLocationPermission(this)
         }
+
         val gMapView = mapView.view
         if (gMapView?.findViewById<View>("1".toInt()) != null) {
             val locationButton =
@@ -342,17 +233,15 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         googleMap?.isMyLocationEnabled = true
     }
 
-    private fun addMarkerToPolyLines() {
+    private fun addMarkerToPolyLines(geoDirections: GeoDirectionsResponse) {
 
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
-
 
         var loc2 = location[1].address
         if (loc2.length > 20) {
             loc2 = location[1].address.substring(0..20)
         }
-
 
         val sLl = (startLocation?.lat ?: 0.0)
         val sLlg = (startLocation?.lng ?: 0.0)
@@ -414,8 +303,6 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         gMap.moveCamera(boundsUpdate)
-
-
     }
 
     private fun createClusterBitmap(add: String, min: String): Bitmap {

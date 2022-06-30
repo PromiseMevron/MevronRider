@@ -13,12 +13,10 @@ class PaymentAdapter(val paySelected: PaySelected, val data: List<Data>,  val po
 
 
     class PayHolder(val binding: PayTypeItemBinding): RecyclerView.ViewHolder(binding.root) {
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PayHolder {
         return PayHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.pay_type_item, parent, false))
-
     }
 
     override fun onBindViewHolder(holder: PayHolder, position: Int) {

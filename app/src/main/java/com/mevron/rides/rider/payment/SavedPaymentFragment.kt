@@ -35,8 +35,6 @@ class SavedPaymentFragment : Fragment(), PaySelected2 {
         fun newInstance() = SavedPaymentFragment()
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +42,6 @@ class SavedPaymentFragment : Fragment(), PaySelected2 {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.saved_payment_fragment, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

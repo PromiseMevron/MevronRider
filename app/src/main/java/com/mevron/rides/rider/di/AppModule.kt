@@ -62,7 +62,6 @@ object AppModule {
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
-
     @Singleton
     @Provides
     fun provideApi(retrofit: Retrofit): MevronAPI = retrofit.create(MevronAPI::class.java)
@@ -81,8 +80,6 @@ object AppModule {
     ) = Room.databaseBuilder(context, MevronDatabase::class.java, "mevron_database")
         .fallbackToDestructiveMigration()
         .build()
-
-
 
     @Singleton
     @Provides

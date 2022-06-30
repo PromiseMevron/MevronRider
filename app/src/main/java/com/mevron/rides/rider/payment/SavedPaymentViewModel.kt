@@ -59,6 +59,5 @@ class SavedPaymentViewModel @Inject constructor (private val repository: MevronR
             }
         }
         return result
-
     }
 }

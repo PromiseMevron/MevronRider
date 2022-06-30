@@ -97,6 +97,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
+
+                if (it.shouldOpenConfirmRide) {
+                    findNavController().navigate(R.id.action_paymentFragment2_to_confirmRideFragment)
+                    viewModel.resolveConfirmRide()
+                }
+
+                if (it.shouldOpenBookedRide) {
+                    findNavController().navigate(R.id.action_global_bookedFragment)
+                    viewModel.resolveOpenBookedRide()
+                }
+
                 if (it.isOpenSearchClicked) {
                     findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
                     viewModel.resolveSearchClicked()

@@ -16,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
 
-
     fun getACards(): LiveData<GenericStatus<GetCardResponse>> {
 
         val result = MutableLiveData<GenericStatus<GetCardResponse>>()
