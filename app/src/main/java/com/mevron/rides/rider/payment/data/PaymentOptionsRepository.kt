@@ -7,7 +7,7 @@ import com.mevron.rides.rider.payment.domain.PaymentCardDomainModel
 import com.mevron.rides.rider.home.model.getCard.Data
 import com.mevron.rides.rider.payment.domain.PaymentCard
 
-// TODO add unit test for this
+// TODO add unit test for this class
 class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOptionsRepository {
 
     override suspend fun deleteCard(identifier: String): DomainModel {
