@@ -63,5 +63,11 @@
         <item name="android:textColor">@color/raveWhite</item>
     </style>
 
-
+    <style name="FullScreenDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">#E6FFFFFF</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>

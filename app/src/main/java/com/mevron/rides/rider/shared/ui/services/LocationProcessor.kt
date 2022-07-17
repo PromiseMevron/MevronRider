@@ -92,7 +92,7 @@ class LocationProcessor {
         )
     }
 
-    fun checkLocationPermission(context: Context?, onSuccess: () -> Unit = {}, requestLocationPermission: () -> Unit) {
+    fun checkLocationPermission(context: Context?, onSuccess: () -> Unit = {}, onPermissionRequired: () -> Unit) {
         if (context?.let {
                 ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
             } != PackageManager.PERMISSION_GRANTED && context?.let {
@@ -101,7 +101,7 @@ class LocationProcessor {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             } != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission()
+            onPermissionRequired()
         } else {
             onSuccess()
         }

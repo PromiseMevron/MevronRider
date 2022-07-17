@@ -36,7 +36,5 @@ class PaymentMethodViewModel @Inject constructor (private val repository: Mevron
             }
         }
         return result
-
     }
-
 }

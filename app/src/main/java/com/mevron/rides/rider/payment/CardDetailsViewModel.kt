@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class CardDetailsViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
 
@@ -35,7 +34,7 @@ class CardDetailsViewModel @Inject constructor (private val repository: MevronRe
                 result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
             }
         }
-        return result
 
+        return result
     }
 }

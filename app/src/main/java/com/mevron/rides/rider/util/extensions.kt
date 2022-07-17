@@ -34,7 +34,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-
 fun String.isValidEmail(): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
@@ -152,16 +151,10 @@ fun Fragment.getGeoLocation(
                                 plotPolyLines(directionsPayload, gMap, addMarker)
                             }
                         }
-
-
                     } else {
-
                     }
                 }
-            } else {
-
-            }
-
+            } else { }
         }
 
         override fun onFailure(call: Call<GeoDirectionsResponse?>, t: Throwable?) {

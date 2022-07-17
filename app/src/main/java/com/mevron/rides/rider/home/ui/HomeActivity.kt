@@ -20,11 +20,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.socket.domain.ISocketManager
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Screen
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
+import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -41,14 +43,19 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var image: CircleImageView
     private lateinit var rating: RatingBar
 
+    @Inject
+    lateinit var socketManager: ISocketManager
+
     private val viewModel: HomeViewModel by viewModels()
     private val sPref =
         App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        socketManager.connect()
+
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
         val widthOfNav = (Screen.width) * 0.7

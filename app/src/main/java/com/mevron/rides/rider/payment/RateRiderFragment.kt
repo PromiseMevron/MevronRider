@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.payment.rating.RateRiderViewModel
 
 class RateRiderFragment : Fragment() {
 
@@ -21,7 +22,4 @@ class RateRiderFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.rate_rider_fragment, container, false)
     }
-
-
-
 }

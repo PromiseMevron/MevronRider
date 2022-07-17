@@ -48,10 +48,9 @@ class CardDetailsFragment : Fragment() {
         binding.removeCard.setOnClickListener {
             deleteCard()
         }
-
     }
 
-    fun deleteCard(){
+    private fun deleteCard(){
         toggleBusyDialog(true, "Deleting Card")
         viewModel.deleteCard(cards.uuid).observe(viewLifecycleOwner, androidx.lifecycle.Observer  {
             it.let {  res ->
@@ -76,7 +75,4 @@ class CardDetailsFragment : Fragment() {
             }
         })
     }
-
-
-
 }

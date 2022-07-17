@@ -15,54 +15,63 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.PaymentFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.home.model.getCard.Data
-import com.mevron.rides.rider.remote.GenericStatus
+import com.mevron.rides.rider.home.ui.HomeActivity
+import com.mevron.rides.rider.payment.domain.PaymentCard
+import com.mevron.rides.rider.payment.domain.isCash
+import com.mevron.rides.rider.payment.ui.PaymentViewEvent
+import com.mevron.rides.rider.payment.ui.PaymentViewModel
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
+import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.displayLocationSettingsRequest
 import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
-import com.mevron.rides.rider.R
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 // TODO Un-refactored yet. Will be done after socket implementation
 @AndroidEntryPoint
-class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
+class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedListener {
 
     companion object {
         fun newInstance() = PaymentFragment()
     }
 
     private val viewModel: PaymentViewModel by viewModels()
-    private lateinit var binding:PaymentFragmentBinding
+    private lateinit var binding: PaymentFragmentBinding
     private lateinit var mapView: SupportMapFragment
     private lateinit var gMap: GoogleMap
-    private lateinit var geoDirections: GeoDirectionsResponse
     private lateinit var apiInterface: GeoAPIInterface
-    private lateinit var location:Array<LocationModel>
+    private lateinit var location: Array<LocationModel>
     private lateinit var adapter: PaymentAdapter
-    private var data: List<Data> = ArrayList()
 
-    private var uiid:String = ""
-    private var method = ""
-    private var isCard = false
+    // TODO clean this up
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.payment_fragment, container, false)
-
         return binding.root
     }
 
@@ -76,20 +85,56 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        method = "Cash"
-        isCard = false
-        binding.mevronPayBottom.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context,
-            RecyclerView.VERTICAL, false)
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                val selectedPosition = it.paymentCards.indexOf(it.selectedPaymentCard)
+                val position = if (selectedPosition < 0) 0 else selectedPosition
 
-        location = arguments?.let { PaymentFragmentArgs.fromBundle(it).location }!!
+                if (adapter.data != it.paymentCards || adapter.selectedPosition != selectedPosition) {
+                    adapter = PaymentAdapter(this@PaymentFragment, it.paymentCards, position)
+                    binding.mevronPayBottom.recyclerView.adapter = adapter
+                }
+
+                if (it.selectedPaymentCard.isCash()) {
+                    binding.payCash.text = "Pay with Cash"
+                } else {
+                    binding.payCash.text = "Pay with Card"
+                }
+
+                if (it.addPaymentClicked.hasValue()) {
+                    it.addPaymentClicked.get {
+                        findNavController().navigate(R.id.action_paymentFragment2_to_paymentMethodFragment)
+                    }
+                }
+            }
+        }
+
+        viewModel.setEvent(PaymentViewEvent.GetPaymentMethods)
+
+        binding.mevronPayBottom.addPaymentMethod.setOnClickListener {
+            viewModel.setEvent(PaymentViewEvent.AddCardClicked)
+        }
+
+        binding.mevronPayBottom.recyclerView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+        renderCoordinates()
+
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
         binding.payCash.setOnClickListener {
-            if (method.isEmpty()){
+            val selectedCard = viewModel.uiState.value.selectedPaymentCard
+
+            if (selectedCard.type.isEmpty()) {
                 Toast.makeText(context, "Select a payment method", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val action = PaymentFragmentDirections.actionPaymentFragment2ToConfirmRideFragment(location, isCard, uiid)
+            val action =
+                PaymentFragmentDirections.actionPaymentFragment2ToConfirmRideFragment(
+                    location,
+                    selectedCard.isCash(),
+                    selectedCard.uuid
+                )
             findNavController().navigate(action)
         }
         binding.bqckButton.setOnClickListener {
@@ -102,15 +147,15 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         mapView.getMapAsync(this)
 
         displayLocationSettingsRequest(binding)
-        getCards()
+
         binding.addVoucher.setOnClickListener {
             binding.mevronPayBottom.payTypeLayout.visibility = View.GONE
             binding.mevronPayBottom.voucherAddLayout.visibility = View.VISIBLE
         }
         binding.mevronPayBottom.doneButton.setOnClickListener {
-            if (binding.mevronPayBottom.riderCode.text.toString().isEmpty()){
+            if (binding.mevronPayBottom.riderCode.text.toString().isEmpty()) {
                 Toast.makeText(context, "Enter code", Toast.LENGTH_LONG).show()
-            }else{
+            } else {
                 binding.mevronPayBottom.payTypeLayout.visibility = View.VISIBLE
                 binding.mevronPayBottom.voucherAddLayout.visibility = View.GONE
                 binding.addVoucher.visibility = View.GONE
@@ -120,45 +165,81 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         }
     }
 
-    private fun addMarkerToPolyLines() {
+    private fun renderCoordinates() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { uiState ->
+                if (uiState.isValidCoordinate && !uiState.isCoordinateRendered) {
+                    val startLocation = LocationModel(
+                        uiState.startLocationLat,
+                        uiState.startLocationLng,
+                        uiState.startLocationAddress
+                    )
 
+                    val endLocation = LocationModel(
+                        uiState.endLocationLat,
+                        uiState.endLocationLng,
+                        uiState.destinationAddress
+                    )
+
+                    val locations = arrayOf(startLocation, endLocation)
+                    this@PaymentFragment.location = locations
+                    getGeoLocation(locations, gMap) {
+                        addMarkerToPolyLines(it)
+                        viewModel.resolveCoordinateRendered()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addMarkerToPolyLines(geoDirections: GeoDirectionsResponse) {
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
         var loc1 = location[0].address
-        if (loc1.length > 20){
+        if (loc1.length > 20) {
             loc1 = location[0].address.substring(0..20)
         }
 
         var loc2 = location[1].address
-        if (loc2.length > 20){
+        if (loc2.length > 20) {
             loc2 = location[1].address.substring(0..20)
         }
 
+        val sLl = (startLocation?.lat ?: 0.0)
+        val sLlg = (startLocation?.lng ?: 0.0)
 
-        val sLl= (startLocation?.lat ?: 0.0)
-        val sLlg= (startLocation?.lng ?: 0.0)
+        val sLl2 = (endLocation?.lat ?: 0.0)
+        val sLlg2 = (endLocation?.lng ?: 0.0)
 
-        val sLl2= (endLocation?.lat ?: 0.0)
-        val sLlg2= (endLocation?.lng ?: 0.0)
-
-
-
-        val marker1 =  MarkerOptions()
+        val marker1 = MarkerOptions()
             .position(LatLng(sLl, sLlg))
-            .anchor(0.05f,-0.05f)
-            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc1, img = R.drawable.ic_driver_pick)))
+            .anchor(0.05f, -0.05f)
+            .icon(
+                BitmapDescriptorFactory.fromBitmap(
+                    createClusterBitmap(
+                        add = loc1,
+                        img = R.drawable.ic_driver_pick
+                    )
+                )
+            )
 
-        val marker2 =  MarkerOptions()
+        val marker2 = MarkerOptions()
             .position(LatLng(sLl2, sLlg2))
-            .anchor(1.05f,1.05f)
-            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, img = R.drawable.ic_driver_dest)))
+            .anchor(1.05f, 1.05f)
+            .icon(
+                BitmapDescriptorFactory.fromBitmap(
+                    createClusterBitmap(
+                        add = loc2,
+                        img = R.drawable.ic_driver_dest
+                    )
+                )
+            )
 
-
-        val marker3 =  MarkerOptions()
+        val marker3 = MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
             .icon(bitmapFromVector(R.drawable.ic_driver_pick))
 
-        val marker4 =  MarkerOptions()
+        val marker4 = MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
             .icon(bitmapFromVector(R.drawable.ic_driver_dest))
 
@@ -168,8 +249,18 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         gMap.addMarker(marker4)
 
         val builder = LatLngBounds.Builder()
-        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.northeast?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.northeast?.lng ?: 0.0))
-        builder.include(LatLng(geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0, geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0))
+        builder.include(
+            LatLng(
+                geoDirections.routes?.get(0)?.bounds?.northeast?.lat ?: 0.0,
+                geoDirections.routes?.get(0)?.bounds?.northeast?.lng ?: 0.0
+            )
+        )
+        builder.include(
+            LatLng(
+                geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0,
+                geoDirections.routes?.get(0)?.bounds?.southwest?.lat ?: 0.0
+            )
+        )
 
         val bounds = builder.build()
         val width = resources.displayMetrics.widthPixels
@@ -210,100 +301,72 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, PaySelected {
         if (p0 != null) {
             gMap = p0
         }
+
         MapsInitializer.initialize(context?.applicationContext)
 
-        getGeoLocation(location, gMap) {
-            geoDirections = it
-            addMarkerToPolyLines()
-        }
-        location = arguments?.let { PaymentFragmentArgs.fromBundle(it).location }!!
+        renderCoordinates()
 
+        val locationProcessor = LocationProcessor()
 
-        if (location.isNotEmpty()){
+        locationProcessor.checkLocationPermission(
+            context,
+            onPermissionRequired = {
+                locationProcessor.requestLocationPermission(context = this@PaymentFragment)
+            },
+            onSuccess = {
+                activity?.let { parentActivity ->
+                    locationProcessor.animateToCurrentPosition(
+                        parentActivity as HomeActivity,
+                        gMap,
+                        callback = {  },
+                        onLocationRequestFailed = {
+                            parentActivity.runOnUiThread {
+                                Toast.makeText(
+                                    context,
+                                    "Location Permission is required",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    )
+                }
+            }
+        )
 
-            val builder = LatLngBounds.Builder()
-            builder.include(LatLng(location[0].lat, location[0].lng))
-            builder.include(LatLng(location[1].lat, location[1].lng))
-            val bounds = builder.build()
-            val width = resources.displayMetrics.widthPixels;
-            val  height = resources.displayMetrics.heightPixels;
-            val padding =(width * 0.40).toInt()
-           // val cu = CameraUpdateFactory.newLatLngBounds(bounds, 20)
-            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 200)
-
-           // gMap.setPadding(50,50,50,50)
-            //  gMap.setPadding(20,20,20,20)
-          //  gMap.animateCamera(cu)
-            gMap.moveCamera(cu)
-
-            val currentLocation = LatLng(location[0].lat, location[0].lng)
-            val cameraPosition = CameraPosition.Builder()
-                .bearing(0.toFloat())
-                .target(currentLocation)
-                .zoom(15.5.toFloat())
-                .build()
-            // gMap.animateCamera(cu)
-        }
-
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), Constants.LOCATION_REQUEST_CODE
+            )
             return
         }
     }
 
-    fun getCards(){
-        viewModel.getACards().observe(viewLifecycleOwner, androidx.lifecycle.Observer  {
-            it.let {  res ->
-                when(res){
-
-                    is  GenericStatus.Success ->{
-                        adapter = res.data?.success?.data?.let { it1 -> PaymentAdapter(this, it1, 1) }!!
-                        data = res.data.success.data
-                        binding.mevronPayBottom.recyclerView.adapter = adapter
-
-                    }
-
-                    is  GenericStatus.Error ->{
-                        Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
-                    }
-
-                    is GenericStatus.Unaunthenticated -> {}
-                }
-            }
-        })
-    }
-
-    fun getLocationProvider(): FusedLocationProviderClient? {
-        return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mapView.getMapAsync(this)
         }
     }
 
-    override fun selected(pos: Int) {
-        findNavController().navigate(R.id.action_paymentFragment2_to_paymentMethodFragment)
-    }
-
-    override fun selectedMethod(isCard: Boolean, uiid: String, method: String, pos: Int) {
-        this.isCard = isCard
-        this.uiid = uiid
-        this.method = method
-        if (isCard){
-            binding.payCash.text = "Pay with Card"
-        }else{
-            binding.payCash.text = "Pay with Cash"
-        }
-
-        adapter = PaymentAdapter(this, data, pos)
-        binding.mevronPayBottom.recyclerView.adapter = adapter
+    override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
+        viewModel.setState { copy(selectedPaymentCard = paymentCard) }
     }
 }

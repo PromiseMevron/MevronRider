@@ -3,6 +3,8 @@ package com.mevron.rides.rider.home.ui
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
+import com.mevron.rides.rider.shared.ui.SingleStateEvent
+import com.mevron.rides.rider.socket.domain.models.NearByDriver
 
 data class HomeState(
     val startLocation: String,
@@ -17,7 +19,11 @@ data class HomeState(
     val isScheduleTheRideClicked: Boolean,
     val isMyLocationButtonClicked: Boolean,
     val locationModel: LocationModel,
-    val isLocationAdded: Boolean
+    val isLocationAdded: Boolean,
+    val shouldOpenBookedRide: Boolean,
+    val shouldOpenConfirmRide: Boolean,
+    val shouldOpenTipView: SingleStateEvent<Unit>,
+    val markerLocations: List<NearByDriver>
 ) {
 
     companion object {
@@ -34,7 +40,11 @@ data class HomeState(
             isScheduleTheRideClicked = false,
             isMyLocationButtonClicked = false,
             locationModel = LocationModel.EMPTY,
-            isLocationAdded = false
+            isLocationAdded = false,
+            shouldOpenBookedRide = false,
+            shouldOpenConfirmRide = false,
+            shouldOpenTipView = SingleStateEvent(),
+            markerLocations = listOf()
         )
     }
 }
@@ -47,4 +57,5 @@ sealed interface HomeEvent {
     object OnAllSavedAddressClicked : HomeEvent
     object ScheduleButtonClicked : HomeEvent
     object ScheduleTheRideClicked : HomeEvent
+    object ObserveTripState: HomeEvent
 }

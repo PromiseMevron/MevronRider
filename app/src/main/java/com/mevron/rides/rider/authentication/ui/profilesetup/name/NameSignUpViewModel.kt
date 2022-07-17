@@ -57,7 +57,6 @@ class NameSignUpViewModel @Inject constructor(
             lName = null
         }
 
-
         mutableState.update {
             currentValue.copy(
                 name = name ?: currentValue.name,

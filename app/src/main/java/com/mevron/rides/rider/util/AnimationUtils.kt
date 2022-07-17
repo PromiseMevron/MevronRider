@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.view.animation.LinearInterpolator
 
 object AnimationUtils {
-
     fun polyLineAnimator(): ValueAnimator {
         val valueAnimator = ValueAnimator.ofInt(0, 100)
         valueAnimator.interpolator = LinearInterpolator()
@@ -18,5 +17,4 @@ object AnimationUtils {
         valueAnimator.interpolator = LinearInterpolator()
         return valueAnimator
     }
-
 }

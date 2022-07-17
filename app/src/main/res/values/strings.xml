@@ -286,6 +286,7 @@
     <string name="i_ll_share_it_manually">I’ll share it manually</string>
     <string name="save_a_place">Save a place</string>
     <string name="enter_any_address">Enter any address</string>
+    <string name="add_a_custom_tip">Add a Custom Tip</string>
 
 
 </resources>
