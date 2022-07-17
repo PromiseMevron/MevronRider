@@ -3,6 +3,7 @@ package com.mevron.rides.rider.home.ui
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
+import com.mevron.rides.rider.shared.ui.SingleStateEvent
 import com.mevron.rides.rider.socket.domain.models.NearByDriver
 
 data class HomeState(
@@ -21,6 +22,7 @@ data class HomeState(
     val isLocationAdded: Boolean,
     val shouldOpenBookedRide: Boolean,
     val shouldOpenConfirmRide: Boolean,
+    val shouldOpenTipView: SingleStateEvent<Unit>,
     val markerLocations: List<NearByDriver>
 ) {
 
@@ -41,6 +43,7 @@ data class HomeState(
             isLocationAdded = false,
             shouldOpenBookedRide = false,
             shouldOpenConfirmRide = false,
+            shouldOpenTipView = SingleStateEvent(),
             markerLocations = listOf()
         )
     }

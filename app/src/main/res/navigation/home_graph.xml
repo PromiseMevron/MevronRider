@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_selectRideFragment"
             app:destination="@id/selectRideFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addTipFragment"
+            app:destination="@id/addTipFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
@@ -77,6 +80,13 @@
             android:id="@+id/action_paymentFragment2_to_confirmRideFragment"
             app:destination="@id/confirmRideFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addTipFragment"
+        tools:layout="@layout/add_tip_fragment"
+        android:name="com.mevron.rides.rider.payment.AddTipFragment"
+        android:label="AddTipFragment" />
+
     <fragment
         android:id="@+id/confirmRideFragment"
         tools:layout="@layout/confirm_ride_fragment"
@@ -165,7 +175,15 @@
         <argument
             android:name="location"
             app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
-    </fragment><action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
+    </fragment>
+
+    <action android:id="@+id/action_global_bookedFragment" app:destination="@id/bookedFragment"/>
+
+    <action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment"/>
+
+    <action android:id="@+id/action_global_addTipFragment" app:destination="@id/addTipFragment"/>
+
+
     <fragment
         android:id="@+id/savedpaymentFragment"
         android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"

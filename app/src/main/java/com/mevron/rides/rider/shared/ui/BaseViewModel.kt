@@ -22,4 +22,27 @@ abstract class BaseViewModel<State, Event> : ViewModel() {
     open fun setEvent(event: Event) {}
 }
 
-data class Test(val item: String)
+class SingleStateEvent<T> {
+
+    @Volatile
+    var data: T? = null
+
+    @Synchronized
+    fun get(collector: (T) -> Unit) {
+        if (data == null) return
+        val current = data
+
+        if (current != null) {
+            collector(current)
+            data = null
+        }
+    }
+
+    @Synchronized
+    fun set(data: T) {
+       this.data = data
+    }
+
+    @Synchronized
+    fun hasValue() = data != null
+}

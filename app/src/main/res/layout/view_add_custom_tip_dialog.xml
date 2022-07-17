@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/custom_bottom_sheet_background"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/add_custom_tip_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="@string/add_a_custom_tip"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/reduce_tip"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_disabled_minus_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/custom_tip_value"
+            app:layout_constraintEnd_toStartOf="@+id/custom_tip_value"
+            app:layout_constraintTop_toTopOf="@+id/custom_tip_value" />
+
+        <TextView
+            android:id="@+id/custom_tip_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="$5.00"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_custom_tip_title" />
+
+        <ImageView
+            android:id="@+id/increase_tip"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_plus_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/custom_tip_value"
+            app:layout_constraintStart_toEndOf="@+id/custom_tip_value"
+            app:layout_constraintTop_toTopOf="@+id/custom_tip_value" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/done_button_custom_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="@string/done"
+            android:padding="8dp"
+            android:textAllCaps="false"
+            android:textSize="@dimen/_12ssp"
+            app:cornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reduce_tip" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

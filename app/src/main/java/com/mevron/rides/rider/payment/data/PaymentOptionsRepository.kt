@@ -55,7 +55,7 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
 
 private fun List<Data>.toDomainModel(): PaymentCardDomainModel {
     return PaymentCardDomainModel(
-        cards = map { it.toDomainModel() }
+        cards = map { it.toDomainModel() }.apply { toMutableList().add(PaymentCard.EMPTY.copy(type = "cash")) }
     )
 }
 

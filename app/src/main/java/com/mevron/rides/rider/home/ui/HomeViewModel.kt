@@ -4,11 +4,14 @@ import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
+import com.mevron.rides.rider.home.booked.domain.TripStatus
+import com.mevron.rides.rider.home.booked.domain.toTripStatus
 import com.mevron.rides.rider.home.domain.GetProfileUseCase
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.savedplaces.domain.model.GetAddressDomainData
 import com.mevron.rides.rider.savedplaces.domain.usecase.GetAddressUseCase
 import com.mevron.rides.rider.shared.ui.BaseViewModel
+import com.mevron.rides.rider.shared.ui.SingleStateEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -80,22 +83,24 @@ class HomeViewModel @Inject constructor(
     private fun loadTripState() {
         viewModelScope.launch {
             tripStateUseCase().collect { tripState ->
+                if (tripState is TripState.NearByDriversState) {
+                    setState { copy(markerLocations = tripState.data.locations) }
+                }
                 when (tripState) {
                     is TripState.StateMachineState -> {}
 
-                    is TripState.TripStatusState -> {
-                        setState { copy(shouldOpenBookedRide = true) }
-                    }
                     is TripState.DriverSearchState -> {
                         setState { copy(shouldOpenConfirmRide = true) }
                     }
-                    is TripState.NearByDriversState -> {
-                        // add markers showing the nearby drivers
-                        setState { copy(markerLocations = tripState.data.locations) }
+
+                    is TripState.TripStatusState -> {
+                        if (tripState.data.metaData.status.toTripStatus() == TripStatus.TRIP_COMPLETED) {
+                            setState { copy(shouldOpenTipView = SingleStateEvent<Unit>().apply { set(Unit) }) }
+                        }
+                        setState { copy(shouldOpenBookedRide = true) }
                     }
-                    TripState.Idle -> {
-                        /** Do nothing **/
-                    }
+
+                    else -> {}
                 }
             }
         }

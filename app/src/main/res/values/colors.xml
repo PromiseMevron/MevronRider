@@ -18,4 +18,5 @@
     <color name="red_14">#24FF0000</color>
     <color name="field_color">#383838</color>
     <color name="dashColor">#2A2A72</color>
+    <color name="dialog_background">#66000000</color>
 </resources>

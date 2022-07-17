@@ -98,6 +98,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         lifecycleScope.launch {
             viewModel.uiState.collect {
 
+                it.shouldOpenTipView.get {
+                    findNavController().navigate(R.id.action_global_addTipFragment)
+                }
+
                 if (it.shouldOpenConfirmRide) {
                     findNavController().navigate(R.id.action_paymentFragment2_to_confirmRideFragment)
                     viewModel.resolveConfirmRide()
