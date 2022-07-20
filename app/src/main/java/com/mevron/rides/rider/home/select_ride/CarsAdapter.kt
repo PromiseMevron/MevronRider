@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.VehicleItemBinding
@@ -11,11 +13,27 @@ import com.mevron.rides.rider.home.select_ride.domain.MobilityTypeDomainModel
 import com.squareup.picasso.Picasso
 
 class CarsAdapter(
-    val cars: List<MobilityTypeDomainModel>,
+   // val cars: List<MobilityTypeDomainModel>,
     val position: Int,
     val selected: OnCarSelectedListener
-) : RecyclerView.Adapter<CarsAdapter.CarsHolder>() {
-    class CarsHolder(val binding: VehicleItemBinding) : RecyclerView.ViewHolder(binding.root) {
+) : ListAdapter<MobilityTypeDomainModel, CarsAdapter.CarsHolder>(CarsAdapterDiffUtil()) {
+
+    class CarsHolder(val binding: VehicleItemBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class CarsAdapterDiffUtil: DiffUtil.ItemCallback<MobilityTypeDomainModel>(){
+        override fun areItemsTheSame(
+            oldItem: MobilityTypeDomainModel,
+            newItem: MobilityTypeDomainModel
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: MobilityTypeDomainModel,
+            newItem: MobilityTypeDomainModel
+        ): Boolean {
+            return areItemsTheSame(oldItem, newItem)
+        }
 
     }
 
@@ -31,7 +49,7 @@ class CarsAdapter(
     }
 
     override fun onBindViewHolder(holder: CarsHolder, position: Int) {
-        val dt = cars[position]
+        val dt = getItem(position)
         if (this.position != -1) {
             if (position == this.position) {
                 holder.binding.background.setBackgroundResource(R.drawable.rounded_border_car)
@@ -51,10 +69,6 @@ class CarsAdapter(
         holder.binding.root.setOnClickListener {
             selected.onCarSelected(position, dt.name)
         }
-    }
-
-    override fun getItemCount(): Int {
-        return cars.size
     }
 }
 

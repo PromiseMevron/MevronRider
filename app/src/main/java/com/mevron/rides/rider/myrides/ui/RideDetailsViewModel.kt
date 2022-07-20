@@ -2,14 +2,17 @@ package com.mevron.rides.rider.myrides.ui
 
 import androidx.lifecycle.ViewModel
 import com.mevron.rides.rider.domain.update
+import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
 import com.mevron.rides.rider.myrides.domain.usecases.GetARideDetails
 import com.mevron.rides.rider.myrides.ui.event.MyRidesEvents
 import com.mevron.rides.rider.myrides.ui.state.MyRidesState
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+@HiltViewModel
 class RideDetailsViewModel  @Inject constructor(private val useCase: GetARideDetails): ViewModel() {
 
     private val mutableState: MutableStateFlow<MyRidesState> =
@@ -33,7 +36,7 @@ class RideDetailsViewModel  @Inject constructor(private val useCase: GetARideDet
     fun updateState(
         isLoading: Boolean? = null,
         isRequestSuccess: Boolean? = null,
-        savedAddresses: MutableList<GetSavedAddressData>? = null,
+        savedAddresses: MutableList<AllTripsResult>? = null,
         updateAddress: Boolean? = null,
         backButton: Boolean? = null
     ) {

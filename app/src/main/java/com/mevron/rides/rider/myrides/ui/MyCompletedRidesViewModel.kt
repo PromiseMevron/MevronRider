@@ -9,12 +9,14 @@ import com.mevron.rides.rider.myrides.domain.model.GetAllTripsDomainData
 import com.mevron.rides.rider.myrides.domain.usecases.GetAllRideUseCase
 import com.mevron.rides.rider.myrides.ui.event.MyRidesEvents
 import com.mevron.rides.rider.myrides.ui.state.MyRidesState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class MyCompletedRidesViewModel @Inject constructor(private val useCase: GetAllRideUseCase) :
     ViewModel() {
 

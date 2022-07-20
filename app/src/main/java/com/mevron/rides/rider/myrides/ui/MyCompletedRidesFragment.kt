@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,15 +18,18 @@ import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
 
 import com.mevron.rides.rider.myrides.ui.adapter.RideAdapter
 import com.mevron.rides.rider.myrides.ui.adapter.SelectedRide
+import com.mevron.rides.rider.myrides.ui.event.MyRidesEvents
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
+@AndroidEntryPoint
 class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
     companion object {
         fun newInstance() = MyCompletedRidesFragment()
     }
 
-    private lateinit var viewModel: MyCompletedRidesViewModel
+    private val viewModel: MyCompletedRidesViewModel by viewModels()
     private lateinit var binding: MyCompletedRidesFragmentBinding
 
 
@@ -40,6 +44,7 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = RideAdapter<AllTripsResult>(this)
+        viewModel.handleEvent(MyRidesEvents.GetAddress)
         binding.recyclerView.adapter = adapter
         lifecycleScope.launchWhenResumed {
             repeatOnLifecycle(Lifecycle.State.STARTED){

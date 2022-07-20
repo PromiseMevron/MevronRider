@@ -61,7 +61,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
     private lateinit var apiInterface: GeoAPIInterface
     private var mDialog: Dialog? = null
     private lateinit var adapter: CarsAdapter
-    private lateinit var cars: List<MobilityTypeDomainModel>
+    private var cars: List<MobilityTypeDomainModel> = mutableListOf()
     var pos = 0
 
     private val locationProcessor = LocationProcessor()
@@ -77,12 +77,21 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        context?.let {
+            adapter = CarsAdapter(
+                pos,
+                this@SelectRideFragment
+            )
+            binding.mevronRideBottom.recyclerView.adapter = adapter
+
+        }
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
 
 //                toggleBusyDialog(uiState.isLoading, "Loading...")
                 if (uiState.isMobilityTypeAvailable) {
+                    cars = uiState.mobilityTypes
                     binding.mevronRideBottom.destAddres.text = "Confirm ${cars[pos].name}"
                 }
 
@@ -99,16 +108,10 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                     viewModel.setState { copy(isOpenPaymentClicked = false) }
                 }
 
-                if (!uiState.isListLoaded && uiState.mobilityTypes.isNotEmpty())
-                    context?.let {
-                        adapter = CarsAdapter(
-                            uiState.mobilityTypes,
-                            pos,
-                            this@SelectRideFragment
-                        )
-                        binding.mevronRideBottom.recyclerView.adapter = adapter
-                        viewModel.setState { copy(isListLoaded = true) }
-                    }
+                if (!uiState.isListLoaded && uiState.mobilityTypes.isNotEmpty()) {
+                    adapter.submitList(uiState.mobilityTypes)
+                    viewModel.setState { copy(isListLoaded = true) }
+                }
             }
         }
 
@@ -363,9 +366,10 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
 
     override fun onCarSelected(pos: Int, car: String) {
         context?.let { _ ->
-            adapter = CarsAdapter(cars, pos, this)
+            adapter = CarsAdapter(pos, this)
             binding.mevronRideBottom.recyclerView.adapter = adapter
-            binding.mevronRideBottom.destAddres.text = "Confirm ${car}"
+            binding.mevronRideBottom.destAddres.text = "Confirm $car"
+            adapter.submitList(cars)
         }
     }
 }
