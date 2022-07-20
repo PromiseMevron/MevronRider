@@ -6,13 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyCompletedRidesFragmentBinding
 import com.mevron.rides.rider.localdb.SavedAddress
+import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
 
 import com.mevron.rides.rider.myrides.ui.adapter.RideAdapter
 import com.mevron.rides.rider.myrides.ui.adapter.SelectedRide
+import kotlinx.coroutines.flow.collect
 
 class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
@@ -34,12 +39,19 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var adapter = RideAdapter<SavedAddress>(this)
+        val adapter = RideAdapter<AllTripsResult>(this)
         binding.recyclerView.adapter = adapter
+        lifecycleScope.launchWhenResumed {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.state.collect {
+                    adapter.submitList(it.data)
+                }
+            }
+        }
     }
 
     override fun select() {
-        findNavController().navigate(R.id.action_global_rideDetailsFragment)
+        //findNavController().navigate(R.id.action_global_rideDetailsFragment)
     }
 
 }
