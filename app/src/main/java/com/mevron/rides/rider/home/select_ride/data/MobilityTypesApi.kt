@@ -8,6 +8,6 @@ import retrofit2.http.POST
 
 interface MobilityTypesApi {
 
-    @POST("api/v1/rider/auth/carCategories")
+    @POST("api/v1/trip/rider/auth/carCategories")
     suspend fun getMobilityTypes(@Body data: MobilityTypesRequest): Response<GetCarsCategory2>
 }

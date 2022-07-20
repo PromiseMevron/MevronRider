@@ -6,6 +6,6 @@ import retrofit2.http.POST
 
 interface TipAndReviewApi {
 
-    @POST("/api/v1/rider/auth/trip/tip")
+    @POST("api/v1/trip/rider/auth/trip/tip")
     fun sendTipAndReview(tipAndReviewRequest: TipAndReviewRequest): Response<GeneralResponse>
 }

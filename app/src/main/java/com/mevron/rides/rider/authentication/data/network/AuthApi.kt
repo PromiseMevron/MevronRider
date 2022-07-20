@@ -13,13 +13,13 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthApi {
-    @POST("api/v1/rider/request-otp")
+    @POST("api/v1/acquisation/rider/request-otp")
     suspend fun registerPhone(@Body data: RegisterBody): Response<RegisterPhoneResponse>
 
-    @POST("api/v1/rider/validate-otp")
+    @POST("api/v1/acquisation/rider/validate-otp")
     suspend fun verifyOTP(@Body data: ValidateOTPRequest): Response<ValidateOTPResponse>
 
-    @POST("api/v1/rider/auth/profile")
+    @POST("api/v1/acquisation/rider/auth/update-profile")
     suspend fun sendDetail(@Body data: SaveDetailsRequest): Response<GeneralResponse>
 
     @GET("api/v1/rider/auth/profile")

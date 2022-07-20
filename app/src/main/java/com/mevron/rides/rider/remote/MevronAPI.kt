@@ -67,7 +67,7 @@ interface MevronAPI {
     @GET("api/v1/rider/auth/payment-method")
     suspend fun getCards(): Response<GetCardResponse>
 
-    @POST("api/v1/rider/auth/requestRide")
+    @POST("api/v1/trip/rider/auth/requestRide")
     suspend fun makeARideRequest(@Body data: RideRequest): Response<ConfirmRideResponse>
 
     @GET("api/v1/rider/auth/referral-history")

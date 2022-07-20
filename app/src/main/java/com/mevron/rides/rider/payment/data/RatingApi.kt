@@ -6,6 +6,6 @@ import retrofit2.http.POST
 
 interface RatingApi {
 
-    @POST("/api/v1/rider/auth/trip/rate")
+    @POST("api/v1/trip/rider/auth/trip/rate")
     suspend fun rateDriver(rateRequest: RateRequest): Response<GeneralResponse>
 }

@@ -6,9 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MyRideAPI {
-    @GET("api/v1/rider/auth/trips")
+    @GET("api/v1/trip/rider/auth/trips")
     suspend fun getAllTrips(): Response<GeneralResponse>
 
-    @GET("api/v1/rider/auth/trips/{uiid}")
-    suspend fun getTripDetail(@Path("uiid") id: String): Response<GeneralResponse>
+    @GET("api/v1/trip/rider/auth/trip/view/{uuid}")
+    suspend fun getTripDetail(@Path("uuid") id: String): Response<GeneralResponse>
 }

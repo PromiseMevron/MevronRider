@@ -7,6 +7,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface RideRequestApi {
-    @POST("api/v1/rider/auth/requestRide")
+    @POST("api/v1/trip/rider/auth/requestRide")
     suspend fun makeARideRequest(@Body data: RideRequest): Response<ConfirmRideResponse>
 }
