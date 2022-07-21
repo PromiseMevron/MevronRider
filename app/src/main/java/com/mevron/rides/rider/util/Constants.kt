@@ -14,6 +14,10 @@ object Constants {
     const val EMAIL = "EMAIL"
     const val LOCATION_REQUEST_CODE = 4555
     const val PHONE_NUMBER = "PHONE_NUMBER"
+    val CAR = "CAR"
+    val ThePaymentModel = "PaymentModel"
+    val LocationModelPick = "LocationModelPick"
+    val LocationModelDrop = "LocationModelDrop"
 
     fun isNewNumberType(number: String): Boolean {
         return if (number.isEmpty() || number.length < 4) {

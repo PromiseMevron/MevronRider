@@ -77,18 +77,17 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        context?.let {
-            adapter = CarsAdapter(
-                pos,
-                this@SelectRideFragment
-            )
-            binding.mevronRideBottom.recyclerView.adapter = adapter
-
-        }
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
+                context?.let {
+                    adapter = CarsAdapter(
+                        pos,
+                        this@SelectRideFragment
+                    )
+                    binding.mevronRideBottom.recyclerView.adapter = adapter
 
+                }
 //                toggleBusyDialog(uiState.isLoading, "Loading...")
                 if (uiState.isMobilityTypeAvailable) {
                     cars = uiState.mobilityTypes
@@ -107,9 +106,9 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                     findNavController().navigate(action)
                     viewModel.setState { copy(isOpenPaymentClicked = false) }
                 }
+                adapter.submitList(uiState.mobilityTypes)
 
                 if (!uiState.isListLoaded && uiState.mobilityTypes.isNotEmpty()) {
-                    adapter.submitList(uiState.mobilityTypes)
                     viewModel.setState { copy(isListLoaded = true) }
                 }
             }

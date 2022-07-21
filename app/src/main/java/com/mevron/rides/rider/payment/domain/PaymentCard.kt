@@ -19,7 +19,7 @@ data class PaymentCard(
             expiryMonth = "",
             expiryYear = "",
             lastDigits = "",
-            type = "",
+            type = "cash",
             uuid = ""
         )
     }

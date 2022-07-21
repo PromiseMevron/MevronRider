@@ -87,18 +87,29 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
+
+                adapter = PaymentAdapter(this@PaymentFragment, -1)
+
                 val selectedPosition = it.paymentCards.indexOf(it.selectedPaymentCard)
                 val position = if (selectedPosition < 0) 0 else selectedPosition
 
-                if (adapter.data != it.paymentCards || adapter.selectedPosition != selectedPosition) {
-                    adapter = PaymentAdapter(this@PaymentFragment, it.paymentCards, position)
+                adapter.submitList(it.paymentCards)
+
+                if (adapter.selectedPosition != selectedPosition) {
+                    adapter = PaymentAdapter(this@PaymentFragment, position)
                     binding.mevronPayBottom.recyclerView.adapter = adapter
                 }
+
+
 
                 if (it.selectedPaymentCard.isCash()) {
                     binding.payCash.text = "Pay with Cash"
                 } else {
                     binding.payCash.text = "Pay with Card"
+                }
+
+                it.openConfirmRide.get {
+                    findNavController().navigate(R.id.action_global_openConfirmRide)
                 }
 
                 if (it.addPaymentClicked.hasValue()) {
@@ -124,19 +135,13 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
         binding.payCash.setOnClickListener {
             val selectedCard = viewModel.uiState.value.selectedPaymentCard
-
             if (selectedCard.type.isEmpty()) {
                 Toast.makeText(context, "Select a payment method", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val action =
-                PaymentFragmentDirections.actionPaymentFragment2ToConfirmRideFragment(
-                    location,
-                    selectedCard.isCash(),
-                    selectedCard.uuid
-                )
-            findNavController().navigate(action)
+            viewModel.setEvent(PaymentViewEvent.OpenConfirmRide)
         }
+
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -318,7 +323,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                     locationProcessor.animateToCurrentPosition(
                         parentActivity as HomeActivity,
                         gMap,
-                        callback = {  },
+                        callback = { },
                         onLocationRequestFailed = {
                             parentActivity.runOnUiThread {
                                 Toast.makeText(

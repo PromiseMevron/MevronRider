@@ -133,7 +133,8 @@
             app:argType="string" />
     </fragment>
 
-
+    <action android:id="@+id/action_global_openConfirmRide"
+            app:destination="@id/confirmRideFragment"/>
     <action android:id="@+id/action_global_saveAddressFragment"
         app:destination="@id/saveAddressFragment" />
     <fragment

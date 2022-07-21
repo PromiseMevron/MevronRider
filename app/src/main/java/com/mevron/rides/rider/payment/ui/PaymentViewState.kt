@@ -16,6 +16,7 @@ data class PaymentViewState(
     val selectedPaymentCard: PaymentCard,
     val addPaymentClicked: SingleStateEvent<Unit>,
     val isCoordinateRendered: Boolean,
+    val openConfirmRide: SingleStateEvent<Unit>,
     val error: String
 ) {
     companion object {
@@ -31,6 +32,7 @@ data class PaymentViewState(
             selectedPaymentCard = PaymentCard.EMPTY,
             addPaymentClicked = SingleStateEvent(),
             isCoordinateRendered = false,
+            openConfirmRide = SingleStateEvent(),
             error = ""
         )
     }
@@ -43,4 +45,5 @@ data class PaymentViewState(
 sealed interface PaymentViewEvent {
     object AddCardClicked : PaymentViewEvent
     object GetPaymentMethods : PaymentViewEvent
+    object OpenConfirmRide : PaymentViewEvent
 }

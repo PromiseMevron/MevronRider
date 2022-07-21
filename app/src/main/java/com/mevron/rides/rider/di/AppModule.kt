@@ -3,10 +3,16 @@ package com.mevron.rides.rider.di
 import android.content.Context
 import androidx.room.Room
 import com.mevron.rides.rider.App
+import com.mevron.rides.rider.authentication.data.network.AuthApi
+import com.mevron.rides.rider.authentication.data.repository.AuthRepository
+import com.mevron.rides.rider.authentication.domain.repository.IAuthRepository
+import com.mevron.rides.rider.data.OrderPropertiesRepository
+import com.mevron.rides.rider.domain.IOrderPropertiesRepository
 import com.mevron.rides.rider.localdb.MevronDao
 import com.mevron.rides.rider.localdb.MevronDatabase
 import com.mevron.rides.rider.remote.MevronAPI
 import com.mevron.rides.rider.remote.MevronRepo
+import com.mevron.rides.rider.sharedprefrence.domain.repository.IPreferenceRepository
 import com.mevron.rides.rider.util.Constants.BASE_URL
 import com.mevron.rides.rider.util.Constants.SHARED_PREF_KEY
 import com.mevron.rides.rider.util.Constants.TOKEN
@@ -38,6 +44,11 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideOrderRepository(repository: IPreferenceRepository): IOrderPropertiesRepository =
+        OrderPropertiesRepository(repository)
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder().followRedirects(true)
             .retryOnConnectionFailure(true)
@@ -47,8 +58,8 @@ object AppModule {
                     SHARED_PREF_KEY,
                     Context.MODE_PRIVATE
                 )
-                 val token = sPref.getString(TOKEN, null)
-               // val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInV1aWQiOiJjM2Y1MTkyZC00ZGY4LTRlMGMtYTYzZS03ZjIzZGY4MjI4YWUiLCJ0eXBlIjoicmlkZXIiLCJpYXQiOjE2NTc3MDk0NzN9.29gPOPDubP7CBbjHbGlj_Z0deoPzGpC6UqCVUyI4_Us"
+                val token = sPref.getString(TOKEN, null)
+                // val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInV1aWQiOiJjM2Y1MTkyZC00ZGY4LTRlMGMtYTYzZS03ZjIzZGY4MjI4YWUiLCJ0eXBlIjoicmlkZXIiLCJpYXQiOjE2NTc3MDk0NzN9.29gPOPDubP7CBbjHbGlj_Z0deoPzGpC6UqCVUyI4_Us"
                 val newRequest: Request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer $token")
                     .addHeader("Accept", "application/json")
