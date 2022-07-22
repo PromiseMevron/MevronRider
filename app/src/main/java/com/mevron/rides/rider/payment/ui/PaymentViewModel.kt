@@ -3,13 +3,21 @@ package com.mevron.rides.rider.payment.ui
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
+import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
+import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.payment.domain.GetPaymentMethodsUseCase
 import com.mevron.rides.rider.payment.domain.PaymentCard
 import com.mevron.rides.rider.payment.domain.PaymentCardDomainModel
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.shared.ui.SingleStateEvent
+import com.mevron.rides.rider.util.Constants.DROP_OFF_ADD
+import com.mevron.rides.rider.util.Constants.DROP_OFF_LAT
+import com.mevron.rides.rider.util.Constants.DROP_OFF_LNG
+import com.mevron.rides.rider.util.Constants.PICK_UP_ADD
+import com.mevron.rides.rider.util.Constants.PICK_UP_LAT
+import com.mevron.rides.rider.util.Constants.PICK_UP_LNG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -20,7 +28,8 @@ import javax.inject.Inject
 class PaymentViewModel @Inject constructor(
     private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase,
     private val getTripStateUseCase: GetTripStateUseCase, // X cancel this
-    private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase
+    private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
+    private val setOrderPropertiesUseCase: SetOrderPropertiesUseCase
 ) : BaseViewModel<PaymentViewState, PaymentViewEvent>() {
 
     override fun createInitialState(): PaymentViewState = PaymentViewState.EMPTY
@@ -34,12 +43,12 @@ class PaymentViewModel @Inject constructor(
                     if (tripStatus.status == TripStatus.ACCEPTED.status) {
                         setState {
                             copy(
-                                startLocationAddress = tripStatus.trip.pickupAddress,
-                                destinationAddress = tripStatus.trip.destinationAddress,
-                                startLocationLat = tripStatus.trip.pickupLatitude.toDouble(),
-                                startLocationLng = tripStatus.trip.pickupLongitude.toDouble(),
-                                endLocationLat = tripStatus.trip.destinationLatitude.toDouble(),
-                                endLocationLng = tripStatus.trip.destinationLongitude.toDouble()
+                                startLocationAddress = getOrderPropertiesUseCase(PICK_UP_ADD),
+                                destinationAddress = getOrderPropertiesUseCase(DROP_OFF_ADD),
+                                startLocationLat = getOrderPropertiesUseCase(PICK_UP_LAT).toDouble(),
+                                startLocationLng = getOrderPropertiesUseCase(PICK_UP_LNG).toDouble(),
+                                endLocationLat = getOrderPropertiesUseCase(DROP_OFF_LAT).toDouble(),
+                                endLocationLng = getOrderPropertiesUseCase(DROP_OFF_LNG).toDouble()
                             )
                         }
                     }

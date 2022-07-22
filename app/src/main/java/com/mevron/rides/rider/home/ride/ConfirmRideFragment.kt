@@ -79,7 +79,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
         // TODO Refactor this to use the PaymentOptionsRepository
-        isCard = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).isCard }!!
+       // isCard = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).isCard }!!
 
         binding.bqckButton.setOnClickListener {
             activity?.onBackPressed()

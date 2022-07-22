@@ -92,7 +92,7 @@
         tools:layout="@layout/confirm_ride_fragment"
         android:name="com.mevron.rides.rider.home.ride.ConfirmRideFragment"
         android:label="ConfirmRideFragment" >
-        <argument
+   <!--     <argument
             android:name="location"
             app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
         <argument
@@ -100,7 +100,7 @@
             app:argType="boolean" />
         <argument
             android:name="uiid"
-            app:argType="string" />
+            app:argType="string" />-->
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

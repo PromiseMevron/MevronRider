@@ -16,8 +16,13 @@ object Constants {
     const val PHONE_NUMBER = "PHONE_NUMBER"
     val CAR = "CAR"
     val ThePaymentModel = "PaymentModel"
-    val LocationModelPick = "LocationModelPick"
-    val LocationModelDrop = "LocationModelDrop"
+    val PICK_UP_LAT = "PICK_UP_LAT"
+    val DROP_OFF_LAT = "DROP_OFF_LAT"
+    val PICK_UP_LNG = "PICK_UP_LNG"
+    val DROP_OFF_LNG = "DROP_OFF_LNG"
+    val PICK_UP_ADD = "PICK_UP_ADD"
+    val DROP_OFF_ADD = "DROP_OFF_ADD"
+
 
     fun isNewNumberType(number: String): Boolean {
         return if (number.isEmpty() || number.length < 4) {

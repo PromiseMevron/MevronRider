@@ -420,10 +420,12 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
             Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
         } else {
             locations.add(data)
+            viewModel.updateOrderStatus(locations)
             var ads = arrayOf<LocationModel>()
             for (a in locations) {
                 ads += a
             }
+
             val action =
                 SearchLocationFragmentDirections.actionSearchLocationFragmentToSelectRideFragment(
                     ads
