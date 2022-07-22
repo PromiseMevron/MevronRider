@@ -91,6 +91,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
 //                toggleBusyDialog(uiState.isLoading, "Loading...")
                 if (uiState.isMobilityTypeAvailable) {
                     cars = uiState.mobilityTypes
+                    viewModel.setUpPaymentMethod(cars[pos].id.toString())
                     binding.mevronRideBottom.destAddres.text = "Confirm ${cars[pos].name}"
                 }
 
@@ -364,7 +365,9 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
     }
 
     override fun onCarSelected(pos: Int, car: String) {
+        viewModel.setUpPaymentMethod(cars[pos].id.toString())
         context?.let { _ ->
+            this.pos = pos
             adapter = CarsAdapter(pos, this)
             binding.mevronRideBottom.recyclerView.adapter = adapter
             binding.mevronRideBottom.destAddres.text = "Confirm $car"

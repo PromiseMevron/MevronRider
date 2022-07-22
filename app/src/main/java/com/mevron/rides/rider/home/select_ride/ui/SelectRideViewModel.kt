@@ -2,11 +2,13 @@ package com.mevron.rides.rider.home.select_ride.ui
 
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.select_ride.domain.GetMobilityTypesUseCase
 import com.mevron.rides.rider.home.select_ride.domain.MobilityTypeDomainModel
 import com.mevron.rides.rider.home.select_ride.domain.MobilityTypesRequest
 import com.mevron.rides.rider.shared.ui.BaseViewModel
+import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SelectRideViewModel @Inject constructor(
-    private val getMobilityTypesUseCase: GetMobilityTypesUseCase
+    private val getMobilityTypesUseCase: GetMobilityTypesUseCase,
+    private val setOrderPropertiesUseCase: SetOrderPropertiesUseCase
 ) : BaseViewModel<SelectRideState, SelectRideEvent>() {
 
     override fun createInitialState(): SelectRideState = SelectRideState.EMPTY
@@ -49,6 +52,10 @@ class SelectRideViewModel @Inject constructor(
 
     fun resetDirectionResponse() {
         setState { copy(geoDirectionsResponse = GeoDirectionsResponse(null, null, null)) }
+    }
+
+    fun setUpPaymentMethod(id: String){
+        setOrderPropertiesUseCase(Constants.CAR, id)
     }
 
     override fun setEvent(event: SelectRideEvent) {

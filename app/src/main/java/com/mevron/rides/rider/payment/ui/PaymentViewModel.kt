@@ -18,6 +18,7 @@ import com.mevron.rides.rider.util.Constants.DROP_OFF_LNG
 import com.mevron.rides.rider.util.Constants.PICK_UP_ADD
 import com.mevron.rides.rider.util.Constants.PICK_UP_LAT
 import com.mevron.rides.rider.util.Constants.PICK_UP_LNG
+import com.mevron.rides.rider.util.Constants.ThePaymentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -57,6 +58,19 @@ class PaymentViewModel @Inject constructor(
         }
     }
 
+    fun updateLocationStatus() {
+        setState {
+            copy(
+                startLocationAddress = getOrderPropertiesUseCase(PICK_UP_ADD),
+                destinationAddress = getOrderPropertiesUseCase(DROP_OFF_ADD),
+                startLocationLat = getOrderPropertiesUseCase(PICK_UP_LAT).toDouble(),
+                startLocationLng = getOrderPropertiesUseCase(PICK_UP_LNG).toDouble(),
+                endLocationLat = getOrderPropertiesUseCase(DROP_OFF_LAT).toDouble(),
+                endLocationLng = getOrderPropertiesUseCase(DROP_OFF_LNG).toDouble()
+            )
+        }
+    }
+
     private fun getPaymentMethods() {
         val theData: MutableList<PaymentCard> = mutableListOf()
         setState { copy(isLoading = true) }
@@ -71,6 +85,10 @@ class PaymentViewModel @Inject constructor(
                 setState { copy(error = (result as DomainModel.Error).error.toString()) }
             }
         }
+    }
+
+    fun setUpPaymentMethod(id: String){
+        setOrderPropertiesUseCase(ThePaymentModel, id)
     }
 
     override fun setEvent(event: PaymentViewEvent) {

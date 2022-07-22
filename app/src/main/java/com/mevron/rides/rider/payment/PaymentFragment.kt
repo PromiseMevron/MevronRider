@@ -84,7 +84,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.updateLocationStatus()
         lifecycleScope.launch {
             viewModel.uiState.collect {
 
@@ -372,6 +372,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
     }
 
     override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
+        viewModel.setUpPaymentMethod(paymentCard.uuid)
         viewModel.setState { copy(selectedPaymentCard = paymentCard) }
     }
 }
