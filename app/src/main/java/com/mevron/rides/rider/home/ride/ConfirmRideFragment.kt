@@ -77,6 +77,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
+        viewModel.updateOrderParamStatus()
 
         // TODO Refactor this to use the PaymentOptionsRepository
        // isCard = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).isCard }!!

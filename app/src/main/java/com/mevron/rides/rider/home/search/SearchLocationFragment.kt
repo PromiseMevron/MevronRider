@@ -372,6 +372,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
                             )
                         )
                     }
+                    viewModel.updateOrderStatus(locations)
                     var ads = arrayOf<LocationModel>()
                     for (a in locations) {
                         ads += a

@@ -3,6 +3,7 @@ package com.mevron.rides.rider.home.ride.ui
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
+import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.ride.domain.MakeRideRequestUseCase
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class ConfirmRideViewModel @Inject constructor(
     private val makeRideRequestUseCase: MakeRideRequestUseCase,
     private val preferenceRepo: IPreferenceRepository,
-    private val getTripStateUseCase: GetTripStateUseCase
+    private val getTripStateUseCase: GetTripStateUseCase,
+    private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
 ) : BaseViewModel<ConfirmRideState, ConfirmRideEvent>() {
 
     override fun createInitialState(): ConfirmRideState = ConfirmRideState.EMPTY
@@ -58,6 +60,21 @@ class ConfirmRideViewModel @Inject constructor(
         }
     }
 
+    fun updateOrderParamStatus() {
+        setState {
+            copy(
+                startLocationAddress = getOrderPropertiesUseCase(Constants.PICK_UP_ADD),
+                destinationAddress = getOrderPropertiesUseCase(Constants.DROP_OFF_ADD),
+                startLocationLat = getOrderPropertiesUseCase(Constants.PICK_UP_LAT).toDouble(),
+                startLocationLng = getOrderPropertiesUseCase(Constants.PICK_UP_LNG).toDouble(),
+                endLocationLat = getOrderPropertiesUseCase(Constants.DROP_OFF_LAT).toDouble(),
+                endLocationLng = getOrderPropertiesUseCase(Constants.DROP_OFF_LNG).toDouble(),
+                payId = getOrderPropertiesUseCase(Constants.ThePaymentModel),
+                vehicleId = getOrderPropertiesUseCase(Constants.CAR)
+            )
+        }
+    }
+
     private fun makeRideRequest() {
         setState { copy(isLoading = true) }
 
@@ -66,11 +83,11 @@ class ConfirmRideViewModel @Inject constructor(
             destinationAddress = uiState.value.destinationAddress,
             destinationLatitude = uiState.value.endLocationLat.toString(),
             destinationLongitude = uiState.value.endLocationLng.toString(),
-            paymentMethod = uiState.value.paymentType.value,
-            pickupAddress = uiState.value.destinationAddress,
+            paymentMethod = uiState.value.payId,
+            pickupAddress = uiState.value.startLocationAddress,
             pickupLatitude = uiState.value.startLocationLat.toString(),
             pickupLongitude = uiState.value.startLocationLng.toString(),
-            vehicleType = ""
+            vehicleType = uiState.value.vehicleId
         )
 
         viewModelScope.launch {

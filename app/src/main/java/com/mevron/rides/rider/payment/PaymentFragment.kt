@@ -129,8 +129,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         binding.mevronPayBottom.recyclerView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-        renderCoordinates()
-
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
 
         binding.payCash.setOnClickListener {
@@ -306,6 +304,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         if (p0 != null) {
             gMap = p0
         }
+      //  renderCoordinates()
 
         MapsInitializer.initialize(context?.applicationContext)
 

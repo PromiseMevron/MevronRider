@@ -4,6 +4,8 @@ import com.mevron.rides.rider.home.booked.domain.UNDEFINED_COORDINATE
 
 data class ConfirmRideState(
     val paymentType: PaymentType,
+    val payId: String,
+    val vehicleId: String,
     val uuid: String,
     val startLocationLat: Double,
     val startLocationLng: Double,
@@ -38,7 +40,9 @@ data class ConfirmRideState(
             isCoordinateRendered = false,
             isSearchingDrivers = false,
             isBookingConfirmed = false,
-            error = ""
+            error = "",
+            payId = "cash",
+            vehicleId = ""
         )
     }
 }

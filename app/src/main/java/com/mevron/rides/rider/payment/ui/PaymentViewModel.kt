@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.payment.ui
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
@@ -59,6 +60,8 @@ class PaymentViewModel @Inject constructor(
     }
 
     fun updateLocationStatus() {
+        Log.d("Param", getOrderPropertiesUseCase(PICK_UP_LAT))
+        Log.d("Param", getOrderPropertiesUseCase(PICK_UP_ADD))
         setState {
             copy(
                 startLocationAddress = getOrderPropertiesUseCase(PICK_UP_ADD),

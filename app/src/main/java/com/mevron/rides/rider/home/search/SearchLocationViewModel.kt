@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home.search
 
+import android.util.Log
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.model.LocationModel
@@ -91,6 +92,7 @@ class SearchLocationViewModel @Inject constructor(
     }
 
     fun updateOrderStatus(model: List<LocationModel>){
+        Log.d("DIRECTION", model[0].lat.toString())
         setOrderPropertiesUseCase(PICK_UP_ADD, model[0].address)
         setOrderPropertiesUseCase(DROP_OFF_ADD, model[1].address)
         setOrderPropertiesUseCase(PICK_UP_LAT, model[0].lat.toString())
