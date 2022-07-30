@@ -2,6 +2,7 @@ package com.mevron.rides.rider.home.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.RatingBar
 import android.widget.TextView
@@ -20,15 +21,21 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
+import com.mevron.rides.rider.socket.domain.CONNECTED
+import com.mevron.rides.rider.socket.domain.Connected
 import com.mevron.rides.rider.socket.domain.ISocketManager
+import com.mevron.rides.rider.socket.domain.SEARCH_DRIVERS
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Screen
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
+import io.socket.client.IO
+import io.socket.client.Socket
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.net.URISyntaxException
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -53,8 +60,37 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        socketManager.connect {  }
+       /* var mSocket: Socket? = null
 
-        socketManager.connect()
+        try {
+            mSocket = IO.socket("http://staging.mevron.com:8086")
+            Log.d("TAG", "Connecting socket")
+
+        } catch (e: URISyntaxException) {
+            Log.d("TAG", "Error Connecting socket $e")
+        }
+
+        mSocket?.on("event") {
+            Log.d("TAG", "abcd $it")
+            val type = "rider"
+            mSocket.emit(CONNECTED, "{\"uuid\":\"c83be6ac-9b7e-4033-b0d7-1e7ea2e21a9c\", \"type\": \"rider\"}")
+        } ?:  Log.d("TAG", "abcd 333")
+        mSocket?.on("search_drivers") {
+            Log.d("TAG", "abcd 2 $it")
+        } ?:  Log.d("TAG", "abcd 4444")
+        //  mSocket?.connect()
+        mSocket?.open()*/
+
+     /*   socketManager.connect {
+            socketManager.socketInstance()?.on(SEARCH_DRIVERS){
+                Log.d("SOCKET", "The data is $it")
+            }
+            Log.d("SOCKET", "The socket bool is ${socketManager.socketInstance()?.connected()}")
+         //   socketManager.socketInstance()?.listeners(SEARCH_DRIVERS)
+        }*/
+
+
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)

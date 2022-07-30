@@ -2,6 +2,7 @@ package com.mevron.rides.rider.socket.data
 
 import android.util.Log
 import com.google.gson.Gson
+import com.mevron.rides.rider.domain.IOpenBookedStateRepository
 import com.mevron.rides.rider.domain.ITripStateRepository
 import com.mevron.rides.rider.domain.TripState
 import com.mevron.rides.rider.sharedprefrence.domain.repository.IPreferenceRepository
@@ -13,10 +14,7 @@ import com.mevron.rides.rider.socket.domain.SEARCH_DRIVERS
 import com.mevron.rides.rider.socket.domain.SocketEvent
 import com.mevron.rides.rider.socket.domain.TRIP_STATE_MACHINE
 import com.mevron.rides.rider.socket.domain.TRIP_STATUS
-import com.mevron.rides.rider.socket.domain.models.DriverSearchData
-import com.mevron.rides.rider.socket.domain.models.NearByDriversData
-import com.mevron.rides.rider.socket.domain.models.StateMachineData
-import com.mevron.rides.rider.socket.domain.models.TripStatus
+import com.mevron.rides.rider.socket.domain.models.*
 import com.mevron.rides.rider.util.Constants
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -28,41 +26,51 @@ private const val TAG = "SocketManager"
 
 class SocketManager(
     private val preferenceRepository: IPreferenceRepository,
-    private val tripStateRepository: ITripStateRepository
+    private val tripStateRepository: ITripStateRepository,
+    private val openBookedStateRepository: IOpenBookedStateRepository
 ) : ISocketManager {
 
-    private lateinit var socket: Socket
+    private var socket: Socket? = null
 
-    override fun connect(): Boolean {
+    override fun socketInstance(): Socket? = socket
+
+    override fun connect(next: () -> Unit): Boolean {
         try {
             socket = IO.socket(URL)
             Log.d(TAG, "Connecting socket")
+
         } catch (e: URISyntaxException) {
             Log.e(TAG, "Error Connecting socket $e")
             return false
         }
 
-        observeConnectedEvent()
-        observeTripStatusEvent()
-        observeSearchingDriverEvent()
-        observeNearByDrivers()
-        observeStateMachine()
+        observeConnectedEvent(next)
 
-        socket.open()
+        socket?.open()
         return true
     }
 
-    private fun observeConnectedEvent() {
-        socket.on(EVENT_STARTED) {
-            Log.d(TAG, "connected")
+    private fun observeConnectedEvent(next: () -> Unit) {
+        Log.d(TAG, "searching drivers uyuy 2")
+        socket?.on(EVENT_STARTED) {
+            Log.d(TAG, "connected $it")
             val uuid = preferenceRepository.getStringForKey(Constants.UUID)
-            val type = "rider"
-            socket.emit(CONNECTED, Connected.toData(arrayOf("uuid", "type"), arrayOf(uuid, type)))
+            socket?.emit(CONNECTED, "{\"uuid\":\"${uuid}\", \"type\": \"rider\"}")
+            // socket?.emit(CONNECTED, Connected.toData(arrayOf("uuid", "type"), arrayOf(uuid, type)))
+           // observeTripStatusEvent()
+            observeSearchingDriverEvent()
+            observeNearByDrivers()
+            observeStateMachine()
+           print ("121212122 ${socket?.connected()}")
+            Log.d("SOCKET", "The socket bool is 1 ${socket?.connected()}")
+            next()
         }
+
     }
 
     private fun observeSearchingDriverEvent() {
-        socket.on(SEARCH_DRIVERS) {
+        socket?.on(SEARCH_DRIVERS) {
+            Log.d(TAG, "searching drivers uyuy 1")
             if (it.isNotEmpty()) {
                 try {
                     val data = it[0].toString()
@@ -71,14 +79,18 @@ class SocketManager(
                     Log.d(TAG, "searching drivers $driverSearchData")
                     tripStateRepository.setTripState(TripState.DriverSearchState(driverSearchData))
                 } catch (error: Throwable) {
+                    Log.d(TAG, "searching drivers error")
                     Log.e(TAG, "Error parsing searching drivers $error")
                 }
+            }else{
+                Log.d(TAG, "searching drivers empty")
+
             }
         }
     }
 
     private fun observeNearByDrivers() {
-        socket.on(SEARCH_DRIVERS) {
+        socket?.on(SEARCH_DRIVERS) {
             if (it.isNotEmpty()) {
                 try {
                     val data = it[0].toString()
@@ -94,12 +106,12 @@ class SocketManager(
     }
 
     private fun observeStateMachine() {
-        socket.on(TRIP_STATE_MACHINE) {
+        socket?.on(TRIP_STATE_MACHINE) {
             try {
                 if (it.isNotEmpty()) {
                     val data = it[0].toString()
                     val gson = Gson()
-                    val stateMachineData = gson.fromJson(data, StateMachineData::class.java)
+                    val stateMachineData = gson.fromJson(data, StateMachineSocketResponse::class.java)
                     tripStateRepository.setTripState(TripState.StateMachineState(stateMachineData))
                     Log.d(TAG, "StateMachine: $stateMachineData")
                 }
@@ -110,14 +122,15 @@ class SocketManager(
     }
 
     private fun observeTripStatusEvent() {
-        socket.on(TRIP_STATUS) {
+        socket?.on(TRIP_STATUS) {
             if (it.isNotEmpty()) {
                 try {
-                    val data = it[0].toString()
-                    val gson = Gson()
-                    val tripStatus = gson.fromJson(data, TripStatus::class.java)
-                    Log.d(TAG, "Trip Status $tripStatus")
-                    tripStateRepository.setTripState(TripState.TripStatusState(tripStatus))
+                 //   val data = it[0].toString()
+                   // val gson = Gson()
+                  //  val tripStatus = gson.fromJson(data, TripStatus::class.java)
+                    Log.d(TAG, "Trip Status $it")
+                    openBookedStateRepository.setTripState(true)
+                  //  tripStateRepository.setTripState(TripState.RideAccepted)
                 } catch (error: Throwable) {
                     Log.e(TAG, "Error observingTripStatus $error")
                 }
@@ -127,12 +140,13 @@ class SocketManager(
 
     override fun <T> emitEvent(event: SocketEvent, data: T) {
         val gson = Gson()
-        socket.emit(event.name, gson.toJson(data))
+        socket?.emit(event.name, gson.toJson(data))
     }
 
     override fun disconnect(): Boolean {
-        if (socket.isActive) {
-            socket.disconnect()
+        Log.d(TAG, "disconnected sockeket")
+        if (socket?.isActive == true) {
+            socket?.disconnect()
             return true
         }
 

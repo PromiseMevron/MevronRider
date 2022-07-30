@@ -62,7 +62,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/you_ll_reach_the_destination_by_03_24_pm"
+            tools:text="@string/you_ll_reach_the_destination_by_03_24_pm"
             android:textAllCaps="false"
             android:textColor="#2A2A72"
             android:visibility="visible"
@@ -156,7 +156,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fairmont Cafe"
+        tools:text="Fairmont Cafe"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:fontFamily="@font/poppins_regular"
@@ -217,7 +217,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Barry John "
+        tools:text="Barry John "
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -234,7 +234,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Honda Civic • LHC-8595"
+        tools:text="Honda Civic • LHC-8595"
         android:textAllCaps="false"
         android:textColor="#9C9C9C"
         android:fontFamily="@font/poppins_regular"
@@ -295,7 +295,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.5"
+                tools:text="4.5"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
 
@@ -352,7 +352,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Visa ••••1234"
+        tools:text="Visa ••••1234"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -398,7 +398,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Base Fare"
+        tools:text="Base Fare"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -415,7 +415,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -432,7 +432,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Booking Fare"
+        tools:text="Booking Fare"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -449,7 +449,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -466,7 +466,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Promo"
+        tools:text="Promo"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -483,7 +483,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#0B973A"
         android:fontFamily="@font/poppins_regular"
@@ -517,7 +517,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"

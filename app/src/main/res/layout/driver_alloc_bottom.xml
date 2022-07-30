@@ -117,7 +117,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5"
+                tools:text="5"
                 android:textAllCaps="false"
                 android:textAlignment="center"
                 android:textColor="#ffffff"
@@ -154,7 +154,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Barry John "
+        tools:text="Barry John "
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -171,7 +171,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Honda Civic • LHC-8595"
+        tools:text="Honda Civic • LHC-8595"
         android:textAllCaps="false"
         android:textColor="#9C9C9C"
         android:fontFamily="@font/poppins_regular"
@@ -179,7 +179,6 @@
         android:textSize="@dimen/_11ssp"
         android:lineHeight="@dimen/_22sdp"
         android:id="@+id/driver_car"
-
         app:layout_constraintTop_toBottomOf="@id/driver_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/_2sdp"
@@ -261,7 +260,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.5"
+                tools:text="4.5"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
 
@@ -319,7 +318,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2345"
+            tools:text="2345"
             android:textAllCaps="false"
             android:textColor="#0B973A"
             android:fontFamily="@font/poppins_regular"
@@ -430,7 +429,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fairmont Cafe"
+        tools:text="Fairmont Cafe"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:fontFamily="@font/poppins_regular"
@@ -446,7 +445,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="86706 Kuhic Trafficway, Phenix City, AL"
+        tools:text="86706 Kuhic Trafficway, Phenix City, AL"
         android:textAllCaps="false"
         android:textColor="#9C9C9C"
         android:fontFamily="@font/poppins_regular"
@@ -484,7 +483,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fairmont Cafe"
+        tools:text="Fairmont Cafe"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:fontFamily="@font/poppins_regular"
@@ -500,7 +499,7 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="86706 Kuhic Trafficway, Phenix City, AL"
+        tools:text="86706 Kuhic Trafficway, Phenix City, AL"
         android:textAllCaps="false"
         android:textColor="#9C9C9C"
         android:fontFamily="@font/poppins_regular"
@@ -559,7 +558,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Visa ••••1234"
+        tools:text="Visa ••••1234"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -605,7 +604,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Base Fare"
+        tools:text="Base Fare"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -622,7 +621,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -639,7 +638,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Booking Fare"
+        tools:text="Booking Fare"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -656,7 +655,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -673,7 +672,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Promo"
+        tools:text="Promo"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"
@@ -690,7 +689,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#0B973A"
         android:fontFamily="@font/poppins_regular"
@@ -724,7 +723,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$12.50"
+        tools:text="$12.50"
         android:textAllCaps="false"
         android:textColor="#383838"
         android:fontFamily="@font/poppins_regular"

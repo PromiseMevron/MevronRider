@@ -85,6 +85,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.updateLocationStatus()
+        viewModel.setUpPaymentMethod("cash")
         lifecycleScope.launch {
             viewModel.uiState.collect {
 

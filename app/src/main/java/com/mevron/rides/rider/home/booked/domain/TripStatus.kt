@@ -4,7 +4,7 @@ enum class TripStatus(val status: String) {
     ACCEPTED("accepted"),
     DRIVER_ARRIVED("driver_arrived"),
     TRIP_STARTED("trip_began"),
-    TRIP_COMPLETED("trip_completed"),
+    TRIP_COMPLETED("completed"),
     START_RIDE("start_ride"),
     UNKNOWN("unknown")
 }

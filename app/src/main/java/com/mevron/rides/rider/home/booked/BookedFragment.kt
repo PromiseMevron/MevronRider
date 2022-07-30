@@ -20,6 +20,7 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -41,24 +42,28 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
+import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
+import com.mevron.rides.rider.socket.domain.models.MetaData
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.getGeoLocation
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     companion object {
         fun newInstance() = BookedFragment()
     }
 
-    private lateinit var viewModel: BookedViewModel
+    private val viewModel: BookedViewModel by viewModels()
     private lateinit var binding: BookedFragmentBinding
     private lateinit var driverAllBottomSheetBehavior: BottomSheetBehavior<ScrollView>
     private lateinit var onRideBottomSheetBehavior: BottomSheetBehavior<ScrollView>
@@ -88,7 +93,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         return binding.root
     }
 
-    private fun bindDriverArrived() {
+    private fun bindDriverArrived(data: MetaData?) {
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         binding.bookedHomeBottom.text1.visibility = View.GONE
         binding.bookedHomeBottom.text2.visibility = View.GONE
@@ -98,26 +103,81 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding.bookedHomeBottom.driverLinera.visibility = View.GONE
     }
 
-    private fun bindTripStarted() {
+    private fun bindTripStarted(data: MetaData?) {
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         driverAllBottomSheetBehavior.isHideable = true
         onRideBottomSheetBehavior.isHideable = false
         binding.verifiedCode.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        binding.bookedOnrideBottom.pickName.text = ""
+        binding.bookedOnrideBottom.text22.text = "fix up arriving time"
+        binding.bookedOnrideBottom.cardNumber.text = data?.paymentMethod?.type
+        binding.bookedOnrideBottom.userRating.text = data?.driver?.rating
+        binding.bookedOnrideBottom.pickAddress.text = data?.trip?.pickupAddress
+        binding.bookedOnrideBottom.driverName.text = "${data?.driver?.firstName} ${data?.driver?.lastName}"
+        binding.bookedOnrideBottom.driverCar.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
+        if (data?.fare?.isEmpty() == false){
+            data.fare.let {
+                binding.bookedOnrideBottom.baseFareText.text = it[0].name
+                binding.bookedOnrideBottom.baseFare.text == it[0].amount
+                if (it.size > 1 ){
+                    binding.bookedOnrideBottom.bookingFareText.text = it[1].name
+                    binding.bookedOnrideBottom.bookingFare.text = it[1].amount
+                }
+                if (it.size > 2 ){
+                    binding.bookedOnrideBottom.promoText.text = it[2].name
+                    binding.bookedOnrideBottom.promo.text = it[2].amount
+                }
+            }
+
+        }
+
     }
 
-    private fun bindTripCompleted() {
+    private fun bindTripCompleted(data: MetaData?) {
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         binding.verifiedCode.visibility = View.GONE
         onRideBottomSheetBehavior.isHideable = true
         reachedBottomSheetBehavior.isHideable = false
         onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        binding.bookedArrivedBottom.pickName.text = ""
+        binding.bookedArrivedBottom.pickAddress.text = data?.trip?.pickupAddress
     }
 
     private fun bindStartRide() {
         binding.verifiedCode.visibility = View.VISIBLE
+    }
+
+    private fun setUpDefaultView(data: MetaData?) {
+        binding.bookedHomeBottom.optNum.text = data?.trip?.verificationCode
+        binding.bookedHomeBottom.pickName.text = ""
+        binding.bookedHomeBottom.dropName.text = ""
+        binding.bookedHomeBottom.cardNumber.text = data?.paymentMethod?.type
+        binding.bookedHomeBottom.userRating.text = data?.driver?.rating
+        binding.bookedHomeBottom.pickAddress.text = data?.trip?.pickupAddress
+        binding.bookedHomeBottom.dropAddress.text = data?.trip?.destinationAddress
+        binding.bookedHomeBottom.time.text = data?.trip?.estimatedPickupTime?.toString()
+        binding.bookedHomeBottom.driverName.text = "${data?.driver?.firstName} ${data?.driver?.lastName}"
+        binding.bookedHomeBottom.driverCar.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
+        if (data?.fare?.isEmpty() == false){
+            data.fare.let {
+                binding.bookedHomeBottom.baseFareText.text = it[0].name
+                binding.bookedHomeBottom.baseFare.text == it[0].amount
+                if (it.size > 1 ){
+                    binding.bookedHomeBottom.bookingFareText.text = it[1].name
+                    binding.bookedHomeBottom.bookingFare.text = it[1].amount
+                }
+                if (it.size > 2 ){
+                    binding.bookedHomeBottom.promoText.text = it[2].name
+                    binding.bookedHomeBottom.promo.text = it[2].amount
+                }
+            }
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -139,16 +199,17 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        viewModel.setEvent(BookedTripEvent.RequestTripStatus)
 
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
                 when (uiState.currentStatus) {
-                    TripStatus.DRIVER_ARRIVED -> bindDriverArrived()
-                    TripStatus.TRIP_STARTED -> bindTripStarted()
-                    TripStatus.TRIP_COMPLETED -> bindTripCompleted()
+                    TripStatus.DRIVER_ARRIVED -> bindDriverArrived(data = uiState.metaData)
+                    TripStatus.TRIP_STARTED -> bindTripStarted(data = uiState.metaData)
+                    TripStatus.TRIP_COMPLETED -> bindTripCompleted(data = uiState.metaData)
                     TripStatus.START_RIDE -> bindStartRide()
                     TripStatus.ACCEPTED -> {
-                        /** do nothing **/
+                        setUpDefaultView(data = uiState.metaData)
                     }
                     TripStatus.UNKNOWN -> {
                         /** Do nothing **/

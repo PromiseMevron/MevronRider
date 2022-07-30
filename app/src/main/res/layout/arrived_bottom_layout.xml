@@ -109,7 +109,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fairmont Cafe"
+            tools:text="Fairmont Cafe"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_regular"
@@ -125,7 +125,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="86706 Kuhic Trafficway, Phenix City, AL"
+            tools:text="86706 Kuhic Trafficway, Phenix City, AL"
             android:textAllCaps="false"
             android:textColor="#9C9C9C"
             android:fontFamily="@font/poppins_regular"

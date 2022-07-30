@@ -7,7 +7,7 @@ data class RideDomainData(
     val destinationLatitude: String,
     val destinationLongitude: String,
     val endTime: String,
-    val estimatedDistance: Int,
+    val estimatedDistance: String,
     val id: Int,
     val maxEstimatedCost: Int,
     val minEstimatedCost: Int,

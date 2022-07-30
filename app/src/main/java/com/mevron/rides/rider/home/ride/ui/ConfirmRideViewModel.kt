@@ -1,8 +1,11 @@
 package com.mevron.rides.rider.home.ride.ui
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.domain.IOpenBookedStateRepository
 import com.mevron.rides.rider.domain.TripState
+import com.mevron.rides.rider.domain.usecase.GetOpenBookUseCase
 import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.home.booked.domain.TripStatus
@@ -21,7 +24,9 @@ class ConfirmRideViewModel @Inject constructor(
     private val makeRideRequestUseCase: MakeRideRequestUseCase,
     private val preferenceRepo: IPreferenceRepository,
     private val getTripStateUseCase: GetTripStateUseCase,
+    private val openBookedUseCase: GetOpenBookUseCase,
     private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
+    private val openBookedStateRepository: IOpenBookedStateRepository
 ) : BaseViewModel<ConfirmRideState, ConfirmRideEvent>() {
 
     override fun createInitialState(): ConfirmRideState = ConfirmRideState.EMPTY
@@ -36,7 +41,7 @@ class ConfirmRideViewModel @Inject constructor(
         viewModelScope.launch {
             getTripStateUseCase().collect { tripState ->
 
-                if (tripState is TripState.TripStatusState) {
+               /* if (tripState is TripState.TripStatusState) {
                     val tripStatus = tripState.data.metaData
                     if (tripStatus.status == TripStatus.ACCEPTED.status) {
                         setState {
@@ -51,13 +56,38 @@ class ConfirmRideViewModel @Inject constructor(
                             )
                         }
                     }
+                }*/
+
+                if (tripState is TripState.RideAccepted) {
+                    Log.d("ssss", "wewewe 11")
+                    setState { copy(isBookingConfirmed = true) }
                 }
 
-                if (tripState is TripState.DriverSearchState) {
-                    setState { copy(isSearchingDrivers = true) }
+                if (tripState is TripState.StateMachineState) {
+                    if (tripState.data != null){
+                        if (tripState.data.meta_data != null){
+                            Log.d("ssss", "wewewe 12 ${tripState.data.meta_data.status}")
+                            if (tripState.data.meta_data.status == "accepted")
+                                setState { copy(isBookingConfirmed = true) }
+                        }
+
+                    }
+
                 }
+
+             /*   if (tripState is TripState.DriverSearchState) {
+                  //  setState { copy(isSearchingDrivers = true) }
+                }*/
+            }
+            openBookedUseCase().collect {
+                Log.d("ssss", "wewewe")
+                setState { copy(isBookingConfirmed = it) }
             }
         }
+    }
+
+    fun updateOpenBooked() {
+       // openBookedStateRepository.setTripState(false)
     }
 
     fun updateOrderParamStatus() {

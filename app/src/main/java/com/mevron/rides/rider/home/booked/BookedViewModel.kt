@@ -8,10 +8,13 @@ import com.mevron.rides.rider.home.booked.domain.BookedTripState
 import com.mevron.rides.rider.home.booked.domain.UNDEFINED_COORDINATE
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
 import com.mevron.rides.rider.shared.ui.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BookedViewModel(
+@HiltViewModel
+class BookedViewModel @Inject constructor(
     private val getTripStateUseCase: GetTripStateUseCase
 ) : BaseViewModel<BookedTripState, BookedTripEvent>() {
 
@@ -20,7 +23,7 @@ class BookedViewModel(
     private fun getTripState() {
         viewModelScope.launch {
             getTripStateUseCase().collect { tripState ->
-                if (tripState is TripState.TripStatusState) {
+            /*    if (tripState is TripState.TripStatusState) {
                     setState {
                         copy(
                             currentStatus = tripState.data.metaData.status.toTripStatus(),
@@ -32,7 +35,16 @@ class BookedViewModel(
                             destinationAddress = tripState.data.metaData.trip.destinationAddress
                         )
                     }
+                }*/
+                if (tripState is TripState.StateMachineState){
+                    setState {
+                        copy(
+                            currentStatus = tripState.data.meta_data.status.toTripStatus(),
+                            metaData = tripState.data.meta_data
+                        )
+                    }
                 }
+
             }
         }
     }

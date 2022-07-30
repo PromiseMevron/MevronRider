@@ -3,6 +3,9 @@ package com.mevron.rides.rider.home.ride
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -30,13 +29,20 @@ import com.mevron.rides.rider.home.ride.ui.ConfirmRideViewModel
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
+import com.mevron.rides.rider.socket.domain.CONNECTED
+import com.mevron.rides.rider.socket.domain.Connected
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.displayLocationSettingsRequest
 import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
+import io.socket.client.IO
+import io.socket.client.Socket
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.net.URISyntaxException
+
 
 @AndroidEntryPoint
 class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
@@ -60,9 +66,30 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+       /* var mSocket: Socket? = null
+
+        try {
+            mSocket = IO.socket("http://staging.mevron.com:8086")
+            Log.d("TAG", "Connecting socket")
+
+        } catch (e: URISyntaxException) {
+            Log.d("TAG", "Error Connecting socket $e")
+        }
+        mSocket?.on("event") {
+            Log.d("TAG", "abcd $it")
+            val type = "rider"
+            val json = JSONObject(Connected.toData(arrayOf("uuid", "type"), arrayOf("c83be6ac-9b7e-4033-b0d7-1e7ea2e21a9c", type))).toString()
+            mSocket.emit(CONNECTED, "{\"uuid\":\"c83be6ac-9b7e-4033-b0d7-1e7ea2e21a9c\", \"type\": \"rider\"}")
+        } ?:  Log.d("TAG", "abcd 333")
+        //search_drivers
+        mSocket?.on("search_drivers") {
+            Log.d("TAG", "abcd 2 $it")
+        } ?:  Log.d("TAG", "abcd 4444")
+        //  mSocket?.connect()
+        mSocket?.open()*/
+
         binding =
             DataBindingUtil.inflate(inflater, R.layout.confirm_ride_fragment, container, false)
-
         return binding.root
     }
 
@@ -103,9 +130,10 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                         )
                     findNavController().navigate(action)
                     viewModel.setState { copy(isBookingConfirmed = false) }
+                    viewModel.updateOpenBooked()
                 }
 
-                if (uiState.isSearchingDrivers) {
+                if (uiState.isRideConfirmed) {
                     binding.findingFoundDriver.visibility = View.VISIBLE
                     binding.confirmingDriver.visibility = View.GONE
                 } else {
@@ -114,7 +142,6 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-
         viewModel.setEvent(ConfirmRideEvent.ConfirmRideRequest)
         viewModel.setEvent(ConfirmRideEvent.CollectSocketData)
     }
