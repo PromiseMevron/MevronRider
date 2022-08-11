@@ -2,10 +2,12 @@ package com.mevron.rides.rider.payment.data
 
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.home.model.AddCard
+import com.mevron.rides.rider.home.model.GetLinkAmount
 import com.mevron.rides.rider.payment.domain.IPaymentOptionsRepository
 import com.mevron.rides.rider.payment.domain.PaymentCardDomainModel
 import com.mevron.rides.rider.home.model.getCard.Data
 import com.mevron.rides.rider.payment.domain.PaymentCard
+import com.mevron.rides.rider.payment.domain.PaymentLinkDomain
 
 // TODO add unit test for this class
 class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOptionsRepository {
@@ -51,6 +53,23 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             DomainModel.Error(Throwable("Error fetching cards $error"))
         }
     }
+
+    override suspend fun getPaymentLink(data: GetLinkAmount): DomainModel {
+        return try {
+            val response = api.getPaymentLink(data = data)
+            if (response.isSuccessful) {
+                DomainModel.Success(
+                    data = PaymentLinkDomain(response.body()?.link ?: "")
+                 /*   response.body()?.success?.data?.toDomainModel()
+                        ?: PaymentCardDomainModel()*/
+                )
+            } else {
+                DomainModel.Error(Throwable(response.errorBody().toString()))
+            }
+        } catch (error: Throwable) {
+            DomainModel.Error(Throwable("Error adding cards $error"))
+        }
+    }
 }
 
 private fun List<Data>.toDomainModel(): PaymentCardDomainModel {
@@ -69,3 +88,5 @@ private fun Data.toDomainModel(): PaymentCard =
         type = type,
         uuid = uuid
     )
+
+

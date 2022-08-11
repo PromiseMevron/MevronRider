@@ -5,6 +5,14 @@ xmlns:tools="http://schemas.android.com/tools"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 tools:context=".payment.SavedPaymentFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:background="#ffffff"
@@ -60,6 +68,7 @@ tools:context=".payment.SavedPaymentFragment">
         android:lineHeight="@dimen/_22sdp"
         android:textColor="#383838"
         tools:targetApi="p" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -225,10 +234,15 @@ tools:context=".payment.SavedPaymentFragment">
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/webView"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

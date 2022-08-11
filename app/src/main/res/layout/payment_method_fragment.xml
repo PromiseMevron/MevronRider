@@ -19,7 +19,7 @@
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="@dimen/_16sdp"
         android:contentDescription="@string/back_button"
         android:id="@+id/back_button"/>
@@ -166,6 +166,13 @@
             tools:targetApi="p" />
 
     </LinearLayout>
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:id="@+id/webView"
+        android:visibility="gone"/>
 
 
 

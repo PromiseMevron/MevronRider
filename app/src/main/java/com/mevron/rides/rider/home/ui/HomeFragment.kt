@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,6 +95,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronHomeBottom.bottomSheet)
         setUpAdapter()
         getAddress()
+        viewModel.setEvent(HomeEvent.ObserveTripState)
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
@@ -108,6 +110,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                 }
 
                 if (it.shouldOpenBookedRide) {
+                    Log.d("sdsdd", "sdsdss 2")
                     findNavController().navigate(R.id.action_global_bookedFragment)
                     viewModel.resolveOpenBookedRide()
                 }

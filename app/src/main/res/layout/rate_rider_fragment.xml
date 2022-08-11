@@ -7,6 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@color/white"
+        android:id="@+id/root_view"
         android:layout_height="match_parent">
 
         <ImageButton
@@ -39,7 +41,7 @@
             android:layout_marginTop="@dimen/_14sdp"
             android:fontFamily="@font/poppins_regular"
             android:lineHeight="@dimen/_32sdp"
-            android:text="How was your ride with Barry?"
+            tools:text="How was your ride with Barry?"
             android:textColor="#383838"
             android:textSize="@dimen/_18ssp"
             android:textStyle="bold"
@@ -74,7 +76,8 @@
             android:layout_marginTop="@dimen/_25sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             android:numStars="5"
-            android:rating="4"
+            tools:rating="4"
+            android:id="@+id/rating"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/schedule_date" />

@@ -94,6 +94,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun bindDriverArrived(data: MetaData?) {
+        binding.tipDriverLayout.rootView.visibility = View.GONE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         binding.bookedHomeBottom.text1.visibility = View.GONE
         binding.bookedHomeBottom.text2.visibility = View.GONE
@@ -103,7 +105,35 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding.bookedHomeBottom.driverLinera.visibility = View.GONE
     }
 
+    private fun bindRateDriver(data: MetaData?){
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.verifiedCode.visibility = View.GONE
+        onRideBottomSheetBehavior.isHideable = true
+        reachedBottomSheetBehavior.isHideable = false
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        onRideBottomSheetBehavior.isHideable = true
+        emergedBottomSheetBehavior.isHideable = true
+        reachedBottomSheetBehavior.isHideable = true
+        driverAllBottomSheetBehavior.isHideable = true
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        binding.tipDriverLayout.nameDisplay.text = "How was your ride with ${data?.driver?.firstName}?"
+
+        binding.ratingDriverLayout.rating.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+            binding.tipDriverLayout.rating.rating = rating
+            binding.tipDriverLayout.rootView.visibility = View.VISIBLE
+            binding.ratingDriverLayout.rootView.visibility = View.GONE
+        }
+    }
+
     private fun bindTripStarted(data: MetaData?) {
+        binding.tipDriverLayout.rootView.visibility = View.GONE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         driverAllBottomSheetBehavior.isHideable = true
         onRideBottomSheetBehavior.isHideable = false
@@ -137,6 +167,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun bindTripCompleted(data: MetaData?) {
+        binding.tipDriverLayout.rootView.visibility = View.GONE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         binding.verifiedCode.visibility = View.GONE
         onRideBottomSheetBehavior.isHideable = true
@@ -149,10 +181,14 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun bindStartRide() {
+        binding.tipDriverLayout.rootView.visibility = View.GONE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
         binding.verifiedCode.visibility = View.VISIBLE
     }
 
     private fun setUpDefaultView(data: MetaData?) {
+        binding.tipDriverLayout.rootView.visibility = View.GONE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
         binding.bookedHomeBottom.optNum.text = data?.trip?.verificationCode
         binding.bookedHomeBottom.pickName.text = ""
         binding.bookedHomeBottom.dropName.text = ""
@@ -160,7 +196,18 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding.bookedHomeBottom.userRating.text = data?.driver?.rating
         binding.bookedHomeBottom.pickAddress.text = data?.trip?.pickupAddress
         binding.bookedHomeBottom.dropAddress.text = data?.trip?.destinationAddress
-        binding.bookedHomeBottom.time.text = data?.trip?.estimatedPickupTime?.toString()
+        val timeSplit = data?.trip?.estimatedPickupTime?.toString()?.split(" ")
+        //data?.trip?.estimatedPickupTime?.toString()
+        if (timeSplit?.isEmpty() == false){
+            binding.bookedHomeBottom.time.text = timeSplit[0]
+        }else{
+            binding.bookedHomeBottom.time.text = data?.trip?.estimatedPickupTime?.toString()
+        }
+
+        if ((timeSplit?.size ?: 0) > 1){
+            binding.bookedHomeBottom.timeType.text = timeSplit?.get(1)
+        }
+
         binding.bookedHomeBottom.driverName.text = "${data?.driver?.firstName} ${data?.driver?.lastName}"
         binding.bookedHomeBottom.driverCar.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
         if (data?.fare?.isEmpty() == false){

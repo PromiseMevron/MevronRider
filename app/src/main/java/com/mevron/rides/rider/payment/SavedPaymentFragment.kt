@@ -1,35 +1,39 @@
 package com.mevron.rides.rider.payment
 
 import android.app.Dialog
-import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.flutterwave.raveandroid.RavePayActivity
-import com.flutterwave.raveandroid.RaveUiManager
-import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SavedPaymentFragmentBinding
-import com.mevron.rides.rider.home.model.AddCard
 import com.mevron.rides.rider.home.model.getCard.Data
-import com.mevron.rides.rider.remote.GenericStatus
+import com.mevron.rides.rider.payment.domain.PaymentCard
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class SavedPaymentFragment : Fragment(), PaySelected2 {
+class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedListener {
 
     private val viewModel: SavedPaymentViewModel by viewModels()
     private lateinit var binding: SavedPaymentFragmentBinding
-    var ref = "txRef 1111 dgd"
     private var mDialog: Dialog? = null
-    private lateinit var adapter: PaymentAdapter2
+    private lateinit var adapter: PaymentAdapter
 
     companion object {
         fun newInstance() = SavedPaymentFragment()
@@ -46,134 +50,125 @@ class SavedPaymentFragment : Fragment(), PaySelected2 {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.settings.builtInZoomControls = true
+        binding.webView.settings.useWideViewPort = true
+
+        adapter = PaymentAdapter(this@SavedPaymentFragment, -1)
+        binding.recyclerView.adapter = adapter
         binding.backButton.setOnClickListener {
-            activity?.onBackPressed()
+            if (binding.webView.visibility == View.GONE) {
+                activity?.onBackPressed()
+            } else {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
+                } else {
+                    binding.webView.visibility = View.GONE
+                }
+            }
         }
-        getCards()
-
         binding.credit.setOnClickListener {
-            RaveUiManager(this).setAmount(100.0)
-                .setCurrency("NGN")
-                .setEmail("occ@dd.com")
-                .setfName("Promise")
-                .setlName("Ochornma")
-                .setPublicKey("FLWPUBK_TEST-51e5d0f6c6a58ee544f762c74dc0a3ad-X")
-                .setEncryptionKey("FLWSECK_TESTae2b068106c0")
-                .setTxRef(ref)
-                .acceptAccountPayments(false)
-                .acceptCardPayments(true)
-                .acceptMpesaPayments(false)
-                .acceptAchPayments(false)
-                .acceptGHMobileMoneyPayments(false)
-                .acceptUgMobileMoneyPayments(false)
-                .acceptZmMobileMoneyPayments(false)
-                .acceptRwfMobileMoneyPayments(false)
-                .acceptSaBankPayments(false)
-                .acceptUkPayments(false)
-                .allowSaveCardFeature(false)
-                .acceptBankTransferPayments(false)
-                .acceptUssdPayments(false)
-                .acceptBarterPayments(false)
-                .acceptFrancMobileMoneyPayments(false, "NG")
-                .onStagingEnv(true)
-                .showStagingLabel(false)
-                .withTheme(R.style.MyCustomTheme)
-                .initialize()
+            viewModel.updateState(amount = "100")
+            viewModel.getPayLink()
         }
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        viewModel.getPaymentMethods()
 
-        if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
-            val message = data.getStringExtra("response")
-            if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-                addCard(ref)
-            } else if (resultCode == RavePayActivity.RESULT_ERROR) {
-                Toast.makeText(context, "ERROR $message", Toast.LENGTH_SHORT).show()
-            } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
-                Toast.makeText(context, "CANCELLED $message", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
+        lifecycleScope.launchWhenResumed {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    toggleBusyDialog(
+                        state.isLoading,
+                        desc = if (state.isLoading) "Processing..." else null
+                    )
+                    adapter = PaymentAdapter(this@SavedPaymentFragment, -1)
+                    binding.recyclerView.adapter = adapter
+                    adapter.submitList(state.paymentCards)
 
-
-    fun addCard(ref: String){
-
-        toggleBusyDialog(true,"Adding card...")
-        val data = AddCard(ref)
-
-        viewModel.addCard(data).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-
-            it.let {  res ->
-                when(res){
-
-                    is  GenericStatus.Success ->{
-                        toggleBusyDialog(false)
-                        getCards()
-                        Toast.makeText(context, res.data?.success?.message, Toast.LENGTH_LONG).show()
+                    if (state.error.isNotEmpty()) {
+                        Log.d("Failure", state.error)
+                        Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
                     }
 
-                    is  GenericStatus.Error ->{
-                        toggleBusyDialog(false)
-                        Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG).show()
-                    }
-
-                    is GenericStatus.Unaunthenticated -> {
-                        toggleBusyDialog(false)
+                    if (state.paymentLink.isNotEmpty()) {
+                        loadWebView(state.paymentLink)
+                        binding.webView.visibility = View.VISIBLE
+                        viewModel.updateState(payLink = "")
                     }
                 }
             }
-        })
+        }
 
     }
 
-    fun getCards(){
-        viewModel.getACards().observe(viewLifecycleOwner, androidx.lifecycle.Observer  {
-            it.let {  res ->
-                when(res){
-
-                    is  GenericStatus.Success ->{
-                      adapter = res.data?.success?.data?.let { it1 -> PaymentAdapter2(this, it1) }!!
-                        binding.recyclerView.adapter = adapter
-
-                    }
-
-                    is  GenericStatus.Error ->{
-
-                        Toast.makeText(context, res.error?.error?.message ?: "Error in fetching cards", Toast.LENGTH_LONG).show()
-                    }
-
-                    is GenericStatus.Unaunthenticated -> {
-                        toggleBusyDialog(false)
-                    }
-                }
+    private fun loadWebView(webUrl: String) {
+        binding.webView.loadUrl(webUrl)
+        binding.webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val url = request?.url.toString()
+                view?.loadUrl(url)
+                return super.shouldOverrideUrlLoading(view, request)
             }
-        })
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+            }
+
+            override fun onReceivedError(
+                view: WebView,
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {
+                super.onReceivedError(view, request, error)
+            }
+        }
     }
 
-
-    private fun toggleBusyDialog(busy: Boolean, desc: String? = null){
-        if(busy){
-            if(mDialog == null){
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
                 val view = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.dialog_busy_layout,null)
-                mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
-            }else{
-                if(!desc.isNullOrBlank()){
-                    val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout,null)
-                    mDialog = LauncherUtil.showPopUp(requireContext(),view,desc)
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
                 }
             }
             mDialog?.show()
-        }else{
+        } else {
             mDialog?.dismiss()
         }
     }
 
     override fun selected(data: Data) {
-        val action = SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
+        val action =
+            SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
+        findNavController().navigate(action)
+    }
+
+    override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
+        val data = Data(
+            bin = paymentCard.bin,
+            brand = paymentCard.brand,
+            expiryMonth = paymentCard.expiryMonth,
+            expiryYear = paymentCard.expiryYear,
+            uuid = paymentCard.uuid,
+            lastDigits = paymentCard.lastDigits,
+            type = paymentCard.type
+        )
+        val action =
+            SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
         findNavController().navigate(action)
     }
 

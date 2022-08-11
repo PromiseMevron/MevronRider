@@ -1,40 +1,78 @@
 package com.mevron.rides.rider.payment
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mevron.rides.rider.home.model.AddCard
-import com.mevron.rides.rider.remote.GenericStatus
-import com.mevron.rides.rider.remote.HTTPErrorHandler
-import com.mevron.rides.rider.remote.MevronRepo
-import com.mevron.rides.rider.remote.model.GeneralResponse
+import androidx.lifecycle.viewModelScope
+import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.domain.update
+import com.mevron.rides.rider.home.model.GetLinkAmount
+import com.mevron.rides.rider.payment.domain.GetPaymentLinkUseCase
+import com.mevron.rides.rider.payment.domain.PaymentLinkDomain
+import com.mevron.rides.rider.payment.ui.GetLinkState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PaymentMethodViewModel @Inject constructor (private val repository: MevronRepo) : ViewModel() {
+class PaymentMethodViewModel @Inject constructor(private val useCase: GetPaymentLinkUseCase) :
+    ViewModel() {
 
-    fun getAddresses(data: AddCard): LiveData<GenericStatus<GeneralResponse>> {
+    private val mutableState: MutableStateFlow<GetLinkState> =
+        MutableStateFlow(GetLinkState.EMPTY)
 
-        val result = MutableLiveData<GenericStatus<GeneralResponse>>()
+    val state: StateFlow<GetLinkState>
+        get() = mutableState
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try{
-                val response = repository.addCard(data)
-                if(response.isSuccessful){
-                    result.postValue(GenericStatus.Success(response.body()))
+    fun getPayLink() {
+        updateState(isLoading = true)
+        val request = mutableState.value.toRequest()
+        viewModelScope.launch(Dispatchers.IO) {
+
+            when (val result = useCase(request)) {
+                is DomainModel.Success -> {
+                    val data = result.data as PaymentLinkDomain
+                    updateState(
+                        isLoading = false,
+                        payLink = data.link
+                    )
                 }
-                else{
-                    result.postValue(GenericStatus.Error(HTTPErrorHandler.handleErrorWithCode(response)))
+                is DomainModel.Error -> mutableState.update {
+                    mutableState.value.copy(
+                        isLoading = false,
+                        error = result.buildString()
+                    )
                 }
-            }catch (ex: Exception){
-                ex.printStackTrace()
-                result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
             }
         }
-        return result
     }
+
+    private fun DomainModel.Error.buildString(): String =
+        this.error.localizedMessage ?: "Card Addition Failed"
+
+
+    private fun GetLinkState.toRequest(): GetLinkAmount =
+        GetLinkAmount(
+            amount = this.amount
+        )
+
+
+    fun updateState(
+        payLink: String? = null,
+        isLoading: Boolean? = null,
+        error: String? = null,
+        amount: String? = null
+    ) {
+        val currentValue = mutableState.value
+        mutableState.update {
+            currentValue.copy(
+                paymentLink = payLink ?: currentValue.paymentLink,
+                isLoading = isLoading ?: currentValue.isLoading,
+                error = error ?: currentValue.error,
+                amount = amount ?: currentValue.amount
+            )
+        }
+    }
+
 }

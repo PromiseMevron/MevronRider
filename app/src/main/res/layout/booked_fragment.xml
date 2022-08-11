@@ -70,9 +70,21 @@
             android:visibility="visible" />
 
         <include
+            android:id="@+id/rating_driver_layout"
+            android:visibility="visible"
+            layout="@layout/rate_rider_fragment"/>
+
+        <include
+            android:id="@+id/tip_driver_layout"
+            android:visibility="visible"
+            layout="@layout/add_tip_fragment"/>
+
+        <include
             android:id="@+id/booked_emergency_bottom"
             layout="@layout/emergency_bottom_layout"
             android:visibility="visible" />
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/verified_code"

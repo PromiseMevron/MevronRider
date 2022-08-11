@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home.ui
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
@@ -83,14 +84,24 @@ class HomeViewModel @Inject constructor(
     private fun loadTripState() {
         viewModelScope.launch {
             tripStateUseCase().collect { tripState ->
+                Log.d("sdsdd", "sdsdss 5 $tripState")
                 if (tripState is TripState.NearByDriversState) {
                     setState { copy(markerLocations = tripState.data.locations) }
                 }
                 when (tripState) {
-                    is TripState.StateMachineState -> {}
-
                     is TripState.DriverSearchState -> {
                         setState { copy(shouldOpenConfirmRide = true) }
+                    }
+
+
+                    is TripState.StateMachineState -> {
+                        Log.d("sdsdd", "sdsdss")
+                       val currentStatus = tripState.data.meta_data.status.toTripStatus()
+                        Log.d("sdsdd", "sdsdss 595959m $currentStatus")
+                        if (currentStatus != TripStatus.UNKNOWN){
+                            Log.d("sdsdd", "sdsdss 444")
+                            setState { copy(shouldOpenBookedRide = true) }
+                        }
                     }
 
                     is TripState.TripStatusState -> {
