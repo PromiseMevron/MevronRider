@@ -18,7 +18,9 @@ data class TopUpState(
     val successCard: Boolean,
     val data: List<PaymentBalanceDetailsDomainDatum>,
     val cardData: List<PaymentCard>,
-    val payLink: String
+    val payLink: String,
+    val addCard: Boolean,
+    val shouldGoBack: Boolean
 ){
     companion object {
         val EMPTY = TopUpState(
@@ -36,7 +38,9 @@ data class TopUpState(
             successFund = false,
             successCard = false,
             errorLink = "",
-            payLink = ""
+            payLink = "",
+            addCard = false,
+            shouldGoBack = false
         )
     }
 }

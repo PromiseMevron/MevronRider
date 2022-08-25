@@ -56,6 +56,18 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
         lifecycleScope.launchWhenResumed {
 
                 viewModel.state.collect { state ->
+
+                    binding.backButton.setOnClickListener {
+                        if (binding.webView.visibility == View.GONE) {
+                            activity?.onBackPressed()
+                        } else {
+                            if (state.addCard) {
+                                viewModel.getCards()
+                            }
+                            binding.webView.visibility = View.GONE
+                        }
+                    }
+
                     if (state.cardData.isNotEmpty()){
                         Log.d("THE CARDS ARE", "THE CARDS ARE ${state.cardData}")
                         val dataToUse = state.cardData.filter {
@@ -82,13 +94,13 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
                     }*/)
                     }
 
-                    if (state.successFund)
+                    if (state.successFund) {
                         Toast.makeText(
                             requireContext(),
                             "Fund Added Successfully",
                             Toast.LENGTH_LONG
                         ).show()
-
+                    }
                     if (state.payLink.isNotEmpty()){
                         loadWebView(state.payLink)
                         binding.webView.visibility = View.VISIBLE
@@ -103,21 +115,11 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
         }
 
         binding.addCard.setOnClickListener {
-            viewModel.updateState(addFund = "100")
+            viewModel.updateState(addFund = "100", addCard = true)
             viewModel.getPayLink()
         }
 
-        binding.backButton.setOnClickListener {
-            if (binding.webView.visibility == View.GONE) {
-                activity?.onBackPressed()
-            } else {
-                if (binding.webView.canGoBack()) {
-                    binding.webView.goBack()
-                } else {
-                    binding.webView.visibility = View.GONE
-                }
-            }
-        }
+
     }
 
     private fun loadWebView(webUrl: String) {
