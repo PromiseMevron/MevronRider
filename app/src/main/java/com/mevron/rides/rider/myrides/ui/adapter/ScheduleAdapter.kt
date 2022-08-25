@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyScheduleItemBinding
+import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
 
-class ScheduleAdapte<T>(): ListAdapter<T, ScheduleAdapte.ScheduleHolder>(RideAdapter.RideAdapterDiffUti()) {
+class ScheduleAdapte<T>(): ListAdapter<AllTripsResult, ScheduleAdapte.ScheduleHolder>(RideAdapter.RideAdapterDiffUti()) {
 
     class ScheduleHolder(val binding: MyScheduleItemBinding): RecyclerView.ViewHolder(binding.root)
 

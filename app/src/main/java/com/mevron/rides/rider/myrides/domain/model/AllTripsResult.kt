@@ -9,5 +9,7 @@ class AllTripsResult (
     val id: String,
     val status: String,
     val time: String,
-    val title: String
+    val title: String,
+    val vehicleName: String,
+    val vehicleNum: String
     )

@@ -27,18 +27,14 @@
                 android:background="#1A2A2A72"
                 android:id="@+id/pick_up_min"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_height="@dimen/_250sdp">
-
-
+                android:layout_height="300dp">
 
                <ImageView
                    android:layout_width="match_parent"
                    android:layout_height="match_parent"
                    android:src="@drawable/map"
+                   android:id="@+id/google_map"
                    android:scaleType="centerCrop"/>
-
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -51,7 +47,7 @@
                 android:textFontWeight="600"
                 android:textSize="@dimen/_18ssp"
                 android:lineHeight="@dimen/_32sdp"
-                android:id="@+id/driver_name"
+                android:id="@+id/ride_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/pick_up_min"
                 android:layout_marginTop="@dimen/_20sdp"
@@ -70,128 +66,25 @@
                 android:lineHeight="@dimen/_22sdp"
                 android:id="@+id/driver_car"
 
-                app:layout_constraintTop_toBottomOf="@id/driver_name"
+                app:layout_constraintTop_toBottomOf="@id/ride_date"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_14sdp"
                 tools:targetApi="p" />
 
-            <ImageButton
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/ic_call_rider"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:layout_marginStart="@dimen/_14sdp"
-                app:layout_constraintTop_toBottomOf="@id/driver_car"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="@dimen/_14sdp"
-                android:id="@+id/call_rider"/>
-
-            <ImageButton
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/ic_chat_driver"
-                android:background="@android:color/transparent"
-                android:layout_marginStart="@dimen/_14sdp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/driver_car"
-                app:layout_constraintStart_toEndOf="@id/call_rider"
-                android:layout_marginTop="@dimen/_14sdp"
-                android:id="@+id/chat_rider"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#F2F2F2"
-                app:layout_constraintTop_toBottomOf="@id/chat_rider"
+                app:layout_constraintTop_toBottomOf="@id/driver_car"
                 android:layout_marginEnd="@dimen/_14sdp"
                 android:layout_marginStart="@dimen/_14sdp"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:id="@+id/divider_1"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="@dimen/_116sdp"
-                android:layout_height="@dimen/_75sdp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@android:color/transparent"
-                app:layout_constraintBottom_toBottomOf="@id/divider_1"
-                app:layout_constraintTop_toBottomOf="@id/pick_up_min"
-                android:layout_marginEnd="@dimen/_14sdp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="@dimen/_64sdp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/bike"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:id="@+id/rider_car_img"/>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="@dimen/_64sdp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/profile"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:id="@+id/profile_image"/>
-
-                <LinearLayout
-                    android:layout_width="@dimen/_66sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:background="@drawable/rounded_corner_rating"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <ImageView
-                        android:layout_width="@dimen/_15sdp"
-                        android:layout_height="@dimen/_15sdp"
-                        android:src="@drawable/ic_star"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="2sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4.5"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-
-                        android:fontFamily="@font/poppins_regular"
-                        android:textSize="@dimen/_12ssp"
-                        android:textColor="#000000"
-                        android:id="@+id/user_rating"
-                        tools:targetApi="p" />
-
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Verification Code"
-                android:textAllCaps="false"
-                android:textColor="#383838"
-                android:visibility="gone"
-                android:fontFamily="@font/poppins_regular"
-                android:textFontWeight="600"
-                android:textSize="@dimen/_15ssp"
-                android:lineHeight="@dimen/_32sdp"
-                android:id="@+id/verify"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider_1"
-                app:layout_constraintBottom_toTopOf="@id/divider_1"
-                android:layout_marginStart="@dimen/_14sdp"
-                tools:targetApi="p" />
-
             <LinearLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:background="@drawable/rounded_corner_otp"
@@ -232,6 +125,7 @@
                 android:layout_marginEnd="@dimen/_14sdp"
                 android:layout_marginStart="@dimen/_14sdp"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 android:layout_marginTop="@dimen/_240sdp"
                 android:id="@+id/divider_3"/>
 
@@ -252,21 +146,9 @@
                 android:layout_marginStart="@dimen/_14sdp"
                 tools:targetApi="p" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_edit_trip"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="@id/trip_detail"
-                app:layout_constraintBottom_toBottomOf="@id/trip_detail"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="@dimen/_14sdp"
-                android:id="@+id/edit_trip"/>
-
             <ImageView
                 android:layout_width="@dimen/_4sdp"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_height="@dimen/_70sdp"
                 android:src="@drawable/ic_rectangle"
                 android:id="@+id/drop_line"
                 android:background="@android:color/transparent"
@@ -295,7 +177,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/_14sdp"
                 app:layout_constraintTop_toBottomOf="@+id/pick_logo"
-                android:layout_marginTop="@dimen/_90sdp"/>
+                android:layout_marginTop="@dimen/_60sdp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -323,6 +205,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:textFontWeight="500"
                 android:textSize="@dimen/_12ssp"
+                android:visibility="gone"
                 android:lineHeight="@dimen/_24sdp"
                 android:id="@+id/pick_name"
                 android:layout_marginTop="@dimen/_2sdp"
@@ -376,6 +259,7 @@
                 android:textColor="@color/black"
                 android:fontFamily="@font/poppins_regular"
                 android:textFontWeight="500"
+                android:visibility="gone"
                 android:textSize="@dimen/_12ssp"
                 android:lineHeight="@dimen/_24sdp"
                 android:id="@+id/drop_name"
@@ -420,6 +304,71 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:text="Barry John "
+                android:textAllCaps="false"
+                android:textColor="#383838"
+                android:fontFamily="@font/poppins_regular"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_15ssp"
+                android:lineHeight="@dimen/_32sdp"
+                android:id="@+id/driver_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_4"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_14sdp"
+                tools:targetApi="p" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/your_rating"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="@dimen/_12ssp"
+                android:id="@+id/rating_word"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/driver_name"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_14sdp"
+                tools:targetApi="p" />
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rating"
+                tools:rating="4"
+                style="?android:attr/ratingBarStyleSmall"
+                android:numStars="5"
+                android:progressTint="@color/primary"
+                app:layout_constraintStart_toEndOf="@id/rating_word"
+                app:layout_constraintTop_toTopOf="@id/rating_word"
+                app:layout_constraintBottom_toBottomOf="@id/rating_word"
+                android:layout_marginStart="@dimen/_2sdp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="@dimen/_48sdp"
+                android:layout_height="@dimen/_48sdp"
+                android:id="@+id/driver_image"
+                android:src="@drawable/profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/_14sdp"
+                app:layout_constraintTop_toTopOf="@id/driver_name"
+                app:layout_constraintBottom_toBottomOf="@id/rating_word"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F2F2F2"
+                app:layout_constraintTop_toBottomOf="@id/rating_word"
+                android:layout_marginEnd="@dimen/_14sdp"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:id="@+id/divider_5"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Fare Breakdown"
                 android:textAllCaps="false"
                 android:textColor="#383838"
@@ -430,7 +379,7 @@
                 android:id="@+id/fare_breakdown"
                 android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider_4"
+                app:layout_constraintTop_toBottomOf="@id/divider_5"
                 android:layout_marginStart="@dimen/_14sdp"
                 tools:targetApi="p" />
 
@@ -556,7 +505,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$12.50"
+                tools:text="$12.50"
                 android:textAllCaps="false"
                 android:textColor="#383838"
                 android:fontFamily="@font/poppins_regular"
@@ -599,7 +548,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Visa ••••1234"
+                tools:text="Visa ••••1234"
                 android:textAllCaps="false"
                 android:textColor="#383838"
                 android:fontFamily="@font/poppins_regular"

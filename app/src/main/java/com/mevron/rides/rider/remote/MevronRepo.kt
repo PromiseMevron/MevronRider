@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.remote
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.mevron.rides.rider.authentication.data.models.createaccount.SaveDetailsRequest
 import com.mevron.rides.rider.auth.model.details.SaveResponse
 import com.mevron.rides.rider.auth.model.otp.OTPResponse
@@ -60,24 +61,24 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
     }
 
     suspend fun saveAddressInDb(add: SavedAddress) {
-        dao.insert(add)
+       // dao.insert(add)
     }
 
     suspend fun deleteAllAdd() {
-        dao.deleteAllAddress()
+      //  dao.deleteAllAddress()
     }
 
     suspend fun updataAddInDB(add: SavedAddress) {
-        dao.update(add)
+      //  dao.update(add)
     }
 
     suspend fun updataAdd(path: String, add: UpdateAddress): Response<GeneralResponse> {
         return api.updateAddress(path, add)
     }
 
-    fun getllAddress(): LiveData<MutableList<SavedAddress>> {
-        return dao.getAllAddress()
-    }
+   /* fun getllAddress(): LiveData<MutableList<SavedAddress>> {
+       return dao.getAllAddress()
+    }*/
 
     suspend fun addCard(data: AddCard): Response<GeneralResponse> {
         return api.addCard(data)
@@ -120,17 +121,17 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
     }
 
     suspend fun saveReferInDb(add: ReferalDetail) {
-        dao.insertRefer(add)
+     //   dao.insertRefer(add)
     }
 
     suspend fun deleteAllRefer() {
-        dao.deleteAllReferral()
+       // dao.deleteAllReferral()
     }
 
 
-    fun getllReferal(): LiveData<MutableList<ReferalDetail>> {
+    /*fun getllReferal(): LiveData<MutableList<ReferalDetail>> {
         return dao.getAllReferal()
-    }
+    }*/
 
     suspend fun saveEmergency(data: AddContactRequest): Response<GeneralResponse> {
         return api.saveEmergency(data)

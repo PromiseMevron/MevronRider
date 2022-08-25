@@ -439,3 +439,51 @@ fun Fragment.checkPermission2() {
     }
 }
 
+fun String.toReadableDate(): String {
+    val theDate = this.split("-")
+    if (theDate[2].length > 2){
+        return "${theDate[1].toMonth()} ${theDate[2].substring(0, 1)}, ${theDate[0]}"
+    }
+    return "${theDate[1].toMonth()} ${theDate[2]}, ${theDate[0]}"
+}
+
+fun String.toMonth(): String {
+    if (this == "01") {
+        return "January"
+    }
+    if (this == "02") {
+        return "February"
+    }
+    if (this == "03") {
+        return "March"
+    }
+    if (this == "04") {
+        return "April"
+    }
+    if (this == "05") {
+        return "May"
+    }
+    if (this == "06") {
+        return "June"
+    }
+    if (this == "07") {
+        return "July"
+    }
+    if (this == "08") {
+        return "August"
+    }
+    if (this == "09") {
+        return "September"
+    }
+    if (this == "10") {
+        return "October"
+    }
+    if (this == "11") {
+        return "November"
+    }
+    if (this == "12") {
+        return "December"
+    }
+    return ""
+}
+

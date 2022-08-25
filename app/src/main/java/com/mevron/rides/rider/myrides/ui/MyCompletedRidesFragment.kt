@@ -43,20 +43,21 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = RideAdapter<AllTripsResult>(this)
+        val adapter = RideAdapter(this)
         viewModel.handleEvent(MyRidesEvents.GetAddress)
         binding.recyclerView.adapter = adapter
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+           // repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.state.collect {
                     adapter.submitList(it.data)
                 }
-            }
+           // }
         }
     }
 
-    override fun select() {
-        //findNavController().navigate(R.id.action_global_rideDetailsFragment)
+    override fun select(id: String) {
+        val action = MyCompletedRidesFragmentDirections.actionGlobalRideDetailsFragment(id)
+        findNavController().navigate(action)
     }
 
 }

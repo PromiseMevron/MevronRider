@@ -13,7 +13,13 @@ data class BookedTripState(
     val pickupAddress: String,
     val destinationAddress: String,
     val isLocationProcessed: Boolean,
-    val metaData: MetaData?
+    val metaData: MetaData?,
+    val rating: Int,
+    val tipRider: Int,
+    val review: MutableList<String>,
+    val isSuccess: Boolean,
+    val error: String,
+    val loading: Boolean
 ) {
 
     val hasValidCoordinates: Boolean
@@ -30,7 +36,13 @@ data class BookedTripState(
             pickupAddress = "",
             destinationAddress = "",
             isLocationProcessed = false,
-            metaData = null
+            metaData = null,
+            tipRider = 0,
+            rating = 1,
+            review = mutableListOf(),
+            isSuccess = false,
+            error = "",
+            loading = false
         )
     }
 }

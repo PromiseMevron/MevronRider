@@ -37,6 +37,7 @@
             android:textSize="@dimen/_15ssp"
             android:lineHeight="@dimen/_24sdp"
             android:id="@+id/text1"
+            android:visibility="visible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/_25sdp"
@@ -49,6 +50,7 @@
             android:text="@string/meet_your_driver_at_the_pick_up_spot"
             android:textAllCaps="false"
             android:textColor="#2A2A72"
+            android:visibility="visible"
             android:fontFamily="@font/poppins_regular"
             android:textFontWeight="400"
             android:textSize="@dimen/_11ssp"
@@ -76,7 +78,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             tools:targetApi="p" />
@@ -123,7 +125,7 @@
                 android:textColor="#ffffff"
                 android:fontFamily="@font/poppins_bold"
                 android:textFontWeight="400"
-                android:textSize="@dimen/_15ssp"
+                android:textSize="@dimen/_25ssp"
                 android:lineHeight="@dimen/_22sdp"
                 android:id="@+id/time"
                 app:layout_constraintTop_toBottomOf="@id/text1"
@@ -176,6 +178,7 @@
         android:textSize="@dimen/_11ssp"
         android:lineHeight="@dimen/_22sdp"
         android:id="@+id/driver_car"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/driver_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/_2sdp"
@@ -342,7 +345,7 @@
         android:layout_marginEnd="@dimen/_14sdp"
         android:layout_marginStart="@dimen/_14sdp"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/_240sdp"
+        android:layout_marginTop="@dimen/_180sdp"
         android:id="@+id/divider_3"/>
 
     <TextView
@@ -375,7 +378,7 @@
 
     <ImageView
         android:layout_width="@dimen/_4sdp"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_height="@dimen/_70sdp"
         android:src="@drawable/ic_rectangle"
         android:id="@+id/drop_line"
         android:background="@android:color/transparent"
@@ -404,7 +407,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/_14sdp"
         app:layout_constraintTop_toBottomOf="@+id/pick_logo"
-        android:layout_marginTop="@dimen/_90sdp"/>
+        android:layout_marginTop="@dimen/_40sdp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -434,6 +437,7 @@
         android:textSize="@dimen/_12ssp"
         android:lineHeight="@dimen/_24sdp"
         android:id="@+id/pick_name"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/_2sdp"
         app:layout_constraintStart_toStartOf="@id/pick_text"
         app:layout_constraintTop_toBottomOf="@id/pick_text"
@@ -480,6 +484,7 @@
         tools:text="Fairmont Cafe"
         android:textAllCaps="false"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:fontFamily="@font/poppins_regular"
         android:textFontWeight="500"
         android:textSize="@dimen/_12ssp"

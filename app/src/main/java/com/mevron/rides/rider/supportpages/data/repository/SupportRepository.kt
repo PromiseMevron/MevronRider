@@ -29,7 +29,7 @@ class SupportRepository (private val api: SupportAPI): ISupportRepository {
     private fun NotificationResponse.toDomainModel() = DomainModel.Success(
         data = SupportDomainData(
             notifications = this.success.notificationData.result.map {
-                Supports(heading = it.title, subHeading = it.description)
+                Supports(heading = it.title, subHeading = it.description, date = it.createdAt)
             }
         )
     )
@@ -37,7 +37,7 @@ class SupportRepository (private val api: SupportAPI): ISupportRepository {
     private fun PromoResponse.toDomainModel() = DomainModel.Success(
         data = SupportDomainData(
             notifications = this.success.promoData.map {
-                Supports(heading = it.description, subHeading = it.remain)
+                Supports(heading = it.description, subHeading = it.remain, date = it.date)
             }
         )
     )

@@ -9,17 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.MyRideItemBinding
 import com.mevron.rides.rider.home.HomeAdapter
+import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
+import com.mevron.rides.rider.util.toReadableDate
 
-class RideAdapter<T>(val sel: SelectedRide): ListAdapter<T, RideAdapter.RideHolder>(RideAdapterDiffUti()) {
+class RideAdapter(val sel: SelectedRide): ListAdapter<AllTripsResult, RideAdapter.RideHolder>(RideAdapterDiffUti()) {
 
     class RideHolder(val binding: MyRideItemBinding): RecyclerView.ViewHolder(binding.root)
 
-    class RideAdapterDiffUti<T>: DiffUtil.ItemCallback<T>() {
-        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+    class RideAdapterDiffUti: DiffUtil.ItemCallback<AllTripsResult>() {
+        override fun areItemsTheSame(oldItem: AllTripsResult, newItem: AllTripsResult): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        override fun areContentsTheSame(oldItem: AllTripsResult, newItem: AllTripsResult): Boolean {
             return areItemsTheSame(oldItem, newItem)
         }
     }
@@ -37,13 +39,17 @@ class RideAdapter<T>(val sel: SelectedRide): ListAdapter<T, RideAdapter.RideHold
 
     override fun onBindViewHolder(holder: RideHolder, position: Int) {
 //[ home, work or others ]
+        val data = getItem(position)
+        holder.binding.dateDisplay.text = data.date.toReadableDate()
+        holder.binding.amountDisplay.text = data.amount
+        holder.binding.carDisplay.text = "${data.vehicleName} . ${data.vehicleNum}"
         holder.binding.root.setOnClickListener {
-            sel.select()
+            sel.select(data.id)
         }
     }
 }
 
 interface SelectedRide{
-    fun select()
+    fun select(id: String)
 }
 

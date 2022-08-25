@@ -21,6 +21,7 @@ data class HomeState(
     val locationModel: LocationModel,
     val isLocationAdded: Boolean,
     val shouldOpenBookedRide: Boolean,
+    val hideStateCheckCover: Boolean,
     val shouldOpenConfirmRide: Boolean,
     val shouldOpenTipView: SingleStateEvent<Unit>,
     val markerLocations: List<NearByDriver>
@@ -44,7 +45,8 @@ data class HomeState(
             shouldOpenBookedRide = false,
             shouldOpenConfirmRide = false,
             shouldOpenTipView = SingleStateEvent(),
-            markerLocations = listOf()
+            markerLocations = listOf(),
+            hideStateCheckCover = false
         )
     }
 }

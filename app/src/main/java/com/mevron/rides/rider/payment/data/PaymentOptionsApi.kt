@@ -21,7 +21,12 @@ interface PaymentOptionsApi {
     @DELETE("api/v1/rider/auth/payment-method/{uiid}/remove")
     suspend fun deleteCard(@Path("uiid") identifier: String): Response<GeneralResponse>
 
-  //  @POST()
     @POST("api/v1/rider/auth/payment-method/payment-link")
     suspend fun getPaymentLink(@Body data: GetLinkAmount): Response<PaymentLink>
+
+    @GET("api/v1/rider/auth/wallet/details")
+    suspend fun getWalletDetails(): Response<PaymentDetailsResponse>
+
+    @GET("api/v1/rider/auth/wallet/addFunds")
+    suspend fun addFund(data: CashActionData): Response<GeneralResponse>
 }

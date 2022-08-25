@@ -43,7 +43,7 @@ class AddTipFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         setCommentClickListeners()
         setTipPercentClickListeners()
-        binding.doneButton.setOnClickListener { viewModel.setEvent(AddTipViewEvent.AddTipClicked) }
+        binding.doneButtonTipRate.setOnClickListener { viewModel.setEvent(AddTipViewEvent.AddTipClicked) }
         binding.rating.setOnRatingBarChangeListener { _, rating, _ ->
             viewModel.setEvent(AddTipViewEvent.RatingAdded(rating.toInt()))
         }

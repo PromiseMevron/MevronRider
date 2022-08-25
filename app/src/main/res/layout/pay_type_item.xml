@@ -29,7 +29,7 @@
             android:lineHeight="@dimen/_24sdp"
             android:textColor="#383838"
             android:textFontWeight="500"
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent"

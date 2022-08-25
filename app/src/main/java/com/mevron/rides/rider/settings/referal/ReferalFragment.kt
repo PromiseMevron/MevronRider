@@ -101,10 +101,10 @@ class ReferalFragment : Fragment(), SelectedReferal {
     }
 
     fun getHistory(){
-        viewModel.getReferalFromDB().observe(viewLifecycleOwner, Observer {
+      /*  viewModel.getReferalFromDB().observe(viewLifecycleOwner, Observer {
             val adapter = ReferalAdapter(this, it)
             binding.recyclerView.adapter = adapter
-        })
+        })*/
     }
 
     fun getHistoryFromApi(){

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -59,7 +60,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
     private lateinit var placesClient: PlacesClient
     private lateinit var adapter: PlaceAdapter
     private var locations = arrayListOf<LocationModel>()
-    var itIsStart = false
+    var itIsStart = true
 
     // TODO fetch saved addresses from api
     private lateinit var homeAdapter: HomeAdapter
@@ -79,24 +80,44 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        homeAdapter = context?.let {
+            HomeAdapter(this, it)
+        }!!
         viewModel.setEvent(SearchLocationEvent.GetAddress)
-
+        binding.savedPlacesRecyclerView.layoutManager = LinearLayoutManager(
+            context,
+            RecyclerView.VERTICAL, false
+        )
+        binding.savedPlacesRecyclerView.adapter = homeAdapter
         val sessionToken = AutocompleteSessionToken.newInstance()
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
                 toggleBusyDialog(busy = it.isLoading)
                 if (it.isAddressEntered) {
-                    showAddressList()
+                  //  showAddressList()
                     initSearchConfig(it.destination, sessionToken)
                 } else {
-                    hideAddressList()
+                  //  hideAddressList()
                 }
 
                 if (it.isSetLocationOnTheMapClicked) {
                     findNavController().navigate(R.id.action_searchLocationFragment_to_selectOnMapFragment)
                     viewModel.clearState()
                 }
+                binding.savedPlacesRecyclerView.adapter = homeAdapter
+                homeAdapter.submitList(it.savedAddresses)
+                if (it.savedAddresses.isNotEmpty()){
+                    for (add in it.savedAddresses){
+                        if (add.type == Constants.HOME){
+                            binding.addHome.visibility = View.GONE
+                        }
+                        if (add.type == Constants.WORK){
+                            binding.addWork.visibility = View.GONE
+                        }
+                    }
+                }
+
             }
         }
 
@@ -105,14 +126,51 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
             placesClient = Places.createClient(it)
         }
 
+        showAddressList()
+        initSearchConfig("", sessionToken)
+
         getCurrentLocation(start = true)
         binding.startAddressField.setOnClickListener {
             itIsStart = false
+            selectedField = binding.startAddressField
+
+        }
+
+        binding.stopAddressField.setOnClickListener {
+            itIsStart = false
+            selectedField = binding.stopAddressField
+
+            binding.savedPlacesRecyclerView.visibility = View.GONE
+            binding.placesRecyclerView.visibility = View.VISIBLE
+            binding.addHome.visibility = View.GONE
+            binding.addWork.visibility = View.GONE
+            binding.currentLocation.visibility = View.GONE
+        }
+
+        binding.destAddressField.setOnClickListener {
+            itIsStart = false
+            selectedField = binding.destAddressField
+
+            binding.savedPlacesRecyclerView.visibility = View.GONE
+            binding.placesRecyclerView.visibility = View.VISIBLE
+            binding.addHome.visibility = View.GONE
+            binding.addWork.visibility = View.GONE
+            binding.currentLocation.visibility = View.GONE
+        }
+
+        binding.stopAddressField.setOnClickListener {
+            selectedField = binding.stopAddressField
+
+            binding.savedPlacesRecyclerView.visibility = View.GONE
+            binding.placesRecyclerView.visibility = View.VISIBLE
+            binding.addHome.visibility = View.GONE
+            binding.addWork.visibility = View.GONE
+            binding.currentLocation.visibility = View.GONE
         }
         binding.startAddressField.onFocusChangeListener =
             View.OnFocusChangeListener { _, p1 ->
                 if (p1) {
-                    itIsStart = false
+                  //  itIsStart = false
                 }
             }
 
@@ -160,6 +218,14 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         binding.destAddressField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 selectedField = binding.stopAddressField
+
+                binding.savedPlacesRecyclerView.visibility = View.GONE
+                binding.placesRecyclerView.visibility = View.VISIBLE
+                binding.addHome.visibility = View.GONE
+                binding.addWork.visibility = View.GONE
+                binding.currentLocation.visibility = View.GONE
+                itIsStart = false
+
                 viewModel.setState {
                     copy(destination = binding.destAddressField.text.toString().trim())
                 }
@@ -172,6 +238,13 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
         binding.stopAddressField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 selectedField = binding.stopAddressField
+
+                binding.savedPlacesRecyclerView.visibility = View.GONE
+                binding.placesRecyclerView.visibility = View.VISIBLE
+                binding.addHome.visibility = View.GONE
+                binding.addWork.visibility = View.GONE
+                binding.currentLocation.visibility = View.GONE
+                itIsStart = false
                 viewModel.setState {
                     copy(destination = binding.stopAddressField.text.toString().trim())
                 }
@@ -180,6 +253,20 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        binding.startAddressField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                selectedField = binding.startAddressField
+                viewModel.setState {
+                    copy(destination = binding.startAddressField.text.toString().trim())
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+
 
 
         binding.close.setOnClickListener {
@@ -271,9 +358,13 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
     }
 
     private fun initSearchConfig(query: String, sessionToken: AutocompleteSessionToken) {
+        val query1 = selectedField?.text?.toString()
+        if (query1.isNullOrEmpty()){
+            return
+        }
         val placeRequest = FindAutocompletePredictionsRequest.builder()
             .setSessionToken(sessionToken)
-            .setQuery(query)
+            .setQuery(query1)
             .build()
 
         placesClient.findAutocompletePredictions(placeRequest)
@@ -292,6 +383,7 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
                         adapter = theAdapter
                         binding.placesRecyclerView.adapter = adapter
                         adapter.submitList(response.autocompletePredictions)
+                        showAddressList()
                     }
                 }
             }
@@ -301,11 +393,13 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
     }
 
     private fun showAddressList() {
-        binding.savedPlacesRecyclerView.visibility = View.GONE
-        binding.placesRecyclerView.visibility = View.VISIBLE
-        binding.addHome.visibility = View.GONE
-        binding.addWork.visibility = View.GONE
-        binding.currentLocation.visibility = View.GONE
+        if (!itIsStart) {
+            binding.savedPlacesRecyclerView.visibility = View.GONE
+            binding.placesRecyclerView.visibility = View.VISIBLE
+            binding.addHome.visibility = View.GONE
+            binding.addWork.visibility = View.GONE
+            binding.currentLocation.visibility = View.GONE
+        }
     }
 
     private fun hideAddressList() {

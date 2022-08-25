@@ -7,19 +7,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@android:color/transparent"
     tools:context=".home.ride.ConfirmRideFragment">
 
     <fragment
         android:id="@+id/mapView"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_marginBottom="250dp"
+        android:layout_marginBottom="100dp"
         android:layout_height="match_parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:background="#ffffff"
+        android:visibility="visible"
         android:id="@+id/confirming_driver"
         android:paddingBottom="@dimen/_20sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,6 +48,7 @@
             android:textSize="@dimen/_15ssp"
             android:textColor="#383838"
             android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
             android:textFontWeight="600"
             tools:targetApi="p" />
 

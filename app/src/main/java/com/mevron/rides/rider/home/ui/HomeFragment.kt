@@ -23,11 +23,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -101,21 +97,30 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
             viewModel.uiState.collect {
 
                 it.shouldOpenTipView.get {
-                    findNavController().navigate(R.id.action_global_addTipFragment)
+                 //   findNavController().navigate(R.id.action_global_addTipFragment)
                 }
 
                 if (it.shouldOpenConfirmRide) {
-                    findNavController().navigate(R.id.action_paymentFragment2_to_confirmRideFragment)
-                    viewModel.resolveConfirmRide()
+                  //  findNavController().navigate(R.id.action_paymentFragment2_to_confirmRideFragment)
+                  //  viewModel.resolveConfirmRide()
+                }
+                if (it.hideStateCheckCover){
+                    binding.stateCover.visibility = View.GONE
                 }
 
                 if (it.shouldOpenBookedRide) {
                     Log.d("sdsdd", "sdsdss 2")
-                    findNavController().navigate(R.id.action_global_bookedFragment)
-                    viewModel.resolveOpenBookedRide()
+                    if (findNavController().currentDestination?.id == R.id.homeFragment){
+                        binding.stateCover.visibility = View.GONE
+                        Log.d("sdsdd", "sdsdss 222")
+                        findNavController().navigate(R.id.action_global_bookedFragment)
+                        viewModel.resolveOpenBookedRide()
+                    }
+
                 }
 
                 if (it.isOpenSearchClicked) {
+                    binding.stateCover.visibility = View.GONE
                     findNavController().navigate(R.id.action_homeFragment_to_searchLocationFragment)
                     viewModel.resolveSearchClicked()
                 }
@@ -190,8 +195,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.VISIBLE
-                        binding.mevronHomeBottom.scheduleButton.visibility = View.GONE
-                        binding.mevronHomeBottom.myLocation.visibility = View.GONE
+                   //     binding.mevronHomeBottom.scheduleButton.visibility = View.GONE
+                    //    binding.mevronHomeBottom.myLocation.visibility = View.GONE
                     }
 
                     BottomSheetBehavior.STATE_COLLAPSED -> {
@@ -211,6 +216,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         gotToMyLocation()
     }
 
+    fun onBackPressed() {
+        activity?.finish()
+    }
+
     private fun gotToMyLocation() {
         activity?.let {
             locationProcessor.animateToCurrentPosition(
@@ -221,9 +230,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                         it.lat,
                         it.lng
                     ) //Store these lat lng values somewhere. These should be constant.
-
+                    add = arrayListOf()
+                    add.add(it)
                     val location = CameraUpdateFactory.newLatLngZoom(coordinate, 15f)
                     googleMap?.animateCamera(location)
+                    binding.placeCover.visibility = View.GONE
                 },
                 {
                     requestLocationPermissionIfnNotEnabled()
@@ -254,6 +265,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         if (googleMap != null) {
             this.googleMap = googleMap
         }
+        googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         MapsInitializer.initialize(activity?.applicationContext)
         requestLocationPermissionIfnNotEnabled {
@@ -263,7 +275,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         }
     }
 
-    private fun HomeFragment.requestLocationPermissionIfnNotEnabled(callback: () -> Unit = {}) {
+    private fun requestLocationPermissionIfnNotEnabled(callback: () -> Unit = {}) {
         locationProcessor.checkLocationPermission(context, onSuccess = callback) {
             requestPermissions(
                 arrayOf(
@@ -275,7 +287,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
     }
 
     override fun onLocationChanged(p0: Location) {
-        context?.let { getAddressFromLocation(context!!, p0) }
+        val addressModel = context?.let { getAddressFromLocation(it, p0) }
+        add = arrayListOf()
+        add.add(LocationModel(p0.latitude, p0.longitude, address = addressModel?.address ?: ""))
 
         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(LatLng(p0.latitude, p0.longitude)))
         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(18.5f))
@@ -296,7 +310,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         lifecycleScope.launch {
             viewModel.uiState.collect {
                 if (it.savedAddresses.isEmpty()) {
-                    bottomSheetBehavior.peekHeight = 500
+                    bottomSheetBehavior.peekHeight = 700
                 }
                 if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -341,4 +355,5 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         // what's the plan for dt variable?
         viewModel.setState { (copy(locationModel = data, isLocationAdded = true)) }
     }
+
 }

@@ -13,6 +13,7 @@ data class PaymentViewState(
     val destinationAddress: String,
     val paymentCards: List<PaymentCard>,
     val isLoading: Boolean,
+    val isMarkerRendered: Boolean,
     val selectedPaymentCard: PaymentCard,
     val addPaymentClicked: SingleStateEvent<Unit>,
     val isCoordinateRendered: Boolean,
@@ -33,7 +34,8 @@ data class PaymentViewState(
             addPaymentClicked = SingleStateEvent(),
             isCoordinateRendered = false,
             openConfirmRide = SingleStateEvent(),
-            error = ""
+            error = "",
+            isMarkerRendered = false
         )
     }
 

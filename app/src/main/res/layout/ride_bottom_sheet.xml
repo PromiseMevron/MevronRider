@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/rounded_corner"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="300dp"
+        app:behavior_peekHeight="280dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:background="#1A0B973A"
                 android:paddingBottom="@dimen/_10sdp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
@@ -100,7 +100,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
             android:text="@string/choose_your_ride"
@@ -114,23 +115,24 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
+            android:layout_marginTop="@dimen/_20sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_display"
-            tools:itemCount="4"
+            tools:itemCount="1"
             tools:listitem="@layout/vehicle_item" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/all_saved_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="20dp"
             android:background="#ffffff"
             android:padding="@dimen/_10sdp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -138,7 +140,6 @@
                 android:id="@+id/display_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="@dimen/_12sdp"
                 android:src="@drawable/ic_calendar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -11,6 +11,7 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.AddressItemBinding
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
+import com.mevron.rides.rider.util.Constants
 
 class HomeAdapter(
     val select: OnAddressSelectedListener,
@@ -49,15 +50,15 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         val dt = getItem(position)
 
-        if (dt.type == "home") {
+        if (dt.type == Constants.HOME) {
             holder.binding.displayImage.setImageResource(R.drawable.ic_home_address)
             holder.binding.destType.text = context.getString(R.string.home)
         }
-        if (dt.type == "work") {
+        if (dt.type == Constants.WORK) {
             holder.binding.displayImage.setImageResource(R.drawable.ic_work_address)
             holder.binding.destType.text = context.getString(R.string.work)
         }
-        if (dt.type == "others") {
+        if (dt.type == Constants.OTHER) {
             holder.binding.displayImage.setImageResource(R.drawable.ic_all_saved)
             holder.binding.destType.text = dt.name
         }

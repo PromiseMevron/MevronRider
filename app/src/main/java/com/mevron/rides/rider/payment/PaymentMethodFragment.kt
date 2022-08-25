@@ -22,6 +22,7 @@ import com.mevron.rides.rider.databinding.PaymentMethodFragmentBinding
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PaymentMethodFragment : Fragment() {
@@ -66,8 +67,9 @@ class PaymentMethodFragment : Fragment() {
             viewModel.getPayLink()
         }
 
-        lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+        lifecycleScope.launch {
+
                 viewModel.state.collect { state ->
                     toggleBusyDialog(
                         state.isLoading,
@@ -84,7 +86,7 @@ class PaymentMethodFragment : Fragment() {
                         viewModel.updateState(payLink = "")
                     }
                 }
-            }
+
         }
 
     }

@@ -116,6 +116,10 @@ class PaymentViewModel @Inject constructor(
         setState { copy(isCoordinateRendered = true) }
     }
 
+    fun markerAdded() {
+        setState { copy(isMarkerRendered = true) }
+    }
+
     init {
         observeTripState()
     }

@@ -161,6 +161,7 @@
         android:textColor="@color/black"
         android:fontFamily="@font/poppins_regular"
         android:textFontWeight="500"
+        android:visibility="gone"
         android:textSize="@dimen/_12ssp"
         android:lineHeight="@dimen/_24sdp"
         android:id="@+id/pick_name"

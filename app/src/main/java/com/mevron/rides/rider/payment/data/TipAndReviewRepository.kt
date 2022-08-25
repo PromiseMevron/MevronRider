@@ -14,6 +14,15 @@ class TipAndReviewRepository(private val api: TipAndReviewApi) : ITipAndReviewRe
             DomainModel.Error(Throwable(result.errorBody().toString()))
         }
     }
+
+    override suspend fun rateRider(rateDriverRequest: RateDriverRequest): DomainModel {
+        val result = api.sendRating(rateDriverRequest)
+        return if (result.isSuccessful) {
+            DomainModel.Success(data = Unit)
+        } else {
+            DomainModel.Error(Throwable(result.errorBody().toString()))
+        }
+    }
 }
 
 private fun TipAndReviewData.toRequest(): TipAndReviewRequest =

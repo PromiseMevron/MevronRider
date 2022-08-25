@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#A3FFF7EB"
+    android:layout_height="280dp">
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_back_button"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toEndOf="@id/guideline1"
+        android:id="@+id/back_button"/>
+
+    <TextView
+        android:id="@+id/balance_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineHeight="56dp"
+        android:layout_marginTop="24dp"
+        android:textAlignment="center"
+        android:textColor="#8a8a8a"
+        android:textFontWeight="500"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        tools:targetApi="p"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/balance" />
+
+    <TextView
+        android:id="@+id/balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineHeight="56dp"
+        android:layout_marginTop="2dp"
+        android:textAlignment="center"
+        android:textColor="#383838"
+        android:textFontWeight="500"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@id/balance_title"
+        tools:targetApi="p"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="$1000.00" />
+
+    <TextView
+        android:id="@+id/due_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineHeight="56dp"
+        android:layout_marginTop="2dp"
+        android:textAlignment="textStart"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:textColor="#8a8a8a"
+        android:textFontWeight="500"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:maxLines="1"
+        app:layout_constraintStart_toEndOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@id/balance"
+        tools:targetApi="p"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="Your payout is scheduled on Fri, 16th Mar" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_fund"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toEndOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@id/due_date"
+        android:layout_marginTop="24dp"
+        android:id="@+id/add_fund"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03333" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96667" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

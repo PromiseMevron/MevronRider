@@ -1,6 +1,6 @@
 package com.mevron.rides.rider.myrides.data.model
 
-data class AllTripsData(
+/*data class AllTripsData(
     val amount: String,
     val comment: Any,
     val createdAt: String,
@@ -52,4 +52,19 @@ data class AllTripsData(
     val uuid: String,
     val vehicleType: String,
     val verificationCode: String
+)*/
+data class AllTripsData(
+    val amount: String,
+    val date: String,
+    val destinationLatitude: String,
+    val destinationLongitude: String,
+    val id: String,
+    val pickupLatitude: String,
+    val pickupLongitude: String,
+    val plateNumber: String,
+    val riderPicture: String,
+    val status: String,
+    val time: String,
+    val title: String,
+    val vehicleName: String
 )

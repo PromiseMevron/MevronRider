@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -180,7 +181,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         val padding = (width * 0.3).toInt()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        gMap.moveCamera(boundsUpdate)
+      //  gMap.moveCamera(boundsUpdate)
     }
 
     private fun showRideCancellationDialog() {
@@ -231,6 +232,28 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
 
                     val locations = arrayOf(startLocation, endLocation)
                     this@ConfirmRideFragment.location = locations
+                        val builder = LatLngBounds.Builder()
+                        builder.include(LatLng(location[0].lat, location[0].lng))
+                        builder.include(LatLng(location[1].lat, location[1].lng))
+                        val bounds = builder.build()
+                        val width = resources.displayMetrics.widthPixels;
+                        val height = resources.displayMetrics.heightPixels;
+                        val padding = (width * 0.40).toInt()
+                        val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+
+                        //  gMap.setPadding(50,50,50,50)
+                        //  gMap.animateCamera(cu)
+                        gMap.moveCamera(cu)
+
+                        val currentLocation = LatLng(location[0].lat, location[0].lng)
+                        val cameraPosition = CameraPosition.Builder()
+                            .bearing(0.toFloat())
+                            .target(currentLocation)
+                            .zoom(15.5.toFloat())
+                            .build()
+                        // gMap.animateCamera(cu)
+
+
                     getGeoLocation(locations, gMap) {
                         addMarkerToPolyLines(it)
                         viewModel.resolveCoordinateRendered()

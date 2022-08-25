@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#f9f9f9"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/header"/>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:lineHeight="56dp"
+            android:layout_marginTop="2dp"
+            android:textAlignment="center"
+            android:textColor="#383838"
+            android:textFontWeight="500"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="@id/header"
+            app:layout_constraintBottom_toBottomOf="@id/header"
+            tools:targetApi="p"
+            android:fontFamily="@font/poppins_bold"
+            tools:text="Sat, 10 Mar" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:lineHeight="56dp"
+            android:layout_marginTop="2dp"
+            android:textAlignment="center"
+            android:textColor="#383838"
+            android:textFontWeight="500"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="@dimen/_15sdp"
+            app:layout_constraintTop_toTopOf="@id/header"
+            app:layout_constraintBottom_toBottomOf="@id/header"
+            tools:targetApi="p"
+            app:layout_constraintEnd_toStartOf="@id/collapse"
+            android:fontFamily="@font/poppins_bold"
+            tools:text="$132" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="@id/header"
+            android:src="@drawable/ic_polygon_2"
+            app:layout_constraintBottom_toBottomOf="@id/header"
+            android:id="@+id/collapse"/>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"
+            tools:itemCount="3"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/balance_items"
+            app:layout_constraintTop_toBottomOf="@id/total"/>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.03333" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.96667" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

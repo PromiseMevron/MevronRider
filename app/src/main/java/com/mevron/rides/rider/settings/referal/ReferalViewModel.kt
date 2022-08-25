@@ -39,7 +39,7 @@ class ReferalViewModel @Inject constructor (private val repository: MevronRepo) 
                     editor.apply()
                     val dt = response.body()?.success?.data?.result
                     if (dt?.isNotEmpty() == true){
-                        repository.deleteAllRefer()
+                       // repository.deleteAllRefer()
                         for (d in dt){
                             val add = ReferalDetail(createAt = d.createAt, id = d.id,
                                 title = d.title, description = d.description, category = d.category
@@ -84,8 +84,8 @@ class ReferalViewModel @Inject constructor (private val repository: MevronRepo) 
 
     }
 
-    fun getReferalFromDB(): LiveData<MutableList<ReferalDetail>> {
-        return repository.getllReferal()
-    }
+ /*   fun getReferalFromDB(): LiveData<MutableList<ReferalDetail>> {
+      //  return repository.getllReferal()
+    }*/
 
 }

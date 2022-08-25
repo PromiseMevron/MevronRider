@@ -186,7 +186,7 @@
 
 
     <fragment
-        android:id="@+id/savedpaymentFragment"
+        android:id="@+id/savedpaymentFragment2"
         android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"
         android:label="saved_payment_fragment"
         tools:layout="@layout/saved_payment_fragment" >
@@ -222,7 +222,11 @@
         android:id="@+id/rideDetailsFragment"
         android:name="com.mevron.rides.rider.myrides.ui.RideDetailsFragment"
         android:label="ride_details_fragment"
-        tools:layout="@layout/ride_details_fragment" /><action android:id="@+id/action_global_rideDetailsFragment" app:destination="@id/rideDetailsFragment"/>
+        tools:layout="@layout/ride_details_fragment" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment><action android:id="@+id/action_global_rideDetailsFragment" app:destination="@id/rideDetailsFragment"/>
     <fragment
         android:id="@+id/referalFragment"
         tools:layout="@layout/referal_fragment"
@@ -286,5 +290,25 @@
         <argument
             android:name="data"
             app:argType="com.mevron.rides.rider.emerg.domain.model.GetContactDomainData" />
+    </fragment><action android:id="@+id/action_global_homeFragment2" app:destination="@id/homeFragment"/>
+    <fragment
+        android:id="@+id/savedpaymentFragment"
+        android:name="com.mevron.rides.rider.payment.ui.WalletFragment"
+        android:label="fragment_wallet"
+        tools:layout="@layout/fragment_wallet" />
+    <fragment
+        android:id="@+id/topUpFragment"
+        tools:layout="@layout/fragment_top_up"
+        android:name="com.mevron.rides.rider.payment.ui.TopUpFragment"
+        android:label="TopUpFragment" >
+        <argument
+            android:name="amount"
+            app:argType="string" />
     </fragment>
+    <action android:id="@+id/action_global_topUpFragment" app:destination="@id/topUpFragment" />
+    <fragment
+        android:id="@+id/myCompletedRidesFragment2"
+        android:name="com.mevron.rides.rider.myrides.ui.MyCompletedRidesFragment"
+        android:label="my_completed_rides_fragment"
+        tools:layout="@layout/my_completed_rides_fragment" />
 </navigation>

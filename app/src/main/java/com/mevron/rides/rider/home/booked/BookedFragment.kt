@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home.booked
 
+import android.app.Dialog
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,10 +12,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -22,22 +22,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
@@ -46,18 +38,21 @@ import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.payment.ui.CashOutAddFundEventListener
+import com.mevron.rides.rider.payment.ui.CashOutAddFundLayout
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.socket.domain.models.MetaData
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.getGeoLocation
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
-class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
+class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
+    CashOutAddFundEventListener {
 
     companion object {
         fun newInstance() = BookedFragment()
@@ -69,6 +64,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var onRideBottomSheetBehavior: BottomSheetBehavior<ScrollView>
     private lateinit var emergedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var reachedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var bottomView: CashOutAddFundLayout
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
@@ -76,6 +72,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var mapView: SupportMapFragment
     private var mCircle: Circle? = null
     private val locationProcessor = LocationProcessor()
+    private var mDialog: Dialog? = null
 
     var radiusInMeters = 100.0
     var strokeColor = -0x10000 //Color Code you want
@@ -96,22 +93,26 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private fun bindDriverArrived(data: MetaData?) {
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
-        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.bookedHomeBottom.text1.visibility = View.GONE
         binding.bookedHomeBottom.text2.visibility = View.GONE
+        binding.bookedHomeBottom.text11.text = "${data?.driver?.firstName} has arrived"
         binding.bookedHomeBottom.text11.visibility = View.VISIBLE
         binding.bookedHomeBottom.text22.visibility = View.VISIBLE
         binding.verifiedCode.visibility = View.GONE
         binding.bookedHomeBottom.driverLinera.visibility = View.GONE
+        generalView(data)
     }
 
     private fun bindRateDriver(data: MetaData?){
-        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.tipDriverLayout.rootView.visibility = View.VISIBLE
+        binding.ratingDriverLayout.rootView.visibility = View.GONE
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.verifiedCode.visibility = View.GONE
         onRideBottomSheetBehavior.isHideable = true
         reachedBottomSheetBehavior.isHideable = false
         onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         onRideBottomSheetBehavior.isHideable = true
         emergedBottomSheetBehavior.isHideable = true
@@ -121,25 +122,24 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
+       // binding.tipDriverLayout.rootView.visibility = View.GONE
+      //  binding.ratingDriverLayout.rootView.visibility = View.VISIBLE
         binding.tipDriverLayout.nameDisplay.text = "How was your ride with ${data?.driver?.firstName}?"
-
-        binding.ratingDriverLayout.rating.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-            binding.tipDriverLayout.rating.rating = rating
-            binding.tipDriverLayout.rootView.visibility = View.VISIBLE
-            binding.ratingDriverLayout.rootView.visibility = View.GONE
+        binding.tipDriverLayout.rating.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+           // binding.tipDriverLayout.rating.rating = rating
+            viewModel.rateCustom(rating)
         }
     }
 
     private fun bindTripStarted(data: MetaData?) {
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
-        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         driverAllBottomSheetBehavior.isHideable = true
         onRideBottomSheetBehavior.isHideable = false
         binding.verifiedCode.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        onRideBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         binding.bookedOnrideBottom.pickName.text = ""
         binding.bookedOnrideBottom.text22.text = "fix up arriving time"
@@ -163,6 +163,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
 
         }
+        generalView(data)
 
     }
 
@@ -178,20 +179,29 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         binding.bookedArrivedBottom.pickName.text = ""
         binding.bookedArrivedBottom.pickAddress.text = data?.trip?.pickupAddress
+        generalView(data)
     }
 
-    private fun bindStartRide() {
+    private fun bindStartRide(data: MetaData?) {
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
         binding.verifiedCode.visibility = View.VISIBLE
+        generalView(data)
     }
 
     private fun setUpDefaultView(data: MetaData?) {
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
+        generalView(data)
+    }
+
+    private fun generalView(data: MetaData?){
         binding.bookedHomeBottom.optNum.text = data?.trip?.verificationCode
         binding.bookedHomeBottom.pickName.text = ""
         binding.bookedHomeBottom.dropName.text = ""
+        binding.bookedHomeBottom.pickName.visibility = View.GONE
+        binding.bookedHomeBottom.dropName.visibility = View.GONE
+        binding.bookedHomeBottom.driverCar.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
         binding.bookedHomeBottom.cardNumber.text = data?.paymentMethod?.type
         binding.bookedHomeBottom.userRating.text = data?.driver?.rating
         binding.bookedHomeBottom.pickAddress.text = data?.trip?.pickupAddress
@@ -206,6 +216,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         if ((timeSplit?.size ?: 0) > 1){
             binding.bookedHomeBottom.timeType.text = timeSplit?.get(1)
+        }else{
+            var time = ((data?.trip?.estimatedPickupTime?.toString() ?: "0").toDoubleOrNull() ?: 0.0).toInt()
+            time /= 60
+            binding.bookedHomeBottom.time.text = time.toString()
+            binding.bookedHomeBottom.timeType.text = "min"
         }
 
         binding.bookedHomeBottom.driverName.text = "${data?.driver?.firstName} ${data?.driver?.lastName}"
@@ -213,7 +228,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         if (data?.fare?.isEmpty() == false){
             data.fare.let {
                 binding.bookedHomeBottom.baseFareText.text = it[0].name
-                binding.bookedHomeBottom.baseFare.text == it[0].amount
+                binding.bookedHomeBottom.baseFare.text = it[0].amount
                 if (it.size > 1 ){
                     binding.bookedHomeBottom.bookingFareText.text = it[1].name
                     binding.bookedHomeBottom.bookingFare.text = it[1].amount
@@ -229,6 +244,16 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomView = binding.tipDriverLayout.bottomView
+        bottomView.setEventListener(this)
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() {
+                Toast.makeText(context, "back pressed", Toast.LENGTH_LONG).show()
+                activity?.finish()
+                // in here you can do logic when backPress is clicked
+            }
+        })
+
 
         driverAllBottomSheetBehavior =
             BottomSheetBehavior.from(binding.bookedHomeBottom.bottomSheet)
@@ -248,20 +273,207 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         reachedBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         viewModel.setEvent(BookedTripEvent.RequestTripStatus)
 
+        binding.tipDriverLayout.doneButtonTipRate.setOnClickListener {
+            viewModel.tipAndRateCustom()
+        }
+
+        binding.tipDriverLayout.first.setOnClickListener {
+            binding.tipDriverLayout.first.visibility = View.GONE
+            binding.tipDriverLayout.first2.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+
+            setAlphaForButtons(binding.tipDriverLayout.first, 50)
+        }
+        binding.tipDriverLayout.first2.setOnClickListener {
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.first, 0)
+        }
+        binding.tipDriverLayout.second.setOnClickListener {
+            binding.tipDriverLayout.second.visibility = View.GONE
+            binding.tipDriverLayout.second2.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.second, 100)
+        }
+        binding.tipDriverLayout.second2.setOnClickListener {
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.first, 0)
+        }
+        binding.tipDriverLayout.third.setOnClickListener {
+            binding.tipDriverLayout.third.visibility = View.GONE
+            binding.tipDriverLayout.third2.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.third, 200)
+        }
+        binding.tipDriverLayout.third2.setOnClickListener {
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.first, 0)
+        }
+        binding.tipDriverLayout.fourth.setOnClickListener {
+            bottomView.visibility = View.VISIBLE
+            binding.tipDriverLayout.fourth.visibility = View.GONE
+            binding.tipDriverLayout.fourth2.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+        }
+
+        binding.tipDriverLayout.third2.setOnClickListener {
+            binding.tipDriverLayout.fourth2.visibility = View.GONE
+            binding.tipDriverLayout.fourth.visibility = View.VISIBLE
+
+            binding.tipDriverLayout.first2.visibility = View.GONE
+            binding.tipDriverLayout.first.visibility = View.VISIBLE
+            binding.tipDriverLayout.second2.visibility = View.GONE
+            binding.tipDriverLayout.second.visibility = View.VISIBLE
+            binding.tipDriverLayout.third2.visibility = View.GONE
+            binding.tipDriverLayout.third.visibility = View.VISIBLE
+            setAlphaForButtons(binding.tipDriverLayout.first, 0)
+        }
+
+        binding.tipDriverLayout.cleanliness.setOnClickListener {
+            viewModel.updateRateComment("Cleanliness")
+            binding.tipDriverLayout.cleanliness.visibility = View.GONE
+            binding.tipDriverLayout.cleanliness2.visibility = View.VISIBLE
+        }
+        binding.tipDriverLayout.navigation.setOnClickListener {
+            viewModel.updateRateComment("Navigation")
+            binding.tipDriverLayout.navigation.visibility = View.GONE
+            binding.tipDriverLayout.navigation2.visibility = View.VISIBLE
+        }
+        binding.tipDriverLayout.price.setOnClickListener {
+            viewModel.updateRateComment("Price")
+            binding.tipDriverLayout.price.visibility = View.GONE
+            binding.tipDriverLayout.price2.visibility = View.VISIBLE
+        }
+        binding.tipDriverLayout.service.setOnClickListener {
+            viewModel.updateRateComment("Service")
+            binding.tipDriverLayout.service.visibility = View.GONE
+            binding.tipDriverLayout.service2.visibility = View.VISIBLE
+        }
+
+        binding.tipDriverLayout.route.setOnClickListener {
+            viewModel.updateRateComment("Route")
+            binding.tipDriverLayout.route.visibility = View.GONE
+            binding.tipDriverLayout.route2.visibility = View.VISIBLE
+        }
+        binding.tipDriverLayout.driving.setOnClickListener {
+            viewModel.updateRateComment("Driving")
+            binding.tipDriverLayout.driving.visibility = View.GONE
+            binding.tipDriverLayout.driving2.visibility = View.VISIBLE
+        }
+
+        binding.tipDriverLayout.cleanliness2.setOnClickListener {
+            viewModel.updateRateComment("Cleanliness")
+            binding.tipDriverLayout.cleanliness.visibility = View.VISIBLE
+            binding.tipDriverLayout.cleanliness2.visibility = View.GONE
+        }
+        binding.tipDriverLayout.navigation2.setOnClickListener {
+            viewModel.updateRateComment("Navigation")
+            binding.tipDriverLayout.navigation.visibility = View.VISIBLE
+            binding.tipDriverLayout.navigation2.visibility = View.GONE
+        }
+        binding.tipDriverLayout.price2.setOnClickListener {
+            viewModel.updateRateComment("Price")
+            binding.tipDriverLayout.price.visibility = View.VISIBLE
+            binding.tipDriverLayout.price2.visibility = View.GONE
+        }
+        binding.tipDriverLayout.service2.setOnClickListener {
+            viewModel.updateRateComment("Service")
+            binding.tipDriverLayout.service.visibility = View.VISIBLE
+            binding.tipDriverLayout.service2.visibility = View.GONE
+        }
+
+        binding.tipDriverLayout.route2.setOnClickListener {
+            viewModel.updateRateComment("Route")
+            binding.tipDriverLayout.route.visibility = View.VISIBLE
+            binding.tipDriverLayout.route2.visibility = View.GONE
+        }
+        binding.tipDriverLayout.driving2.setOnClickListener {
+            viewModel.updateRateComment("Driving")
+            binding.tipDriverLayout.driving.visibility = View.VISIBLE
+            binding.tipDriverLayout.driving2.visibility = View.GONE
+        }
+
+        binding.tipDriverLayout.other.setOnClickListener {
+         //   viewModel.updateRateComment("Service")
+        }
+
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
                 when (uiState.currentStatus) {
                     TripStatus.DRIVER_ARRIVED -> bindDriverArrived(data = uiState.metaData)
                     TripStatus.TRIP_STARTED -> bindTripStarted(data = uiState.metaData)
-                    TripStatus.TRIP_COMPLETED -> bindTripCompleted(data = uiState.metaData)
-                    TripStatus.START_RIDE -> bindStartRide()
+                    TripStatus.TRIP_COMPLETED -> bindRateDriver(uiState.metaData)//bindTripCompleted(data = uiState.metaData)
+                    TripStatus.START_RIDE -> bindStartRide(uiState.metaData)
                     TripStatus.ACCEPTED -> {
                         setUpDefaultView(data = uiState.metaData)
                     }
                     TripStatus.UNKNOWN -> {
                         /** Do nothing **/
                     }
+                    else -> {
+                        findNavController().navigate(R.id.action_global_homeFragment)
+                    }
                 }
+                if (uiState.isSuccess){
+                    Toast.makeText(context, "Tip and Rating Successful", Toast.LENGTH_LONG).show()
+                    findNavController().navigate(R.id.action_global_homeFragment)
+                }
+
+                if (uiState.error.isNotEmpty()){
+                    Toast.makeText(context, "Tip and Rating unsuccessful", Toast.LENGTH_LONG).show()
+                }
+
+                toggleBusyDialog(
+                    uiState.loading,
+                    desc = if (uiState.loading) "Submitting Data..." else null
+                )
             }
         }
 
@@ -272,6 +484,10 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         binding.scheduleButton.setOnClickListener {
             emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
+    }
+
+    private fun setAlphaForButtons(button: AppCompatButton, value: Int){
+        viewModel.updateTipValue(value)
     }
 
     override fun onStart() {
@@ -313,6 +529,27 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         lng = uiState.dropOffLongitude,
                         address = uiState.destinationAddress
                     )
+                    val builder = LatLngBounds.Builder()
+                    builder.include(LatLng(locationModels[0].lat, locationModels[0].lng))
+                    builder.include(LatLng(locationModels[1].lat, locationModels[1].lng))
+                    val bounds = builder.build()
+                    val width = resources.displayMetrics.widthPixels;
+                    val height = resources.displayMetrics.heightPixels;
+                    val padding = (width * 0.40).toInt()
+                    val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+
+                    //  gMap.setPadding(50,50,50,50)
+                    //  gMap.animateCamera(cu)
+                    gMap.moveCamera(cu)
+
+                 /*   val currentLocation = LatLng(locationModels[0].lat, locationModels[0].lng)
+                    val cameraPosition = CameraPosition.Builder()
+                        .bearing(0.toFloat())
+                        .target(currentLocation)
+                        .zoom(15.5.toFloat())
+                        .build()*/
+                    // gMap.animateCamera(cu)
+
                     getGeoLocation(locationModels, gMap, true) {
                         gMap.clear()
                         addMarkerToPolyLines(it)
@@ -410,7 +647,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val padding = (width * 0.3).toInt()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        gMap.moveCamera(boundsUpdate)
+      //  gMap.moveCamera(boundsUpdate)
     }
 
     private fun createClusterBitmap(add: String, min: String): Bitmap {
@@ -535,4 +772,51 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener {
             ex.printStackTrace()
         }
     }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
+        }
+    }
+
+    override fun closeButton() {
+        bottomView.visibility = View.GONE
+    }
+
+    override fun skipAction() {
+    }
+
+    override fun addFundDone() {
+        bottomView.visibility = View.GONE
+        //   val action = BalanceFragmentDirections.actionGlobalCashOutCardsFragment(viewModel.state.value.addFundAmount)
+        // findNavController().navigate(R.id.action_global_cashOutCardsFragment)
+        //  findNavController().navigate(action)
+    }
+
+    override fun cashOutDone() {
+
+    }
+
+    override fun cashOutAmount(amount: String) {
+
+    }
+
+    override fun addFundAmount(amount: String) {
+        bottomView.visibility = View.GONE
+        setAlphaForButtons(binding.tipDriverLayout.fourth, (amount.toDoubleOrNull() ?: 0.0).toInt())
+    }
+
 }

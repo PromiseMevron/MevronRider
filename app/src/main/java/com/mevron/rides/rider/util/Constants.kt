@@ -1,8 +1,8 @@
 package com.mevron.rides.rider.util
 
 object Constants {
-    //  const val BASE_URL = "https://mevron-rider.herokuapp.com/"
-    const val BASE_URL = "http://staging.mevron.com:8083/"
+      const val BASE_URL = "https://sandbox.mevron.com/"
+  //  const val BASE_URL = "http://staging.mevron.com:8083/"
     const val SHARED_PREF_KEY = "com.mevron.rides.riderMeveronApp.PREF_NAME"
     const val TOKEN = "TOKEN"
     const val REFERRAL = "REFERRAL"
@@ -22,6 +22,9 @@ object Constants {
     val DROP_OFF_LNG = "DROP_OFF_LNG"
     val PICK_UP_ADD = "PICK_UP_ADD"
     val DROP_OFF_ADD = "DROP_OFF_ADD"
+    val HOME = "home"
+    val WORK = "work"
+    val OTHER = "others"
 
 
     fun isNewNumberType(number: String): Boolean {

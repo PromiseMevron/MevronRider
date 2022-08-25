@@ -11,7 +11,7 @@
     android:background="@drawable/rounded_corner"
     app:behavior_hideable="false"
     android:paddingBottom="150dp"
-    app:behavior_peekHeight="350dp"
+    app:behavior_peekHeight="370dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <ImageView
@@ -46,12 +46,13 @@
             android:textSize="@dimen/_15ssp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_display"
             android:id="@+id/add_payment_method"
             android:layout_width="match_parent"
+            android:visibility="visible"
             android:layout_height="@dimen/_50sdp">
 
             <ImageView
@@ -62,7 +63,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_add_type" />
+                android:src="@drawable/ic_add_type" />
 
             <TextView
                 android:id="@+id/type_name"
@@ -78,7 +79,7 @@
                 app:layout_constraintStart_toEndOf="@id/image"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:targetApi="p"
-                tools:text="Add a Payment Method" />
+                android:text="@string/add_a_payment_method" />
 
             <ImageView
                 android:id="@+id/next"
@@ -86,7 +87,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_16sdp"
                 android:src="@drawable/ic_next"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -96,6 +97,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/recycler_view"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_payment_method"

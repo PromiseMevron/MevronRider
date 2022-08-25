@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.PaymentFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
@@ -68,6 +66,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
@@ -78,7 +77,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
     override fun onResume() {
         super.onResume()
         if (this::gMap.isInitialized) {
-            gMap.clear()
+           // gMap.clear()
         }
     }
 
@@ -94,11 +93,20 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                 val selectedPosition = it.paymentCards.indexOf(it.selectedPaymentCard)
                 val position = if (selectedPosition < 0) 0 else selectedPosition
 
+                adapter = PaymentAdapter(this@PaymentFragment, position)
+                binding.mevronPayBottom.recyclerView.adapter = adapter
                 adapter.submitList(it.paymentCards)
+                Log.d("We reached", "We reached ${it.paymentCards}")
 
                 if (adapter.selectedPosition != selectedPosition) {
-                    adapter = PaymentAdapter(this@PaymentFragment, position)
-                    binding.mevronPayBottom.recyclerView.adapter = adapter
+                   // adapter = PaymentAdapter(this@PaymentFragment, position)
+                  //  binding.mevronPayBottom.recyclerView.adapter = adapter
+                }
+
+                if (it.paymentCards.isEmpty()){
+                    binding.mevronPayBottom.addPaymentMethod.visibility = View.VISIBLE
+                }else{
+                    binding.mevronPayBottom.addPaymentMethod.visibility = View.GONE
                 }
 
 
@@ -153,11 +161,11 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         displayLocationSettingsRequest(binding)
 
         binding.addVoucher.setOnClickListener {
-            binding.mevronPayBottom.payTypeLayout.visibility = View.GONE
-            binding.mevronPayBottom.voucherAddLayout.visibility = View.VISIBLE
+          //  binding.mevronPayBottom.payTypeLayout.visibility = View.GONE
+           // binding.mevronPayBottom.voucherAddLayout.visibility = View.VISIBLE
         }
         binding.mevronPayBottom.doneButton.setOnClickListener {
-            if (binding.mevronPayBottom.riderCode.text.toString().isEmpty()) {
+          /*  if (binding.mevronPayBottom.riderCode.text.toString().isEmpty()) {
                 Toast.makeText(context, "Enter code", Toast.LENGTH_LONG).show()
             } else {
                 binding.mevronPayBottom.payTypeLayout.visibility = View.VISIBLE
@@ -165,7 +173,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                 binding.addVoucher.visibility = View.GONE
                 binding.voucherAdded.visibility = View.VISIBLE
                 binding.voucherCode.text = binding.mevronPayBottom.riderCode.text.toString()
-            }
+            }*/
         }
     }
 
@@ -186,17 +194,58 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                     )
 
                     val locations = arrayOf(startLocation, endLocation)
-                    this@PaymentFragment.location = locations
+                    if (locations.isNotEmpty()) {
+                        this@PaymentFragment.location = locations
+                        val builder = LatLngBounds.Builder()
+                        builder.include(LatLng(location[0].lat, location[0].lng))
+                        builder.include(LatLng(location[1].lat, location[1].lng))
+                        val bounds = builder.build()
+                        val width = resources.displayMetrics.widthPixels;
+                        val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+
+                        //  gMap.setPadding(50,50,50,50)
+                        //  gMap.animateCamera(cu)
+                        gMap.moveCamera(cu)
+                    }
                     getGeoLocation(locations, gMap) {
-                        addMarkerToPolyLines(it)
+                        if (!uiState.isMarkerRendered){
+                            addMarkerToPolyLines(it)
+                        }
+
                         viewModel.resolveCoordinateRendered()
                     }
                 }
             }
         }
+
+     /*   if (it.locationWrapper.model.isNotEmpty()) {
+            val location = it.locationWrapper.model
+            val builder = LatLngBounds.Builder()
+            builder.include(LatLng(location[0].lat, location[0].lng))
+            builder.include(LatLng(location[1].lat, location[1].lng))
+            val bounds = builder.build()
+            val width = resources.displayMetrics.widthPixels;
+            val height = resources.displayMetrics.heightPixels;
+            val padding = (width * 0.40).toInt()
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+
+            //  gMap.setPadding(50,50,50,50)
+            //  gMap.animateCamera(cu)
+            gMap.moveCamera(cu)
+
+            val currentLocation = LatLng(location[0].lat, location[0].lng)
+            val cameraPosition = CameraPosition.Builder()
+                .bearing(0.toFloat())
+                .target(currentLocation)
+                .zoom(15.5.toFloat())
+                .build()
+            // gMap.animateCamera(cu)
+        }*/
+
     }
 
     private fun addMarkerToPolyLines(geoDirections: GeoDirectionsResponse) {
+
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
         var loc1 = location[0].address
@@ -270,9 +319,10 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
         val padding = (width * 0.3).toInt()
+        viewModel.markerAdded()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        gMap.moveCamera(boundsUpdate)
+       // gMap.moveCamera(boundsUpdate)
     }
 
     private fun createClusterBitmap(add: String, img: Int): Bitmap {
@@ -305,6 +355,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         if (p0 != null) {
             gMap = p0
         }
+        gMap.mapType = GoogleMap.MAP_TYPE_NORMAL
       //  renderCoordinates()
 
         MapsInitializer.initialize(context?.applicationContext)
@@ -322,7 +373,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                 activity?.let { parentActivity ->
                     locationProcessor.animateToCurrentPosition(
                         parentActivity as HomeActivity,
-                        gMap,
+                        null,
                         callback = { },
                         onLocationRequestFailed = {
                             parentActivity.runOnUiThread {
@@ -361,6 +412,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
     }
 
     override fun onRequestPermissionsResult(
+
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray

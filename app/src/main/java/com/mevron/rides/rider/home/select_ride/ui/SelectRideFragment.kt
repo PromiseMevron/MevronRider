@@ -92,7 +92,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                 if (uiState.isMobilityTypeAvailable) {
                     cars = uiState.mobilityTypes
                     viewModel.setUpPaymentMethod(cars[pos].id.toString())
-                    binding.mevronRideBottom.destAddres.text = "Confirm ${cars[pos].name}"
+                    binding.destAddres.text = "Confirm ${cars[pos].name}"
                 }
 
                 if(!uiState.isMobilityTypesFetched && uiState.locationWrapper.model.isNotEmpty()) {
@@ -123,7 +123,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
             apiInterface = it
         }
 
-        binding.mevronRideBottom.destAddres.setOnClickListener {
+        binding.destAddres.setOnClickListener {
             viewModel.setEvent(SelectRideEvent.OpenPaymentFragmentEvent)
         }
         binding.bqckButton.setOnClickListener {
@@ -252,7 +252,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         //  gMap.animateCamera(boundsUpdate)
-        Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+      //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
         onMarkerAdded()
     }
 
@@ -285,8 +285,9 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
     override fun onMapReady(p0: GoogleMap?) {
         if (p0 != null) {
             gMap = p0
-            Toast.makeText(context, "33", Toast.LENGTH_LONG).show()
+           // Toast.makeText(context, "33", Toast.LENGTH_LONG).show()
         }
+        gMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         MapsInitializer.initialize(context?.applicationContext)
 
@@ -370,7 +371,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
             this.pos = pos
             adapter = CarsAdapter(pos, this)
             binding.mevronRideBottom.recyclerView.adapter = adapter
-            binding.mevronRideBottom.destAddres.text = "Confirm $car"
+            binding.destAddres.text = "Confirm $car"
             adapter.submitList(cars)
         }
     }

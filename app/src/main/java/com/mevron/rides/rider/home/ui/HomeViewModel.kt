@@ -86,19 +86,19 @@ class HomeViewModel @Inject constructor(
             tripStateUseCase().collect { tripState ->
                 Log.d("sdsdd", "sdsdss 5 $tripState")
                 if (tripState is TripState.NearByDriversState) {
-                    setState { copy(markerLocations = tripState.data.locations) }
+                 //   setState { copy(markerLocations = tripState.data.locations) }
                 }
                 when (tripState) {
                     is TripState.DriverSearchState -> {
                         setState { copy(shouldOpenConfirmRide = true) }
                     }
 
-
                     is TripState.StateMachineState -> {
+                        setState { copy(hideStateCheckCover = true) }
                         Log.d("sdsdd", "sdsdss")
                        val currentStatus = tripState.data.meta_data.status.toTripStatus()
                         Log.d("sdsdd", "sdsdss 595959m $currentStatus")
-                        if (currentStatus != TripStatus.UNKNOWN){
+                        if (currentStatus != TripStatus.UNKNOWN && currentStatus != TripStatus.COMPLETED){
                             Log.d("sdsdd", "sdsdss 444")
                             setState { copy(shouldOpenBookedRide = true) }
                         }
@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(
                         if (tripState.data.metaData.status.toTripStatus() == TripStatus.TRIP_COMPLETED) {
                             setState { copy(shouldOpenTipView = SingleStateEvent<Unit>().apply { set(Unit) }) }
                         }
-                        setState { copy(shouldOpenBookedRide = true) }
+                       // setState { copy(shouldOpenBookedRide = true) }
                     }
 
                     else -> {}

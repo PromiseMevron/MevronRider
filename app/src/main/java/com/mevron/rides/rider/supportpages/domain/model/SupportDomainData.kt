@@ -6,5 +6,6 @@ data class SupportDomainData(
 
 data class Supports(
     val heading: String,
-    val subHeading: String
+    val subHeading: String,
+    val date: String
 )

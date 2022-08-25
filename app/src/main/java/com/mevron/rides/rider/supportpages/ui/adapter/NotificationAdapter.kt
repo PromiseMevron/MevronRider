@@ -44,5 +44,6 @@ class NotificationAdapter :
         val item = getItem(position)
         holder.binding.heading.text = item.heading
         holder.binding.subheading.text = item.subHeading
+        holder.binding.date.text = item.date
     }
 }

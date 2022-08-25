@@ -7,6 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:id="@+id/root_view"
+        android:background="@color/white"
         android:layout_height="match_parent">
 
         <ImageButton
@@ -24,7 +25,7 @@
             android:id="@+id/profile_image"
             android:layout_width="@dimen/_64sdp"
             android:layout_height="@dimen/_64sdp"
-            android:layout_marginBottom="@dimen/_14sdp"
+            android:layout_marginBottom="@dimen/_34sdp"
             android:src="@drawable/profile"
             app:layout_constraintBottom_toTopOf="@id/name_display"
             app:layout_constraintEnd_toEndOf="parent"
@@ -69,13 +70,15 @@
         <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/rating"
             style="@style/RatingBar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             android:layout_marginBottom="@dimen/_20sdp"
             android:numStars="5"
-            android:rating="4"
+            tools:max="5"
+            android:progressTint="@color/primary"
+            tools:rating="4"
             app:layout_constraintBottom_toTopOf="@id/reason"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -107,6 +110,14 @@
                     android:layout_marginEnd="@dimen/_3sdp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_cleanliness" />
+                <ImageButton
+                    android:id="@+id/cleanliness_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_cleanliness2" />
 
                 <ImageButton
                     android:id="@+id/navigation"
@@ -118,12 +129,30 @@
                     android:src="@drawable/ic_navigation" />
 
                 <ImageButton
+                    android:id="@+id/navigation_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_navigation2" />
+
+                <ImageButton
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_3sdp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_price" />
+                <ImageButton
+                    android:id="@+id/price_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_price2" />
 
             </LinearLayout>
 
@@ -140,8 +169,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_3sdp"
+                    android:visibility="gone"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_service" />
+
+                <ImageButton
+                    android:id="@+id/service_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_service_2" />
 
                 <ImageButton
                     android:id="@+id/route"
@@ -151,6 +190,15 @@
                     android:layout_marginEnd="@dimen/_3sdp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_route" />
+                <ImageButton
+                    android:id="@+id/route_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_route2" />
 
                 <ImageButton
                     android:id="@+id/driving"
@@ -159,6 +207,15 @@
                     android:layout_marginStart="@dimen/_3sdp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_driving" />
+
+                <ImageButton
+                    android:id="@+id/driving_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_driving2" />
 
                 <ImageButton
                     android:id="@+id/other"
@@ -234,7 +291,23 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_weight="1"
+                android:text="50"
+                android:textColor="#383838"
+                android:textSize="@dimen/_13ssp"
                 android:background="@drawable/rounded_border_update" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/first2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:text="50"
+                android:visibility="gone"
+                android:textColor="#FF9B04"
+                android:textSize="@dimen/_13ssp"
+                android:background="@drawable/ic_select_tip" />
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/second"
@@ -243,7 +316,22 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_weight="1"
+                android:text="100"
+                android:textColor="#383838"
+                android:textSize="@dimen/_13ssp"
                 android:background="@drawable/rounded_border_update" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/second2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:text="100"
+                android:visibility="gone"
+                android:textColor="#FF9B04"
+                android:textSize="@dimen/_13ssp"
+                android:background="@drawable/ic_select_tip" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/third"
@@ -252,7 +340,22 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_weight="1"
+                android:text="200"
+                android:textColor="#383838"
+                android:textSize="@dimen/_13ssp"
                 android:background="@drawable/rounded_border_update" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/third2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:text="200"
+                android:visibility="gone"
+                android:textColor="#FF9B04"
+                android:textSize="@dimen/_13ssp"
+                android:background="@drawable/ic_select_tip" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/fourth"
@@ -260,11 +363,29 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_weight="1"
+                android:text="Custom"
+                android:textAllCaps="false"
+                android:textColor="#383838"
+                android:textSize="@dimen/_13ssp"
                 android:background="@drawable/rounded_border_update" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/fourth2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:text="Custom"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                android:textColor="#FF9B04"
+                android:textSize="@dimen/_13ssp"
+                android:background="@drawable/ic_select_tip" />
+
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/done_button"
+            android:id="@+id/done_button_tip_rate"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_55sdp"
             android:layout_marginStart="@dimen/_14sdp"
@@ -276,6 +397,12 @@
             android:textSize="@dimen/_14ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:targetApi="p" />
+
+        <com.mevron.rides.rider.payment.ui.CashOutAddFundLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bottom_view"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

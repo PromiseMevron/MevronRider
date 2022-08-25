@@ -42,7 +42,7 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.saved_payment_fragment, container, false)
         return binding.root
@@ -76,7 +76,7 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
         viewModel.getPaymentMethods()
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 viewModel.state.collect { state ->
                     toggleBusyDialog(
                         state.isLoading,
@@ -97,7 +97,7 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
                         viewModel.updateState(payLink = "")
                     }
                 }
-            }
+
         }
 
     }

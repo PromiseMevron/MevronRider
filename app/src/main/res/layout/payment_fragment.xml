@@ -37,13 +37,13 @@
         <include
             android:id="@+id/mevron_pay_bottom"
             layout="@layout/pay_bottom"
-            android:paddingBottom="@dimen/_150sdp"
+            android:paddingBottom="@dimen/_80sdp"
             android:visibility="visible" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_height="@dimen/_120sdp"
             android:layout_gravity="bottom"
             android:background="#ffffff"
             android:backgroundTint="#ffffff"
@@ -160,7 +160,7 @@
                     android:layout_height="@dimen/_50sdp"
                     android:layout_marginStart="@dimen/_16sdp"
                     android:layout_marginEnd="@dimen/_16sdp"
-                    android:layout_marginBottom="@dimen/_34sdp"
+                    android:layout_marginBottom="@dimen/_14sdp"
                     android:fontFamily="@font/poppins_regular"
                     android:lineHeight="@dimen/_23sdp"
                     android:text="@string/pay_with_cash"
