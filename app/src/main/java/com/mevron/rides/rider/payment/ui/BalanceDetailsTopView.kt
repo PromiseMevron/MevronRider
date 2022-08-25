@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.button.MaterialButton
 import com.mevron.rides.rider.R
 
 class BalanceDetailsTopView @JvmOverloads constructor(
@@ -18,6 +19,7 @@ class BalanceDetailsTopView @JvmOverloads constructor(
     private var dueDate: TextView
     private var addFund: ImageButton
     private var backButton: ImageButton
+    private var cardDetail: MaterialButton
     private var onBalanceDetailButtonClickListener: OnBalanceDetailButtonClickListener? = null
 
     init {
@@ -26,8 +28,10 @@ class BalanceDetailsTopView @JvmOverloads constructor(
         dueDate = findViewById(R.id.due_date)
         addFund = findViewById(R.id.add_fund)
         backButton = findViewById(R.id.back_button)
+        cardDetail = findViewById(R.id.card_detail)
         addFund.setOnClickListener(this)
         backButton.setOnClickListener(this)
+        cardDetail.setOnClickListener(this)
     }
 
     fun setUpView(amount: String){
@@ -41,6 +45,7 @@ class BalanceDetailsTopView @JvmOverloads constructor(
         when (view?.id) {
             R.id.add_fund -> onBalanceDetailButtonClickListener?.onDetailOutClicked()
             R.id.back_button -> onBalanceDetailButtonClickListener?.backButtonClicked()
+            R.id.card_detail -> onBalanceDetailButtonClickListener?.cardDetailClicked()
         }
     }
 }
@@ -49,4 +54,5 @@ class BalanceDetailsTopView @JvmOverloads constructor(
 interface OnBalanceDetailButtonClickListener {
     fun onDetailOutClicked()
     fun backButtonClicked()
+    fun cardDetailClicked()
 }

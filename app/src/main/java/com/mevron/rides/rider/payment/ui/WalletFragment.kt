@@ -102,6 +102,10 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
         activity?.onBackPressed()
     }
 
+    override fun cardDetailClicked() {
+        findNavController().navigate(R.id.action_global_savedpaymentFragment2)
+    }
+
     override fun closeButton() {
         bottomView.visibility = View.GONE
     }

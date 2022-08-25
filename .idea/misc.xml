@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/drawable/custom_checkbox.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/gradient_background.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/drawable/hollow_background.xml" value="0.1395" />
+        <entry key="app/src/main/res/drawable/ic_add_fund.xml" value="0.123" />
         <entry key="app/src/main/res/drawable/ic_add_type.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_address_image.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_alert_circle_fill.xml" value="0.119140625" />
@@ -130,7 +131,7 @@
         <entry key="app/src/main/res/layout/address_item.xml" value="0.375" />
         <entry key="app/src/main/res/layout/arrived_bottom_layout.xml" value="0.17798913043478262" />
         <entry key="app/src/main/res/layout/arrived_layout.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/balance_detail_top_layout.xml" value="0.16927083333333334" />
+        <entry key="app/src/main/res/layout/balance_detail_top_layout.xml" value="0.335" />
         <entry key="app/src/main/res/layout/balance_details_details_screen.xml" value="0.25104166666666666" />
         <entry key="app/src/main/res/layout/balance_details_view.xml" value="0.25104166666666666" />
         <entry key="app/src/main/res/layout/balance_items.xml" value="0.25104166666666666" />

@@ -310,5 +310,5 @@
         android:id="@+id/myCompletedRidesFragment2"
         android:name="com.mevron.rides.rider.myrides.ui.MyCompletedRidesFragment"
         android:label="my_completed_rides_fragment"
-        tools:layout="@layout/my_completed_rides_fragment" />
+        tools:layout="@layout/my_completed_rides_fragment" /><action android:id="@+id/action_global_savedpaymentFragment2" app:destination="@id/savedpaymentFragment2"/>
 </navigation>
