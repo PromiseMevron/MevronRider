@@ -1,24 +1,26 @@
-package com.mevron.rides.rider.settings.referal
+package com.mevron.rides.rider.settings.referal.ui
 
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.ReferalDetailFragmentBinding
-import com.mevron.rides.rider.settings.referal.model.ReferalReport
-import com.mevron.rides.rider.util.toggleBusyDialog
+import com.mevron.rides.rider.settings.referal.ui.event.ReferalEvent
+import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
-
 @AndroidEntryPoint
-class ReferalDetailFragment : Fragment(){
-
+class ReferalDetailFragment : Fragment() {
     companion object {
         fun newInstance() = ReferalDetailFragment()
     }
@@ -28,13 +30,14 @@ class ReferalDetailFragment : Fragment(){
     var startDate = ""
     var endDate = ""
     var id = ""
-
+    private var mDialog: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.referal_detail_fragment, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.referal_detail_fragment, container, false)
         return binding.root
     }
 
@@ -44,17 +47,37 @@ class ReferalDetailFragment : Fragment(){
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }
-        id = ReferalDetailFragmentArgs.fromBundle(requireArguments()).id
+        id = ReferalDetailFragmentArgs.fromBundle(
+            requireArguments()
+        ).id
+        viewModel.updateState(referalID = id)
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state ->
+                toggleBusyDialog(
+                    state.isLoading,
+                    desc = if (state.isLoading) "Processing..." else null
+                )
+
+                if (state.error.isNotEmpty()) {
+                    Log.d("Failure", state.error)
+                    Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+                }
+                if (state.startDate.isNotEmpty() && state.endDate.isNotEmpty()) {
+                    viewModel.handleEvent(ReferalEvent.GetReferalDetail)
+                }
+                binding.rideNumber.text = state.numberOfRides
+            }
+        }
+
         binding.selectStart.setOnClickListener {
             val datePickerDialog = context?.let { it1 ->
                 DatePickerDialog(
                     it1,
                     { _, i, i2, i3 ->
                         startDate = "${i}-${i2}-${i3}"
-                        binding.startDate.text = "${returnMonth(i2)} i"
-                        if (startDate.isNotEmpty() && endDate.isNotEmpty()){
-                            getReport()
-                        }
+                        viewModel.updateState(startDate = startDate)
+                        binding.startDate.text = "${returnMonth(i2)} ${i}"
                     },
                     Calendar.getInstance().get(Calendar.YEAR),
                     Calendar.getInstance().get(Calendar.MONTH),
@@ -70,10 +93,8 @@ class ReferalDetailFragment : Fragment(){
                     it1,
                     { _, i, i2, i3 ->
                         endDate = "${i}-${i2}-${i3}"
-                        binding.endDate.text = "${returnMonth(i2)} i"
-                        if (startDate.isNotEmpty() && endDate.isNotEmpty()){
-                            getReport()
-                        }
+                        viewModel.updateState(endDate = endDate)
+                        binding.endDate.text = "${returnMonth(i2)} ${i}"
                     },
                     Calendar.getInstance().get(Calendar.YEAR),
                     Calendar.getInstance().get(Calendar.MONTH),
@@ -84,18 +105,28 @@ class ReferalDetailFragment : Fragment(){
         }
     }
 
-    fun getReport(){
-        toggleBusyDialog(true)
-        val data = ReferalReport(from = startDate, to = endDate, referral_id = id)
-        viewModel.getReferal(data).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            toggleBusyDialog(false)
-        })
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
+        }
     }
 
-
-    fun returnMonth(i: Int): String{
+    fun returnMonth(i: Int): String {
         var mth = ""
-        mth = when(i) {
+        mth = when (i) {
             1 -> "Jan"
             2 -> "Feb"
             3 -> "Mar"

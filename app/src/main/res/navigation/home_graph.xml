@@ -230,7 +230,7 @@
     <fragment
         android:id="@+id/referalFragment"
         tools:layout="@layout/referal_fragment"
-        android:name="com.mevron.rides.rider.settings.referal.ReferalFragment"
+        android:name="com.mevron.rides.rider.settings.referal.ui.ReferalFragment"
         android:label="ReferalFragment" >
         <action
             android:id="@+id/action_referalFragment_to_referalDetailFragment"
@@ -239,7 +239,7 @@
     <fragment
         android:id="@+id/referalDetailFragment"
         tools:layout="@layout/referal_detail_fragment"
-        android:name="com.mevron.rides.rider.settings.referal.ReferalDetailFragment"
+        android:name="com.mevron.rides.rider.settings.referal.ui.ReferalDetailFragment"
         android:label="ReferalDetailFragment" >
         <argument
             android:name="id"
@@ -310,5 +310,6 @@
         android:id="@+id/myCompletedRidesFragment2"
         android:name="com.mevron.rides.rider.myrides.ui.MyCompletedRidesFragment"
         android:label="my_completed_rides_fragment"
-        tools:layout="@layout/my_completed_rides_fragment" /><action android:id="@+id/action_global_savedpaymentFragment2" app:destination="@id/savedpaymentFragment2"/>
+        tools:layout="@layout/my_completed_rides_fragment" />
+    <action android:id="@+id/action_global_savedpaymentFragment2" app:destination="@id/savedpaymentFragment2" />
 </navigation>

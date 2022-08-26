@@ -1,7 +1,5 @@
 package com.mevron.rides.rider.remote
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.mevron.rides.rider.authentication.data.models.createaccount.SaveDetailsRequest
 import com.mevron.rides.rider.auth.model.details.SaveResponse
 import com.mevron.rides.rider.auth.model.otp.OTPResponse
@@ -25,9 +23,9 @@ import com.mevron.rides.rider.authentication.data.models.profile.GetProfileRespo
 import com.mevron.rides.rider.emerg.data.model.AddContactRequest
 import com.mevron.rides.rider.emerg.data.model.GetContactsResponse
 import com.mevron.rides.rider.emerg.data.model.UpdateEmergencyContact
-import com.mevron.rides.rider.settings.referal.model.GetReferalHistory
-import com.mevron.rides.rider.settings.referal.model.ReferalReport
-import com.mevron.rides.rider.settings.referal.model.SetReferal
+import com.mevron.rides.rider.settings.referal.data.model.GetReferalHistory
+import com.mevron.rides.rider.settings.referal.data.model.ReferalReport
+import com.mevron.rides.rider.settings.referal.data.model.SetReferal
 import com.mevron.rides.rider.supportpages.data.model.NotificationResponse
 import retrofit2.Response
 import javax.inject.Inject

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        tools:context=".settings.referal.ReferalFragment">
+        tools:context=".settings.referal.ui.ReferalFragment">
 
         <ImageButton
             android:layout_width="@dimen/_45sdp"

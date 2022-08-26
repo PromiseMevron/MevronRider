@@ -1,4 +1,4 @@
-package com.mevron.rides.rider.settings.referal.model
+package com.mevron.rides.rider.settings.referal.data.model
 
 data class ReferalReport(
     val from: String,
