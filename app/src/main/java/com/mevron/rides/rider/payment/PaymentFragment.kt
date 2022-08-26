@@ -264,29 +264,55 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         val sLl2 = (endLocation?.lat ?: 0.0)
         val sLlg2 = (endLocation?.lng ?: 0.0)
 
-        val marker1 = MarkerOptions()
-            .position(LatLng(sLl, sLlg))
-            .anchor(0.05f, -0.05f)
-            .icon(
-                BitmapDescriptorFactory.fromBitmap(
-                    createClusterBitmap(
-                        add = loc1,
-                        img = R.drawable.ic_driver_pick
-                    )
-                )
-            )
 
+        val marker1 = MarkerOptions()
         val marker2 = MarkerOptions()
-            .position(LatLng(sLl2, sLlg2))
-            .anchor(1.05f, 1.05f)
-            .icon(
-                BitmapDescriptorFactory.fromBitmap(
-                    createClusterBitmap(
-                        add = loc2,
-                        img = R.drawable.ic_driver_dest
+
+        if (sLl < sLl2){
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            img = R.drawable.ic_driver_pick
+                        )
                     )
                 )
-            )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            img = R.drawable.ic_driver_dest
+                        )
+                    )
+                )
+        }else{
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            img = R.drawable.ic_driver_pick
+                        )
+                    )
+                )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            img = R.drawable.ic_driver_dest
+                        )
+                    )
+                )
+        }
 
         val marker3 = MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))

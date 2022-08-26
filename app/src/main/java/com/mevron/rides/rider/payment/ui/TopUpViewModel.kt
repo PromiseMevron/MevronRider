@@ -28,19 +28,12 @@ class TopUpViewModel @Inject constructor(
         get() = mutableState
 
      fun addFundToWallet() {
+         Log.d("we reached here", "we reached here 1111111")
         updateState(loading = true)
-        val amount = mutableState.value.addFundAmount
-        val cardNumber = mutableState.value.cardNumber
-        if (amount.isEmpty() || cardNumber.isEmpty()) {
-            // updateState(loading = false)
-             return
-        }
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = addFundUseCase(data =   CashActionData(
-                amount = amount,
-                card_id = cardNumber
-            )
-            )) {
+                amount = "500",
+                card_id = "dc2ae65a-523a-4968-9fdd-269dd2d7c741"))) {
                 is DomainModel.Success -> {
                     updateState(
                         loading = false,
@@ -83,9 +76,28 @@ class TopUpViewModel @Inject constructor(
     }
 
     fun getPayLink() {
+        Log.d("we reached here", "we reached here 5656555555")
         updateState(loading = true)
         val request = mutableState.value.toLinkRequest()
+        val dt =  CashActionData(amount = "500", card_id = "dc2ae65a-523a-4968-9fdd-269dd2d7c741")
         viewModelScope.launch(Dispatchers.IO) {
+            when (addFundUseCase(dt)) {
+                is DomainModel.Success -> {
+                    updateState(
+                        loading = false,
+                        errorMessage = "",
+                        successFund = true
+                    )
+                }
+                is DomainModel.Error -> mutableState.update {
+                    mutableState.value.copy(
+                        loading = false,
+                        errorMessage = "Failure to add Fund",
+                    )
+                }
+            }
+        }
+     /*   viewModelScope.launch(Dispatchers.IO) {
             when (val result = linkCase(request)) {
                 is DomainModel.Success -> {
                     val data = result.data as PaymentLinkDomain
@@ -101,7 +113,7 @@ class TopUpViewModel @Inject constructor(
                     )
                 }
             }
-        }
+        }*/
     }
 
     private fun TopUpState.toLinkRequest(): GetLinkAmount =

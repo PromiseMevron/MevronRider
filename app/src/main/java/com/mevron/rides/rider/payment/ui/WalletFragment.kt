@@ -119,6 +119,8 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
 
     override fun addFundDone() {
         bottomView.visibility = View.GONE
+        val action = WalletFragmentDirections.actionGlobalTopUpFragment(viewModel.state.value.addFundAmount)
+           findNavController().navigate(action)
      //   val action = BalanceFragmentDirections.actionGlobalCashOutCardsFragment(viewModel.state.value.addFundAmount)
         // findNavController().navigate(R.id.action_global_cashOutCardsFragment)
       //  findNavController().navigate(action)
@@ -134,8 +136,6 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
 
     override fun addFundAmount(amount: String) {
         viewModel.updateState(addFund = amount)
-        val action = WalletFragmentDirections.actionGlobalTopUpFragment(amount)
-        findNavController().navigate(action)
     }
 
 }

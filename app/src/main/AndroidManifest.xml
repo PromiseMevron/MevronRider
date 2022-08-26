@@ -39,18 +39,21 @@
         <activity
             android:name="com.mevron.rides.rider.home.ui.HomeActivity"
             android:exported="false"
-
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.mevron.rides.rider.auth.AuthActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.mevron.rides.rider.IntroScreenActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
         </activity>
         <activity
             android:name="com.mevron.rides.rider.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

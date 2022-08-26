@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.payment
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class PaymentAdapter(
     }
 
     override fun onBindViewHolder(holder: PayHolder, position: Int) {
+        Log.d("we reached here", "we reached here 44444")
         holder.binding.next.visibility = View.INVISIBLE
         val currentPaymentMethod = getItem(position)
         if (currentPaymentMethod.isCash()) {
@@ -52,8 +54,14 @@ class PaymentAdapter(
             holder.binding.image.setImageResource(currentPaymentMethod.getCardImage())
             holder.binding.typeName.text = "****" + currentPaymentMethod.lastDigits
         }
+        holder.binding.clicjButton.setOnClickListener {
+            paySelected.onPaymentMethodSelected(
+                currentPaymentMethod
+            )
+        }
 
-        holder.binding.root.setOnClickListener {
+        holder.binding.image.setOnClickListener {
+            Log.d("we reached here", "we reached here 3333333")
             paySelected.onPaymentMethodSelected(
                 currentPaymentMethod
             )

@@ -27,6 +27,6 @@ interface PaymentOptionsApi {
     @GET("api/v1/rider/auth/wallet/details")
     suspend fun getWalletDetails(): Response<PaymentDetailsResponse>
 
-    @GET("api/v1/rider/auth/wallet/addFunds")
-    suspend fun addFund(data: CashActionData): Response<GeneralResponse>
+    @POST("api/v1/rider/auth/wallet/addFunds")
+    suspend fun addFund(@Body data: CashActionData): Response<GeneralResponse>
 }

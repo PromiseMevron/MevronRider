@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/root_view"
         android:layout_width="match_parent"
@@ -47,5 +46,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:id="@+id/clicj_button"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

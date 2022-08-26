@@ -1,10 +1,8 @@
 package com.mevron.rides.rider.payment.ui
 
 import android.graphics.Bitmap
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +12,20 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.FragmentTopUpBinding
+import com.mevron.rides.rider.home.model.getCard.Data
 import com.mevron.rides.rider.payment.OnPaymentMethodSelectedListener
+import com.mevron.rides.rider.payment.PaySelected2
 import com.mevron.rides.rider.payment.PaymentAdapter
 import com.mevron.rides.rider.payment.domain.PaymentCard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
+class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 {
 
     companion object {
         fun newInstance() = TopUpFragment()
@@ -52,36 +51,39 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
         val amount = arguments?.let { TopUpFragmentArgs.fromBundle(it).amount }
         viewModel.updateState(addFund = amount)
         viewModel.getCards()
+        adapter = PaymentAdapter(this@TopUpFragment, 0)
+        binding.recyclerView.adapter = adapter
+        adapter = PaymentAdapter(this@TopUpFragment, 0)
+
+        binding.recyclerView.adapter = adapter
 
         lifecycleScope.launchWhenResumed {
 
-                viewModel.state.collect { state ->
+            viewModel.state.collect { state ->
 
-                    binding.backButton.setOnClickListener {
-                        if (binding.webView.visibility == View.GONE) {
-                            activity?.onBackPressed()
-                        } else {
-                            if (state.addCard) {
-                                viewModel.getCards()
-                            }
-                            binding.webView.visibility = View.GONE
+                binding.backButton.setOnClickListener {
+                    if (binding.webView.visibility == View.GONE) {
+                        activity?.onBackPressed()
+                    } else {
+                        if (state.addCard) {
+                            viewModel.getCards()
                         }
+                        binding.webView.visibility = View.GONE
                     }
+                }
 
-                    if (state.cardData.isNotEmpty()){
-                        Log.d("THE CARDS ARE", "THE CARDS ARE ${state.cardData}")
-                        val dataToUse = state.cardData.filter {
-                            it.uuid != null &&  it.lastDigits != null
-                        }
-                        if (dataToUse.isEmpty()) {
-                            binding.addCard.visibility = View.VISIBLE
-                        }
-                        else {
-                            binding.addCard.visibility = View.GONE
-                        }
-                        adapter = PaymentAdapter(this@TopUpFragment, -1)
-                        binding.recyclerView.adapter = adapter
-                        adapter.submitList(dataToUse/*.map {
+                if (state.cardData.isNotEmpty()) {
+                    Log.d("THE CARDS ARE", "THE CARDS ARE ${state.cardData}")
+                    val dataToUse = state.cardData.filter {
+                        it.uuid != null && it.lastDigits != null
+                    }
+                    if (dataToUse.isEmpty()) {
+                        binding.addCard.visibility = View.VISIBLE
+                    } else {
+                        binding.addCard.visibility = View.GONE
+                    }
+                    adapter.submitList(
+                        dataToUse/*.map {
                         CardData(
                             bin = it.bin,
                             brand = it.brand,
@@ -91,22 +93,23 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
                             uuid = it.uuid,
                             type = it.type
                         )
-                    }*/)
-                    }
-
-                    if (state.successFund) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Fund Added Successfully",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    if (state.payLink.isNotEmpty()){
-                        loadWebView(state.payLink)
-                        binding.webView.visibility = View.VISIBLE
-                        viewModel.updateState(payLink = "")
-                    }
+                    }*/
+                    )
                 }
+
+                if (state.successFund) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Fund Added Successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                if (state.payLink.isNotEmpty()) {
+                    loadWebView(state.payLink)
+                    binding.webView.visibility = View.VISIBLE
+                    viewModel.updateState(payLink = "")
+                }
+            }
 
         }
 
@@ -118,8 +121,6 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
             viewModel.updateState(addFund = "100", addCard = true)
             viewModel.getPayLink()
         }
-
-
     }
 
     private fun loadWebView(webUrl: String) {
@@ -154,7 +155,12 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener {
     }
 
     override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
+        Log.d("we reached here", "we reached here 22222222")
         viewModel.updateState(cardNumber = paymentCard.uuid)
         viewModel.addFundToWallet()
+    }
+
+    override fun selected(data: Data) {
+
     }
 }

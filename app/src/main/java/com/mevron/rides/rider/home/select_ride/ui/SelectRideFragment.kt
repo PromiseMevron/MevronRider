@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
@@ -191,8 +192,61 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
         val sLl2 = (endLocation?.lat ?: 0.0)
         val sLlg2 = (endLocation?.lng ?: 0.0)
 
-
         val marker1 = MarkerOptions()
+        val marker2 = MarkerOptions()
+
+        if (sLl < sLl2){
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            loc = "Start",
+                            color = "#F57519"
+                        )
+                    )
+                )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            loc = "To",
+                            color = "#F9170F"
+                        )
+                    )
+                )
+        }else{
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            loc = "Start",
+                            color = "#F57519"
+                        )
+                    )
+                )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            loc = "To",
+                            color = "#F9170F"
+                        )
+                    )
+                )
+        }
+
+
+     /*   val marker1 = MarkerOptions()
             .position(LatLng(sLl, sLlg))
             .anchor(1.05f, 1.05f)
             .icon(
@@ -203,11 +257,11 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                         color = "#F57519"
                     )
                 )
-            )
+            )*/
 
-        val marker2 = MarkerOptions()
+      /*  val marker2 = MarkerOptions()
             .position(LatLng(sLl2, sLlg2))
-            .anchor(1.05f, 1.05f)
+            .anchor(0.05f, 1.05f)
             .icon(
                 BitmapDescriptorFactory.fromBitmap(
                     createClusterBitmap(
@@ -216,7 +270,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                         color = "#F9170F"
                     )
                 )
-            )
+            )*/
 
         val marker3 = MarkerOptions()
             .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))

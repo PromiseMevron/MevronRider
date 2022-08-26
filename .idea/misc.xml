@@ -158,7 +158,7 @@
         <entry key="app/src/main/res/layout/fragment_add_fund_methods.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/fragment_face_liveness_detection_item.xml" value="0.1019559902200489" />
         <entry key="app/src/main/res/layout/fragment_facial_recognition.xml" value="0.11484375" />
-        <entry key="app/src/main/res/layout/fragment_top_up.xml" value="0.24635416666666668" />
+        <entry key="app/src/main/res/layout/fragment_top_up.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_wallet.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/help_fragment.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.25" />
@@ -181,7 +181,7 @@
         <entry key="app/src/main/res/layout/on_ride_bottom.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/layout/on_trip_marker.xml" value="0.5" />
         <entry key="app/src/main/res/layout/pay_bottom.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/pay_type_item.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/pay_type_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/payment_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/payment_method_fragment.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.165" />
