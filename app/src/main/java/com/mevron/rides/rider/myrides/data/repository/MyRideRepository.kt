@@ -55,29 +55,30 @@ class MyRideRepository(private val api: MyRideAPI) : IMyRideRepo {
         })
     )
 
-    private fun TripDetailResponse.toDomainModel() = DomainModel.Success(
-        data = this.success.tripData.apply {
+    private fun TripDetailResponse.toDomainModel(): DomainModel{
+        val dt = this.success.tripData.let {
             TripDetailDomainData(
-                dateAndTime = "${this.trip.createdAt.toReadableDate()} ${this.trip.endTime}",
+                dateAndTime = "${it.trip.createdAt.toReadableDate()} ${it.trip.endTime}",
                 carNumber = "",
-                departureTime = this.trip.startTime,
-                arrivalTime = this.trip.endTime,
-                departureAddress = this.trip.pickupAddress,
-                arrivalAddress = this.trip.destinationAddress,
-                driverName = "${this.driver.firstName} ${this.driver.lastName}",
-                driverRating = this.driver.rating ?: "",
-                paymentType = this.trip.paymentMethod,
-                driverProfile = this.driver.profilePicture ?: "",
-                startLat = this.trip.pickupLatitude,
-                startLng = this.trip.pickupLongitude,
-                endLat = this.trip.destinationLatitude,
-                endLng = this.trip.destinationLongitude,
-                total = "${this.trip.currencyCode} ${this.trip.amount}"
+                departureTime = it.trip.startTime,
+                arrivalTime = it.trip.endTime,
+                departureAddress = it.trip.pickupAddress,
+                arrivalAddress = it.trip.destinationAddress,
+                driverName = "${it.driver.firstName} ${it.driver.lastName}",
+                driverRating = it.driver.rating ?: "",
+                paymentType = it.trip.paymentMethod,
+                driverProfile = it.driver.profilePicture ?: "",
+                startLat = it.trip.pickupLatitude,
+                startLng = it.trip.pickupLongitude,
+                endLat = it.trip.destinationLatitude,
+                endLng = it.trip.destinationLongitude,
+                total = "${it.trip.currencyCode} ${it.trip.amount}"
             )
         }
-
-
-    )
+        return DomainModel.Success(
+            data = dt
+        )
+    }
 
 }
 

@@ -29,6 +29,7 @@
         <entry key="app/src/main/res/drawable/ic_cleanliness.xml" value="0.15" />
         <entry key="app/src/main/res/drawable/ic_cleanliness_2.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_close_drawer.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_copy_code.xml" value="0.1605" />
         <entry key="app/src/main/res/drawable/ic_curved_view.xml" value="0.1921875" />
         <entry key="app/src/main/res/drawable/ic_destination.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_done.xml" value="0.121" />
@@ -95,6 +96,8 @@
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.23796296296296296" />
         <entry key="app/src/main/res/drawable/ic_service.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_service_2.xml" value="0.173" />
+        <entry key="app/src/main/res/drawable/ic_share_code.xml" value="0.1605" />
+        <entry key="app/src/main/res/drawable/ic_share_to_contact.xml" value="0.1605" />
         <entry key="app/src/main/res/drawable/ic_share_trip_status.xml" value="0.2324074074074074" />
         <entry key="app/src/main/res/drawable/ic_signal.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_stop_new_ride.xml" value="0.1921875" />
