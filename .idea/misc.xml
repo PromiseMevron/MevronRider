@@ -96,8 +96,11 @@
         <entry key="app/src/main/res/drawable/ic_service.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_service_2.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_share_trip_status.xml" value="0.2324074074074074" />
+        <entry key="app/src/main/res/drawable/ic_signal.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_stop_new_ride.xml" value="0.1921875" />
+        <entry key="app/src/main/res/drawable/ic_telegram.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_verified_fill.xml" value="0.1545" />
+        <entry key="app/src/main/res/drawable/ic_whatsapp.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_work_black.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/next_enabled.xml" value="0.23958333333333334" />
@@ -185,7 +188,7 @@
         <entry key="app/src/main/res/layout/rate_rider_fragment.xml" value="0.125" />
         <entry key="app/src/main/res/layout/referal_bottom.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/referal_detail_fragment.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/referal_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/ride_bottom_sheet.xml" value="0.25" />
         <entry key="app/src/main/res/layout/ride_details_fragment.xml" value="0.335" />
@@ -198,6 +201,7 @@
         <entry key="app/src/main/res/layout/select_on_map_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/select_ride_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/share_dialog.xml" value="0.17447916666666666" />
         <entry key="app/src/main/res/layout/update_address_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/update_emergency_fragment.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/vehicle_item.xml" value="0.335" />

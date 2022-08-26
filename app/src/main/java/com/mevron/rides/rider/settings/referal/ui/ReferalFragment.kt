@@ -1,18 +1,25 @@
 package com.mevron.rides.rider.settings.referal.ui
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.ReferalFragmentBinding
 import com.mevron.rides.rider.settings.referal.ui.event.ReferalEvent
@@ -96,36 +103,114 @@ class ReferalFragment : Fragment(), SelectedReferal {
         }
 
         binding.shareReferal.setOnClickListener {
-            val sharingIntent = Intent(Intent.ACTION_SEND)
+          shareAction()
+        }
 
-            // type of the content to be shared
+        binding.shareCode.setOnClickListener {
+            shareAction()
+        }
 
-            // type of the content to be shared
-            sharingIntent.type = "text/plain"
+        binding.copyCode.setOnClickListener {
+            val myClipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val myClip: ClipData = ClipData.newPlainText("ref", "${binding.referalName.text.toString()}")
+            myClipboard.setPrimaryClip(myClip)
+            Toast.makeText(requireContext(), "Code Copied", Toast.LENGTH_LONG).show()
+        }
 
-            // Body of the content
-
-            // Body of the content
-            val shareBody = "Join me in using Mevron Ride"
-
-            // subject of the content. you can share anything
-
-            // subject of the content. you can share anything
-            val shareSubject = "Ride with mevron and enjoy the beauty of riding"
-
-            // passing body of the content
-
-            // passing body of the content
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
-
-            // passing subject of the content
-
-            // passing subject of the content
-            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject)
-            startActivity(Intent.createChooser(sharingIntent, "Share using"))
+        binding.shareToContact.setOnClickListener {
+            showDialog()
         }
 
 
+    }
+
+    private fun shareAction(){
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+
+        // type of the content to be shared
+
+        // type of the content to be shared
+        sharingIntent.type = "text/plain"
+
+        // Body of the content
+
+        // Body of the content
+        val shareBody = "Join me in using Mevron Ride using my referral code: ${binding.referalName.text.toString()}"
+
+        // subject of the content. you can share anything
+
+        // subject of the content. you can share anything
+        val shareSubject = "Ride with mevron and enjoy the beauty of riding"
+
+        // passing body of the content
+
+        // passing body of the content
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+
+        // passing subject of the content
+
+        // passing subject of the content
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject)
+        startActivity(Intent.createChooser(sharingIntent, "Share using"))
+    }
+
+    private fun showDialog() {
+        val dialog = activity?.let { Dialog(it) }!!
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.share_dialog)
+        // val body = dialog.findViewById(R.id.body) as TextView
+        //  body.text = title
+        val whatsapp = dialog.findViewById(R.id.whatsapp) as LinearLayout
+        val telegram = dialog.findViewById(R.id.telegram) as LinearLayout
+        val signal = dialog.findViewById(R.id.signal) as LinearLayout
+        val cancel = dialog.findViewById(R.id.dont) as MaterialButton
+        whatsapp.setOnClickListener {
+            dialog.dismiss()
+            openSharesApp("com.whatsapp")
+        }
+        telegram.setOnClickListener {
+            dialog.dismiss()
+            openSharesApp("org.telegram.messenger")}
+        signal.setOnClickListener {
+            dialog.dismiss()
+            openSharesApp("org.thoughtcrime.securesms")}
+        cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+
+    }
+
+    private fun isPackageInstalled(packageName: String): Boolean {
+        return try {
+            requireContext().packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    private fun openSharesApp(packageName: String){
+        if (isPackageInstalled(packageName)){
+            // Creating intent with action send
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.setPackage(packageName)
+
+            val shareBody = "Join me in using Mevron Ride"
+            val shareSubject =
+                "Ride with mevron and enjoy the beauty of riding \nRegister using my code ${binding.referalName.text.toString()}"
+
+            intent.putExtra(Intent.EXTRA_TEXT, shareBody)
+
+            intent.putExtra(Intent.EXTRA_SUBJECT, shareSubject)
+
+            startActivity(intent)
+
+        }else{
+            Toast.makeText(requireContext(), "Application not installed", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
