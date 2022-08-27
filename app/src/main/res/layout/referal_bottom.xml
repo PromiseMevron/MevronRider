@@ -8,11 +8,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_200sdp"
-            app:behavior_hideable="true"
             android:visibility="gone"
             android:background="@drawable/rounded_corner"
             android:id="@+id/bottomSheet"
-            app:behavior_peekHeight="@dimen/_200sdp"
+            app:behavior_peekHeight="0dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <ImageView

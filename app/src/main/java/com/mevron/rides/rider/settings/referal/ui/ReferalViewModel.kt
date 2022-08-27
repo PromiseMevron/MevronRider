@@ -46,7 +46,7 @@ class ReferalViewModel @Inject constructor(
     private fun fetchFromPref() {
         updateState(
             referralCode = getPrefUseCase(Constants.REFERRAL),
-            referralStatus = (getPrefUseCase(Constants.REFERRAL_STATUS)).toInt()
+            referralStatus = (getPrefUseCase(Constants.REFERRAL_STATUS)).toIntOrNull()
         )
     }
 

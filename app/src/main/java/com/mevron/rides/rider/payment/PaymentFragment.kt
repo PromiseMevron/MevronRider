@@ -268,7 +268,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         val marker1 = MarkerOptions()
         val marker2 = MarkerOptions()
 
-        if (sLl < sLl2){
+        if (sLlg2 < sLlg){
             marker1.position(LatLng(sLl, sLlg))
                 .anchor(1.05f, 1.05f)
                 .icon(

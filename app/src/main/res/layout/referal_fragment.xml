@@ -121,6 +121,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                             tools:text="unmesh124920"
                             android:textColor="#ffffff"
                             android:textSize="@dimen/_12ssp"
+                            android:maxLines="1"
                             android:fontFamily="@font/poppins_regular"
                             android:textFontWeight="400"
                             android:lineHeight="@dimen/_22sdp"

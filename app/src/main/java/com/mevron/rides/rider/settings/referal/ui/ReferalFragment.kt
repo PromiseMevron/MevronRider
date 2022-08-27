@@ -14,11 +14,14 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.ReferalFragmentBinding
@@ -36,6 +39,7 @@ class ReferalFragment : Fragment(), SelectedReferal {
     private val viewModel: ReferalViewModel by viewModels()
     private lateinit var binding: ReferalFragmentBinding
     private lateinit var adapter: ReferalAdapter
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var mDialog: Dialog? = null
 
     override fun onCreateView(
@@ -52,6 +56,7 @@ class ReferalFragment : Fragment(), SelectedReferal {
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.mevronReferalBottom.bottomSheet)
         viewModel.handleEvent(ReferalEvent.GetReferalDetail)
         viewModel.handleEvent(ReferalEvent.GetReferalPrefDetail)
         adapter = ReferalAdapter(this)
@@ -76,8 +81,10 @@ class ReferalFragment : Fragment(), SelectedReferal {
                 }
 
                 if (state.setReferal) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                     binding.mevronReferalBottom.bottomSheet.visibility = View.VISIBLE
                 } else {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     binding.mevronReferalBottom.bottomSheet.visibility = View.GONE
                 }
 
@@ -88,6 +95,31 @@ class ReferalFragment : Fragment(), SelectedReferal {
             }
 
         }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.mevronReferalBottom.bottomSheet.visibility = View.VISIBLE
+                        viewModel.updateState(setReferal = true)
+                        //     binding.mevronHomeBottom.scheduleButton.visibility = View.GONE
+                        //    binding.mevronHomeBottom.myLocation.visibility = View.GONE
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.mevronReferalBottom.bottomSheet.visibility = View.GONE
+                        viewModel.updateState(setReferal = false)
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        })
 
         binding.enterCode.setOnClickListener {
             viewModel.updateState(setReferal = true)

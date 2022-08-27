@@ -191,11 +191,13 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
 
         val sLl2 = (endLocation?.lat ?: 0.0)
         val sLlg2 = (endLocation?.lng ?: 0.0)
-
+        Log.d("the latlng", "the start ${sLl}, $sLlg")
+        Log.d("the latlng", "the end ${sLl2}, $sLlg2")
         val marker1 = MarkerOptions()
         val marker2 = MarkerOptions()
 
-        if (sLl < sLl2){
+        if (sLlg2 < sLlg){
+            Log.d("the latlng", "the start bigger")
             marker1.position(LatLng(sLl, sLlg))
                 .anchor(1.05f, 1.05f)
                 .icon(
@@ -220,6 +222,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                     )
                 )
         }else{
+            Log.d("the latlng", "the start smaller")
             marker1.position(LatLng(sLl, sLlg))
                 .anchor(0.05f, 1.05f)
                 .icon(
