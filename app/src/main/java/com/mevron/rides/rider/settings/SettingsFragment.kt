@@ -4,21 +4,31 @@ package com.mevron.rides.rider.settings
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.mevron.rides.rider.App
+import com.mevron.rides.rider.MainActivity
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.authentication.data.models.profile.ProfileData
 import com.mevron.rides.rider.databinding.SettingsFragmentBinding
+import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.savedplaces.ui.saveaddress.SaveAddressFragmentDirections
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.LauncherUtil
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +40,9 @@ class SettingsFragment : Fragment() {
     }
     private lateinit var binding: SettingsFragmentBinding
 
-    private lateinit var viewModel: SettingsViewModel
+    private  val viewModel: SettingsViewModel by viewModels()
+
+    private var mDialog: Dialog? = null
 
     val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
 
@@ -67,6 +79,27 @@ class SettingsFragment : Fragment() {
             binding.addWork.visibility = View.GONE
             binding.addWorkFilled.visibility = View.VISIBLE
             binding.textAddressWork.text = workAddres
+        }
+
+        lifecycleScope.launchWhenResumed {
+
+            viewModel.state.collect { state ->
+                toggleBusyDialog(
+                    state.loader,
+                    desc = if (state.loader) "Submitting Data..." else null
+                )
+                if (state.error.isNotEmpty()){
+                    Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
+                    viewModel.updateState(error = "")
+                }
+
+                if (state.isSuccess){
+                    sPref.edit().clear().apply()
+                    val intent = Intent(activity, MainActivity::class.java)
+                    activity?.startActivity(intent)
+                    activity?.finishAffinity()
+                }
+            }
         }
 
         val gson = Gson()
@@ -150,10 +183,30 @@ class SettingsFragment : Fragment() {
         val noBtn = dialog.findViewById(R.id.dont) as MaterialButton
         yesBtn.setOnClickListener {
             dialog.dismiss()
+            viewModel.logOutDevice()
         }
         noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
 
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
+        }
     }
 
 }

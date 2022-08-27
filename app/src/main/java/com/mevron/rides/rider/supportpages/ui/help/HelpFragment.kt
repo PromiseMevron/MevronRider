@@ -86,7 +86,6 @@ class HelpFragment : Fragment() {
     }
 
     private fun loadWebView() {
-        Toast.makeText(requireContext(), "reached", Toast.LENGTH_LONG).show()
         binding.webView.loadUrl("https://mevron.com/ride/support")
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.settings.allowFileAccess = true
