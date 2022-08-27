@@ -5,11 +5,7 @@ import com.mevron.rides.rider.home.model.GetLinkAmount
 import com.mevron.rides.rider.home.model.getCard.GetCardResponse
 import com.mevron.rides.rider.remote.model.GeneralResponse
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface PaymentOptionsApi {
     @POST("api/v1/rider/auth/payment-method/create")
@@ -29,4 +25,7 @@ interface PaymentOptionsApi {
 
     @POST("api/v1/rider/auth/wallet/addFunds")
     suspend fun addFund(@Body data: CashActionData): Response<GeneralResponse>
+
+    @GET
+    suspend fun confirmPayment(@Url theUrl: String): Response<GeneralResponse>
 }

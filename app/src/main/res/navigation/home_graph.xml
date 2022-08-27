@@ -186,7 +186,7 @@
 
 
     <fragment
-        android:id="@+id/savedpaymentFragment2"
+        android:id="@+id/savedpaymentFragment"
         android:name="com.mevron.rides.rider.payment.SavedPaymentFragment"
         android:label="saved_payment_fragment"
         tools:layout="@layout/saved_payment_fragment" >
@@ -292,7 +292,7 @@
             app:argType="com.mevron.rides.rider.emerg.domain.model.GetContactDomainData" />
     </fragment><action android:id="@+id/action_global_homeFragment2" app:destination="@id/homeFragment"/>
     <fragment
-        android:id="@+id/savedpaymentFragment"
+        android:id="@+id/wallet_fragment"
         android:name="com.mevron.rides.rider.payment.ui.WalletFragment"
         android:label="fragment_wallet"
         tools:layout="@layout/fragment_wallet" />
@@ -311,5 +311,5 @@
         android:name="com.mevron.rides.rider.myrides.ui.MyCompletedRidesFragment"
         android:label="my_completed_rides_fragment"
         tools:layout="@layout/my_completed_rides_fragment" />
-    <action android:id="@+id/action_global_savedpaymentFragment2" app:destination="@id/savedpaymentFragment2" />
+    <action android:id="@+id/action_global_savedpaymentFragment2" app:destination="@id/savedpaymentFragment" />
 </navigation>

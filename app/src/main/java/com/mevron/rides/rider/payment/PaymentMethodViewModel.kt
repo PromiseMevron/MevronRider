@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.update
 import com.mevron.rides.rider.home.model.GetLinkAmount
+import com.mevron.rides.rider.payment.domain.ConfirmPaymentUseCase
 import com.mevron.rides.rider.payment.domain.GetPaymentLinkUseCase
 import com.mevron.rides.rider.payment.domain.PaymentLinkDomain
 import com.mevron.rides.rider.payment.ui.GetLinkState
@@ -16,7 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PaymentMethodViewModel @Inject constructor(private val useCase: GetPaymentLinkUseCase) :
+class PaymentMethodViewModel @Inject constructor(
+    private val useCase: GetPaymentLinkUseCase,
+    private val confirmUseCase: ConfirmPaymentUseCase
+) :
     ViewModel() {
 
     private val mutableState: MutableStateFlow<GetLinkState> =
@@ -48,6 +52,21 @@ class PaymentMethodViewModel @Inject constructor(private val useCase: GetPayment
         }
     }
 
+    fun confirmPayment() {
+        val uuid = mutableState.value.confirmLink
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = confirmUseCase(uuid)) {
+                else -> {
+                    updateState(
+                        isLoading = false,
+                        error = "",
+                        successFund = true
+                    )
+                }
+            }
+        }
+    }
+
     private fun DomainModel.Error.buildString(): String =
         this.error.localizedMessage ?: "Card Addition Failed"
 
@@ -62,7 +81,9 @@ class PaymentMethodViewModel @Inject constructor(private val useCase: GetPayment
         payLink: String? = null,
         isLoading: Boolean? = null,
         error: String? = null,
-        amount: String? = null
+        amount: String? = null,
+        confirmLink: String? = null,
+        successFund: Boolean? = null
     ) {
         val currentValue = mutableState.value
         mutableState.update {
@@ -70,7 +91,9 @@ class PaymentMethodViewModel @Inject constructor(private val useCase: GetPayment
                 paymentLink = payLink ?: currentValue.paymentLink,
                 isLoading = isLoading ?: currentValue.isLoading,
                 error = error ?: currentValue.error,
-                amount = amount ?: currentValue.amount
+                amount = amount ?: currentValue.amount,
+                confirmLink = confirmLink ?: currentValue.confirmLink,
+                successFund = successFund ?: currentValue.successFund
             )
         }
     }

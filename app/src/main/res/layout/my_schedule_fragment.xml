@@ -20,5 +20,15 @@ tools:context=".myrides.ui.MyScheduleFragment">
         tools:listitem="@layout/my_schedule_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_empty_data"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        android:id="@+id/empty_data"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

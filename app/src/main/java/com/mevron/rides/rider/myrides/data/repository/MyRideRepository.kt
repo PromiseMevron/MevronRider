@@ -50,7 +50,12 @@ class MyRideRepository(private val api: MyRideAPI) : IMyRideRepo {
                 status = it.status,
                 title = it.title,
                 vehicleName = it.vehicleName,
-                vehicleNum = it.plateNumber
+                vehicleNum = it.plateNumber,
+                destinationLatitude = it.destinationLatitude,
+                destinationLongitude = it.destinationLongitude,
+                pickupLatitude = it.pickupLatitude,
+                pickupLongitude = it.pickupLongitude,
+                driverProfile = it.riderPicture
             )
         })
     )

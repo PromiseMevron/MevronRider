@@ -164,6 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_100sdp"
             android:background="#40C4C4C4"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -282,6 +283,7 @@
         android:layout_marginEnd="@dimen/_14sdp"
         android:src="@drawable/ic_next_yellow"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -295,6 +297,78 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@id/add_home"
+        android:layout_height="@dimen/_90sdp"
+        android:visibility="gone"
+        android:background="#14F57519"
+        android:id="@+id/add_home_filled">
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:id="@+id/home_image2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:src="@drawable/ic_home_black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_14ssp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textColor="#383838"
+            app:layout_constraintStart_toEndOf="@id/home_image2"
+            app:layout_constraintTop_toTopOf="parent"
+          android:layout_marginTop="@dimen/_20sdp"
+            android:id="@+id/text_home2"
+            tools:targetApi="p" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Gbagada General Hospital, Gbagada, Lagos State"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textColor="#383838"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/home_image2"
+            app:layout_constraintTop_toBottomOf="@id/text_home2"
+            android:id="@+id/text_address_home"
+            tools:targetApi="p" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:src="@drawable/ic_next_yellow"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="#f2f2f2"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/add_home_filled"
         android:layout_height="@dimen/_60sdp"
         android:id="@+id/add_work">
 
@@ -346,6 +420,78 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@id/add_work"
+        android:layout_height="@dimen/_90sdp"
+        android:visibility="gone"
+        android:background="#14F57519"
+        android:id="@+id/add_work_filled">
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:id="@+id/home_image4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:src="@drawable/ic_work_black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/work"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_14ssp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textColor="#383838"
+            app:layout_constraintStart_toEndOf="@id/home_image4"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:id="@+id/text_home4"
+            tools:targetApi="p" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Gbagada General Hospital, Gbagada, Lagos State"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_12ssp"
+            android:maxLines="2"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:textColor="#383838"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/home_image4"
+            app:layout_constraintTop_toBottomOf="@id/text_home4"
+            android:id="@+id/text_address_work"
+            tools:targetApi="p" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:src="@drawable/ic_next_yellow"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="#f2f2f2"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/add_work_filled"
         android:layout_height="@dimen/_60sdp"
         android:id="@+id/add_saved">
 

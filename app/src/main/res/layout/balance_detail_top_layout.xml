@@ -90,6 +90,7 @@
         android:textSize="13sp"
         android:textAllCaps="false"
         app:cornerRadius="23dp"
+        android:visibility="gone"
         android:layout_marginStart="@dimen/_12sdp"
         android:fontFamily="@font/poppins_medium"
         app:layout_constraintStart_toEndOf="@+id/add_fund"

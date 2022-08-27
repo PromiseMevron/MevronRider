@@ -58,7 +58,7 @@
         android:layout_height="match_parent"
         android:id="@+id/place_cover"
         tools:visibility="invisible"
-        android:background="@color/primary">
+        android:background="@color/white">
 
         <ImageView
             android:layout_width="@dimen/_100sdp"
@@ -76,7 +76,7 @@
         android:layout_height="match_parent"
         android:id="@+id/state_cover"
         tools:visibility="invisible"
-        android:background="@color/primary">
+        android:background="@color/white">
 
         <ImageView
             android:layout_width="@dimen/_100sdp"

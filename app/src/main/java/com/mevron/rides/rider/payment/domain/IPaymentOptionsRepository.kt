@@ -19,4 +19,6 @@ interface IPaymentOptionsRepository {
 
     suspend fun addFund(data: CashActionData): DomainModel
 
+    suspend fun confirmPayment(uiid: String): DomainModel
+
 }

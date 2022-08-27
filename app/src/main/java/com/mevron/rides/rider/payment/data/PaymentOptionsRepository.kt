@@ -88,6 +88,19 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             DomainModel.Error(Throwable("Error adding fund $error"))
         }
     }
+
+    override suspend fun confirmPayment(uiid: String): DomainModel {
+        return try {
+            val response = api.confirmPayment(uiid.replace("%3F", "?"))
+            if (response.isSuccessful) {
+                DomainModel.Success(data = Unit)
+            } else {
+                DomainModel.Error(Throwable(response.errorBody().toString()))
+            }
+        } catch (error: Throwable) {
+            DomainModel.Error(Throwable("Error adding fund $error"))
+        }
+    }
 }
 
 private fun PaymentDetailsResponse.toDomainModel() = DomainModel.Success(

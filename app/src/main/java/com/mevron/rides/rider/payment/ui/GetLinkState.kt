@@ -5,6 +5,8 @@ data class GetLinkState(
     val error: String,
     val isLoading: Boolean,
     val amount: String,
+    val confirmLink: String,
+    val successFund: Boolean
 
 ) {
     companion object {
@@ -12,7 +14,9 @@ data class GetLinkState(
             paymentLink = "",
             error = "",
             isLoading = false,
-            amount = "0"
+            amount = "0",
+            confirmLink = "",
+            successFund = false
         )
     }
 }

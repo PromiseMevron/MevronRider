@@ -11,5 +11,10 @@ class AllTripsResult (
     val time: String,
     val title: String,
     val vehicleName: String,
-    val vehicleNum: String
+    val vehicleNum: String,
+    val destinationLatitude: String,
+    val destinationLongitude: String,
+    val pickupLatitude: String,
+    val pickupLongitude: String,
+    val driverProfile: String,
     )

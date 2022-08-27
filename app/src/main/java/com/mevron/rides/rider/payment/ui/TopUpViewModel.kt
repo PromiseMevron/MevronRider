@@ -19,7 +19,8 @@ import javax.inject.Inject
 class TopUpViewModel @Inject constructor(
     private val linkCase: GetPaymentLinkUseCase,
     private val addFundUseCase: AddFundUseCase,
-    private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase
+    private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase,
+    private val confirmUseCase: ConfirmPaymentUseCase
 ) : ViewModel() {
     private val mutableState: MutableStateFlow<TopUpState> =
         MutableStateFlow(TopUpState.EMPTY)
@@ -29,11 +30,13 @@ class TopUpViewModel @Inject constructor(
 
      fun addFundToWallet() {
          Log.d("we reached here", "we reached here 1111111")
+         val amount = mutableState.value.addFundAmount
+         val cardId = mutableState.value.cardNumber
         updateState(loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = addFundUseCase(data =   CashActionData(
-                amount = "500",
-                card_id = "dc2ae65a-523a-4968-9fdd-269dd2d7c741"))) {
+                amount = amount,
+                card_id = cardId))) {
                 is DomainModel.Success -> {
                     updateState(
                         loading = false,
@@ -45,6 +48,21 @@ class TopUpViewModel @Inject constructor(
                     mutableState.value.copy(
                         loading = false,
                         errorMessage = "Failure to add Fund",
+                    )
+                }
+            }
+        }
+    }
+
+     fun confirmPayment(){
+         val uuid = mutableState.value.confirmLink
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = confirmUseCase(uuid)) {
+                else -> {
+                    updateState(
+                        loading = false,
+                        errorMessage = "",
+                        successFund = true
                     )
                 }
             }
@@ -79,25 +97,7 @@ class TopUpViewModel @Inject constructor(
         Log.d("we reached here", "we reached here 5656555555")
         updateState(loading = true)
         val request = mutableState.value.toLinkRequest()
-        val dt =  CashActionData(amount = "500", card_id = "dc2ae65a-523a-4968-9fdd-269dd2d7c741")
         viewModelScope.launch(Dispatchers.IO) {
-            when (addFundUseCase(dt)) {
-                is DomainModel.Success -> {
-                    updateState(
-                        loading = false,
-                        errorMessage = "",
-                        successFund = true
-                    )
-                }
-                is DomainModel.Error -> mutableState.update {
-                    mutableState.value.copy(
-                        loading = false,
-                        errorMessage = "Failure to add Fund",
-                    )
-                }
-            }
-        }
-     /*   viewModelScope.launch(Dispatchers.IO) {
             when (val result = linkCase(request)) {
                 is DomainModel.Success -> {
                     val data = result.data as PaymentLinkDomain
@@ -113,7 +113,7 @@ class TopUpViewModel @Inject constructor(
                     )
                 }
             }
-        }*/
+        }
     }
 
     private fun TopUpState.toLinkRequest(): GetLinkAmount =
@@ -137,7 +137,8 @@ class TopUpViewModel @Inject constructor(
         error: String? = null,
         payLink: String? = null,
         addCard: Boolean? = null,
-        shouldGoBack: Boolean? = null
+        shouldGoBack: Boolean? = null,
+        confirmLink: String? = null
     ) {
         val currentState = mutableState.value
         mutableState.update {
@@ -157,7 +158,8 @@ class TopUpViewModel @Inject constructor(
                 errorLink = error ?: currentState.errorLink,
                 payLink = payLink ?: currentState.payLink,
                 addCard = addCard ?: currentState.addCard,
-                shouldGoBack = shouldGoBack ?: currentState.shouldGoBack
+                shouldGoBack = shouldGoBack ?: currentState.shouldGoBack,
+                confirmLink = confirmLink ?: currentState.confirmLink
             )
         }
     }

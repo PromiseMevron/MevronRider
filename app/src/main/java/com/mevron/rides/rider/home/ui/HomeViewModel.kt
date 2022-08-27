@@ -13,6 +13,8 @@ import com.mevron.rides.rider.savedplaces.domain.model.GetAddressDomainData
 import com.mevron.rides.rider.savedplaces.domain.usecase.GetAddressUseCase
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.shared.ui.SingleStateEvent
+import com.mevron.rides.rider.sharedprefrence.domain.usescases.SetPreferenceUseCase
+import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -24,20 +26,32 @@ import kotlinx.coroutines.launch
 class HomeViewModel @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val getProfileUseCase: GetProfileUseCase,
-    private val tripStateUseCase: GetTripStateUseCase
+    private val tripStateUseCase: GetTripStateUseCase,
+    private val setPreferenceUseCase: SetPreferenceUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY
 
     private fun getAddresses() {
+        setPreferenceUseCase(Constants.HOME, "")
+        setPreferenceUseCase(Constants.WORK, "")
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 setState { copy(isLoading = true, error = "") }
                 val networkData = getAddressUseCase()
                 if (networkData is DomainModel.Success) {
+                    val data = (networkData.data as GetAddressDomainData).savedAddresses
+                    for (d in data){
+                        if (d.type == Constants.HOME){
+                            setPreferenceUseCase(Constants.HOME, d.address)
+                        }
+                        if (d.type == Constants.WORK){
+                            setPreferenceUseCase(Constants.WORK, d.address)
+                        }
+                    }
                     setState {
                         copy(
-                            savedAddresses = (networkData.data as GetAddressDomainData).savedAddresses,
+                            savedAddresses = data,
                             error = "", isLoading = false
                         )
                     }

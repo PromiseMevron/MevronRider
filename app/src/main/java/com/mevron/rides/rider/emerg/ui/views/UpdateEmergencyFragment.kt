@@ -73,7 +73,7 @@ class UpdateEmergencyFragment : Fragment() {
 
         binding.night.setOnClickListener {
             night = !night
-            if (before) {
+            if (night) {
                 binding.night.setBackgroundResource(R.drawable.rounded_border_colored)
                 binding.night.setTextColor(resources.getColor(R.color.primary))
             } else {
@@ -83,11 +83,19 @@ class UpdateEmergencyFragment : Fragment() {
         }
 
         binding.manual.setOnClickListener {
+            Toast.makeText(requireContext(), "$manual", Toast.LENGTH_LONG).show()
+
             manual = !manual
-            if (before) {
+            Toast.makeText(requireContext(), "$manual 0", Toast.LENGTH_LONG).show()
+
+            if (manual) {
+                Toast.makeText(requireContext(), "$manual 1", Toast.LENGTH_LONG).show()
+
                 binding.manual.setBackgroundResource(R.drawable.rounded_border_colored)
                 binding.manual.setTextColor(resources.getColor(R.color.primary))
             } else {
+                Toast.makeText(requireContext(), "$manual 2", Toast.LENGTH_LONG).show()
+
                 binding.manual.setBackgroundResource(R.drawable.rounded_border_cancel)
                 binding.manual.setTextColor(resources.getColor(R.color.field_color))
             }

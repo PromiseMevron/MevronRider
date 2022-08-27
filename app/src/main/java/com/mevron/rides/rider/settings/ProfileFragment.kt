@@ -155,7 +155,8 @@ class ProfileFragment : Fragment() {
                 when(res){
 
                     is  GenericStatus.Success ->{
-                     getProfile()
+                     Toast.makeText(requireContext(), "Profile update successfully", Toast.LENGTH_LONG).show()
+                        activity?.onBackPressed()
                     }
 
                     is  GenericStatus.Error ->{
@@ -175,7 +176,7 @@ class ProfileFragment : Fragment() {
 
     fun getProfile(){
         toggleBusyDialog(true, "Uploading Data")
-        viewModel.getProfile().observe(this, Observer {
+        viewModel.getProfile().observe(viewLifecycleOwner, Observer {
             it.let {  res ->
                 toggleBusyDialog(false)
                 when(res){

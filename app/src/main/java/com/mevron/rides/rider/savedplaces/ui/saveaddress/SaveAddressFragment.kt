@@ -91,7 +91,7 @@ class SaveAddressFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener {
         }
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 viewModel.state.collect { state ->
                     binding.stateOfLocation.text = state.title
                     binding.addressField.hint = state.placeHolder
@@ -101,6 +101,9 @@ class SaveAddressFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener {
                     )
                     if (state.autoCompletePredictions.isNotEmpty()) {
                         setUpRecyclerView(state)
+                        binding.emptyData.visibility = View.GONE
+                    }else{
+                        binding.emptyData.visibility = View.VISIBLE
                     }
                     if (state.backPressed) {
                         activity?.onBackPressed()
@@ -130,12 +133,13 @@ class SaveAddressFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener {
                             )
                         findNavController().navigate(action)
                     }
-                }
+
             }
         }
 
         binding.close.setOnClickListener {
-            viewModel.handleEvent(SaveAddressEvent.OnBackButtonPressed)
+            activity?.onBackPressed()
+         //   viewModel.handleEvent(SaveAddressEvent.OnBackButtonPressed)
         }
 
         binding.addressField.textChanges().skipInitialValue().onEach {

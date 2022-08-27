@@ -62,7 +62,6 @@ class AddEmergencyFragment : Fragment(), SaveNumber {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     if (state.backButton) {
                         activity?.onBackPressed()
@@ -78,7 +77,6 @@ class AddEmergencyFragment : Fragment(), SaveNumber {
                     if (state.isSuccess) {
                         activity?.onBackPressed()
                     }
-                }
             }
         }
 

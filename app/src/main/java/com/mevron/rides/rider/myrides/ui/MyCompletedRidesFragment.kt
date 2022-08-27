@@ -49,7 +49,13 @@ class MyCompletedRidesFragment : Fragment(), SelectedRide {
         lifecycleScope.launchWhenResumed {
            // repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.state.collect {
-                    adapter.submitList(it.data)
+
+                    if (it.data.isNotEmpty()){
+                        adapter.submitList(it.data)
+                        binding.emptyData.visibility = View.GONE
+                    }else{
+                        binding.emptyData.visibility = View.VISIBLE
+                    }
                 }
            // }
         }

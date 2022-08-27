@@ -85,6 +85,15 @@ class PaymentMethodFragment : Fragment() {
                         binding.webView.visibility = View.VISIBLE
                         viewModel.updateState(payLink = "")
                     }
+
+                    if (state.successFund) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Card Added Successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        binding.webView.visibility = View.GONE
+                    }
                 }
 
         }
@@ -99,7 +108,14 @@ class PaymentMethodFragment : Fragment() {
                 request: WebResourceRequest?
             ): Boolean {
                 val url = request?.url.toString()
-                view?.loadUrl(url)
+                if (url.contains("confirm-payment/", ignoreCase = true)){
+                    viewModel.updateState(confirmLink = url)
+                    viewModel.confirmPayment()
+                    binding.webView.visibility = View.GONE
+                    // Toast.makeText(requireContext(), "Payment successful", Toast.LENGTH_LONG).show()
+                    // activity?.onBackPressed()
+                }
+              //  view?.loadUrl(url)
                 return super.shouldOverrideUrlLoading(view, request)
             }
 

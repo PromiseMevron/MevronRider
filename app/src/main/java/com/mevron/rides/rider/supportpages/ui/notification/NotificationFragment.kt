@@ -42,7 +42,6 @@ class NotificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     if (state.backButton) {
                         activity?.onBackPressed()
@@ -50,8 +49,11 @@ class NotificationFragment : Fragment() {
 
                     if (state.data.isNotEmpty()) {
                         setUpAdapter(state.data)
+                        binding.emptyData.visibility = View.GONE
+                    }else{
+                        binding.emptyData.visibility = View.VISIBLE
                     }
-                }
+
             }
         }
 

@@ -103,6 +103,7 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                         "Fund Added Successfully",
                         Toast.LENGTH_LONG
                     ).show()
+                    binding.webView.visibility = View.GONE
                 }
                 if (state.payLink.isNotEmpty()) {
                     loadWebView(state.payLink)
@@ -131,7 +132,16 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                 request: WebResourceRequest?
             ): Boolean {
                 val url = request?.url.toString()
-                view?.loadUrl(url)
+              //  Toast.makeText(requireContext(), url, Toast.LENGTH_LONG).show()
+               // Log.d("flutterwave", "flutterwave $url")
+                if (url.contains("confirm-payment/", ignoreCase = true)){
+                    viewModel.updateState(confirmLink = url)
+                    viewModel.confirmPayment()
+                    binding.webView.visibility = View.GONE
+                   // Toast.makeText(requireContext(), "Payment successful", Toast.LENGTH_LONG).show()
+                   // activity?.onBackPressed()
+                }
+             //   view?.loadUrl(url)
                 return super.shouldOverrideUrlLoading(view, request)
             }
 

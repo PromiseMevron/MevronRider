@@ -171,10 +171,10 @@
         <entry key="app/src/main/res/layout/my_ride_item.xml" value="0.125" />
         <entry key="app/src/main/res/layout/my_ride_map_image.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/layout/my_rides_fragment.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/my_schedule_fragment.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/my_schedule_fragment.xml" value="0.345679012345679" />
         <entry key="app/src/main/res/layout/my_schedule_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/name_sign_up_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/notification_fragment.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/notification_fragment.xml" value="0.345679012345679" />
         <entry key="app/src/main/res/layout/notification_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/notification_sub_item.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/o_t_fragment.xml" value="0.18468468468468469" />
@@ -191,7 +191,7 @@
         <entry key="app/src/main/res/layout/rate_rider_fragment.xml" value="0.125" />
         <entry key="app/src/main/res/layout/referal_bottom.xml" value="0.14241803278688525" />
         <entry key="app/src/main/res/layout/referal_detail_fragment.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/referal_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/referal_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/ride_bottom_sheet.xml" value="0.25" />
         <entry key="app/src/main/res/layout/ride_details_fragment.xml" value="0.335" />
@@ -203,7 +203,7 @@
         <entry key="app/src/main/res/layout/search_location_fragment.xml" value="0.208" />
         <entry key="app/src/main/res/layout/select_on_map_fragment.xml" value="0.24010416666666667" />
         <entry key="app/src/main/res/layout/select_ride_fragment.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/share_dialog.xml" value="0.17447916666666666" />
         <entry key="app/src/main/res/layout/update_address_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/update_emergency_fragment.xml" value="0.14241803278688525" />

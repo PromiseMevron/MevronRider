@@ -43,7 +43,6 @@ class PromoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     if (state.backButton) {
                         activity?.onBackPressed()
@@ -51,9 +50,12 @@ class PromoFragment : Fragment() {
 
                     if (state.data.isNotEmpty()) {
                         setUpAdapter(state.data)
+                        binding.emptyData.visibility = View.GONE
+                    }else{
+                        binding.emptyData.visibility = View.VISIBLE
                     }
                 }
-            }
+
         }
 
         viewModel.handleEvent(PromoEvents.GetPromotions)

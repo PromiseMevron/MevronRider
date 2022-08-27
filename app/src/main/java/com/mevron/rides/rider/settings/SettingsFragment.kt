@@ -49,6 +49,25 @@ class SettingsFragment : Fragment() {
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }
+        val homeAddres = sPref.getString(Constants.HOME, "") ?: ""
+        val workAddres = sPref.getString(Constants.WORK, "") ?: ""
+        if (homeAddres.isEmpty()){
+            binding.addHome.visibility = View.VISIBLE
+            binding.addHomeFilled.visibility = View.GONE
+        }else{
+            binding.addHome.visibility = View.GONE
+            binding.addHomeFilled.visibility = View.VISIBLE
+            binding.textAddressHome.text = homeAddres
+        }
+
+        if (workAddres.isEmpty()){
+            binding.addWork.visibility = View.VISIBLE
+            binding.addWorkFilled.visibility = View.GONE
+        }else{
+            binding.addWork.visibility = View.GONE
+            binding.addWorkFilled.visibility = View.VISIBLE
+            binding.textAddressWork.text = workAddres
+        }
 
         val gson = Gson()
         val json = sPref.getString(Constants.PROFILE, null)
@@ -87,6 +106,22 @@ class SettingsFragment : Fragment() {
         }
 
         binding.addWork.setOnClickListener {
+            val title = "Add Work"
+            val holder = "Enter your work address"
+            val type = "work"
+            val action = SettingsFragmentDirections.actionGlobalSaveAddressFragment(title, holder, type)
+            findNavController().navigate(action)
+        }
+
+        binding.addHomeFilled.setOnClickListener {
+            val title = "Add Home"
+            val holder = "Enter your home address"
+            val type = "home"
+            val action = SettingsFragmentDirections.actionGlobalSaveAddressFragment(title, holder, type)
+            findNavController().navigate(action)
+        }
+
+        binding.addWorkFilled.setOnClickListener {
             val title = "Add Work"
             val holder = "Enter your work address"
             val type = "work"

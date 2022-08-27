@@ -8,7 +8,9 @@
             android:id="@+id/my_rides_fragment"
             android:title="@string/my_rides" />
 
-
+        <item
+            android:id="@+id/wallet_fragment"
+            android:title="@string/wallet" />
         <item
             android:id="@+id/notificationFragment"
             android:title="@string/notifications" />

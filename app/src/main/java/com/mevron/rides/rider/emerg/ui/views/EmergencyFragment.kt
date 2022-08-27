@@ -51,7 +51,7 @@ class EmergencyFragment : Fragment(), SelectedContact {
         }
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 viewModel.state.collect { state ->
                     if (state.backButton) {
                         activity?.onBackPressed()
@@ -67,9 +67,11 @@ class EmergencyFragment : Fragment(), SelectedContact {
 
                     if (state.result.isNotEmpty()) {
                         setUpAdapter(state.result)
-
+                        binding.emptyData.visibility = View.GONE
+                    }else{
+                        binding.emptyData.visibility = View.VISIBLE
                     }
-                }
+
             }
         }
         viewModel.handleEvent(EmergencyEvent.MakeAPICall)

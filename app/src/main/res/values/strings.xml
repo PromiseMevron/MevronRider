@@ -294,6 +294,7 @@
     <string name="use_other_payment_methods">Use Other Payment Methods</string>
     <string name="add_card">Add Card</string>
     <string name="your_rating">Your rating</string>
+    <string name="wallet">Wallet</string>
 
 
 </resources>
