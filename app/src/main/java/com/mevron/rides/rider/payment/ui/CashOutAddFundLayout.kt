@@ -52,8 +52,8 @@ class CashOutAddFundLayout @JvmOverloads constructor(
         cashOutAddFundEventListener = listener
     }
 
-    fun setUpAddFund(context: Context) {
-        titleText.text = context.getString(R.string.enter_amount)
+    fun setUpAddFund(context: Context, title: String = context.getString(R.string.enter_amount)) {
+        titleText.text = title
         skipButton.visibility = GONE
         doneButton.setOnClickListener {
             hideKeyboard()
@@ -65,7 +65,7 @@ class CashOutAddFundLayout @JvmOverloads constructor(
             }
             cashOutAddFundEventListener?.addFundAmount(text.toString())
         }
-        amountField.setText("5.00")
+        amountField.setText("10.00")
         addButton.setOnClickListener {
             if (amountField.text.isNotEmpty()) {
                 val amount = (amountField.text.toString()).toDouble() + 5.00
@@ -76,7 +76,7 @@ class CashOutAddFundLayout @JvmOverloads constructor(
         minusButton.setOnClickListener {
             if (amountField.text.isNotEmpty()){
                 val amount = (amountField.text.toString()).toDouble() - 5.00
-                if (amount > 0)
+                if (amount > 10)
                     amountField.setText("$amount")
             }
         }

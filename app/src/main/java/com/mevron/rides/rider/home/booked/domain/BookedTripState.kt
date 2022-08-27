@@ -19,7 +19,8 @@ data class BookedTripState(
     val review: MutableList<String>,
     val isSuccess: Boolean,
     val error: String,
-    val loading: Boolean
+    val loading: Boolean,
+    val customRating: String
 ) {
 
     val hasValidCoordinates: Boolean
@@ -42,7 +43,8 @@ data class BookedTripState(
             review = mutableListOf(),
             isSuccess = false,
             error = "",
-            loading = false
+            loading = false,
+            customRating = ""
         )
     }
 }

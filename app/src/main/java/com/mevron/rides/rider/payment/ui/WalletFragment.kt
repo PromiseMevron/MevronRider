@@ -38,6 +38,7 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
         topView = view.findViewById(R.id.balance_top_layer)
         detail = view.findViewById(R.id.balance_details)
         bottomView = view.findViewById(R.id.bottom_view)
+        bottomView = view.findViewById(R.id.bottom_view)
         return view
     }
 

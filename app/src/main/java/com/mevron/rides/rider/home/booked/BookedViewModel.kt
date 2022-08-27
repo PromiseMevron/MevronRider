@@ -90,6 +90,14 @@ class BookedViewModel @Inject constructor(
         }
     }
 
+    fun updateRating(rating: String){
+        setState {
+            copy(
+                customRating = rating
+            )
+        }
+    }
+
     fun tipAndRateCustom() {
         val currentValues = uiState.value
         val data = TipAndReviewData(

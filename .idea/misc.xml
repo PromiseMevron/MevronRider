@@ -31,6 +31,7 @@
         <entry key="app/src/main/res/drawable/ic_close_drawer.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_copy_code.xml" value="0.1605" />
         <entry key="app/src/main/res/drawable/ic_curved_view.xml" value="0.1921875" />
+        <entry key="app/src/main/res/drawable/ic_custom_rating.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/ic_destination.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_done.xml" value="0.121" />
         <entry key="app/src/main/res/drawable/ic_done_enabled.xml" value="0.1453125" />
@@ -125,15 +126,18 @@
         <entry key="app/src/main/res/drawable/rounded_corner_rating.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/rounded_corner_save_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/unchecked.xml" value="0.1715" />
+        <entry key="app/src/main/res/font/.xml" value="0.2569230769230769" />
+        <entry key="app/src/main/res/font/space_grotesk_semibold.xml" value="0.2558974358974359" />
         <entry key="app/src/main/res/font/sssss.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.209375" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.11764705882352941" />
         <entry key="app/src/main/res/layout/activity_intro_screen.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2234375" />
+        <entry key="app/src/main/res/layout/add_custom_rating_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/add_emergency_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/add_fund_cash_out_layout.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/layout/add_saved_place_fragment.xml" value="0.24010416666666667" />
-        <entry key="app/src/main/res/layout/add_tip_fragment.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/add_tip_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/address_item.xml" value="0.375" />
         <entry key="app/src/main/res/layout/arrived_bottom_layout.xml" value="0.17798913043478262" />
         <entry key="app/src/main/res/layout/arrived_layout.xml" value="0.165" />
@@ -223,7 +227,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.335" />
+        <option name="scale" value="0.1" />
       </ProjectState>
     </option>
   </component>

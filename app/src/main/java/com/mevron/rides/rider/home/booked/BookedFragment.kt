@@ -40,6 +40,8 @@ import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.payment.ui.CashOutAddFundEventListener
 import com.mevron.rides.rider.payment.ui.CashOutAddFundLayout
+import com.mevron.rides.rider.payment.ui.CustomRatingEventListener
+import com.mevron.rides.rider.payment.ui.CustomRatingLayout
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.socket.domain.models.MetaData
 import com.mevron.rides.rider.util.Constants
@@ -52,7 +54,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
-    CashOutAddFundEventListener {
+    CashOutAddFundEventListener, CustomRatingEventListener {
 
     companion object {
         fun newInstance() = BookedFragment()
@@ -65,6 +67,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var emergedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var reachedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var bottomView: CashOutAddFundLayout
+    private lateinit var ratingView: CustomRatingLayout
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
@@ -245,7 +248,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomView = binding.tipDriverLayout.bottomView
+        ratingView = binding.tipDriverLayout.ratingCustom
         bottomView.setEventListener(this)
+        ratingView.setEventListener(this)
+        bottomView.setUpAddFund(requireContext(), title = "Add a Custom Tip")
+        ratingView.setUp(requireContext())
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 Toast.makeText(context, "back pressed", Toast.LENGTH_LONG).show()
@@ -352,6 +359,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
         binding.tipDriverLayout.fourth.setOnClickListener {
             bottomView.visibility = View.VISIBLE
+            binding.tipDriverLayout.doneButtonTipRate.visibility = View.GONE
             binding.tipDriverLayout.fourth.visibility = View.GONE
             binding.tipDriverLayout.fourth2.visibility = View.VISIBLE
 
@@ -442,6 +450,17 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         binding.tipDriverLayout.other.setOnClickListener {
          //   viewModel.updateRateComment("Service")
+            ratingView.setUp(requireContext())
+            ratingView.visibility = View.VISIBLE
+            binding.tipDriverLayout.doneButtonTipRate.visibility = View.GONE
+        }
+
+        binding.tipDriverLayout.other2.setOnClickListener {
+            removeCustomRating()
+        }
+
+        binding.tipDriverLayout.otherWord.setOnClickListener {
+            removeCustomRating()
         }
 
         lifecycleScope.launch {
@@ -793,7 +812,37 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun closeButton() {
+        binding.tipDriverLayout.doneButtonTipRate.visibility = View.VISIBLE
         bottomView.visibility = View.GONE
+    }
+
+    override fun closeCustomButton() {
+        ratingView.visibility = View.GONE
+        binding.tipDriverLayout.doneButtonTipRate.visibility = View.VISIBLE
+
+    }
+
+    private fun removeCustomRating() {
+        val rating = viewModel.uiState.value.customRating
+        viewModel.updateRateComment(rating)
+        binding.tipDriverLayout.other2.visibility = View.GONE
+        binding.tipDriverLayout.other.visibility = View.VISIBLE
+        binding.tipDriverLayout.otherWord.visibility = View.GONE
+    }
+
+    override fun ratingDone() {
+        val rating = viewModel.uiState.value.customRating
+        viewModel.updateRateComment(rating)
+        ratingView.visibility = View.GONE
+        binding.tipDriverLayout.doneButtonTipRate.visibility = View.VISIBLE
+        binding.tipDriverLayout.other2.visibility = View.VISIBLE
+        binding.tipDriverLayout.other.visibility = View.GONE
+        binding.tipDriverLayout.otherWord.visibility = View.VISIBLE
+    }
+
+    override fun addRating(rating: String) {
+        viewModel.updateRating(rating)
+        binding.tipDriverLayout.customRating.text = rating
     }
 
     override fun skipAction() {
@@ -801,6 +850,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun addFundDone() {
         bottomView.visibility = View.GONE
+        binding.tipDriverLayout.doneButtonTipRate.visibility = View.VISIBLE
         //   val action = BalanceFragmentDirections.actionGlobalCashOutCardsFragment(viewModel.state.value.addFundAmount)
         // findNavController().navigate(R.id.action_global_cashOutCardsFragment)
         //  findNavController().navigate(action)
@@ -815,7 +865,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun addFundAmount(amount: String) {
-        bottomView.visibility = View.GONE
+       // bottomView.visibility = View.GONE
         setAlphaForButtons(binding.tipDriverLayout.fourth, (amount.toDoubleOrNull() ?: 0.0).toInt())
     }
 

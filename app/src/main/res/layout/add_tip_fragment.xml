@@ -86,7 +86,7 @@
         <LinearLayout
             android:id="@+id/reason"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_68sdp"
+            android:layout_height="@dimen/_102sdp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
             android:layout_marginBottom="@dimen/_50sdp"
@@ -224,6 +224,47 @@
                     android:layout_marginStart="@dimen/_3sdp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_other" />
+
+                <ImageButton
+                    android:id="@+id/other_2"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_other2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/other_word"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:background="@drawable/ic_custom_rating"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    tools:fontFamily="@font/space_grotesk_semibold"
+                    tools:text="dddddddddddd ffff dddd ddddddddd ffff dddd"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="#FF9B04"
+                    android:ellipsize="end"
+                    android:id="@+id/custom_rating"
+                    android:layout_marginStart="10dp"
+                    android:singleLine="true"
+                    android:layout_marginEnd="37dp"
+                    android:textSize="14sp" />
+
+
 
             </LinearLayout>
         </LinearLayout>
@@ -402,6 +443,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/bottom_view"
+            android:visibility="gone"/>
+
+        <com.mevron.rides.rider.payment.ui.CustomRatingLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rating_custom"
             android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

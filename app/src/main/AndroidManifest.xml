@@ -41,6 +41,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name="com.mevron.rides.rider.home.ui.HomeActivity"
