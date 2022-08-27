@@ -150,6 +150,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                         Toast.makeText(context, "Try again", Toast.LENGTH_LONG).show()
                     } else {
                         add.add(it.locationModel)
+                        viewModel.updateOrderStatus(add)
                         //  val ads = arrayListOf<LocationModel>()
                         var ads: Array<LocationModel> = arrayOf()
                         for (a in add) {

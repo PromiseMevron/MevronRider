@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,33 +30,36 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SelectOnMapFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.bitmapFromVector
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import com.mevron.rides.rider.R
 
-
-class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, OnMapClickListener, GoogleMap.OnMapLongClickListener {
+@AndroidEntryPoint
+class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, OnMapClickListener,
+    GoogleMap.OnMapLongClickListener {
 
     companion object {
         fun newInstance() = SelectOnMapFragment()
     }
 
-    private lateinit var viewModel: SelectOnMapViewModel
+    private val viewModel: SelectOnMapViewModel by viewModels()
     private lateinit var binding: SelectOnMapFragmentBinding
     private var gMap: GoogleMap? = null
     private lateinit var mapView: SupportMapFragment
     private var marker: Marker? = null
     private lateinit var locationField: EditText
-    private var locations : Array<LocationModel> = arrayOf()
+    private var locations: Array<LocationModel> = arrayOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.select_on_map_fragment, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.select_on_map_fragment, container, false)
 
         return binding.root
     }
@@ -84,10 +88,16 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         }
 
         binding.dropMe.setOnClickListener {
-            if (binding.endAddressField.text.toString().isNotEmpty() && locations.isNotEmpty() && locations.size > 1){
-                val action = SelectOnMapFragmentDirections.actionSelectOnMapFragmentToSelectRideFragment(locations)
+            if (binding.endAddressField.text.toString()
+                    .isNotEmpty() && locations.isNotEmpty() && locations.size > 1
+            ) {
+                viewModel.updateOrderStatus(locations)
+                val action =
+                    SelectOnMapFragmentDirections.actionSelectOnMapFragmentToSelectRideFragment(
+                        locations
+                    )
                 findNavController().navigate(action)
-            }else{
+            } else {
                 Toast.makeText(context, "Select Location", Toast.LENGTH_LONG).show()
             }
 
@@ -96,14 +106,25 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         getPresentLocation()
     }
 
-    private fun getPresentLocation(){
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+    private fun getPresentLocation() {
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), Constants.LOCATION_REQUEST_CODE
+            )
             return
         }
 
@@ -114,7 +135,9 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                 val currentLocation = LatLng(location.latitude, location.longitude)
                 getAddressFromLocation(currentLocation)
                 mapClicked(currentLocation)
-            } else { displayLocationSettingsRequest() }
+            } else {
+                displayLocationSettingsRequest()
+            }
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
@@ -138,26 +161,37 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
         MapsInitializer.initialize(activity?.applicationContext)
 
-     /*   googleMap?.setOnMapClickListener {
-            Toast.makeText(context, "ww", Toast.LENGTH_LONG).show()
-            getAddressFromLocation(it)
-        }*/
-    /*    val gMapView = mapView.view
-        if (gMapView?.findViewById<View>("1".toInt()) != null) {
-            val locationButton = (gMapView.findViewById<View>("1".toInt()).parent as View).findViewById<View>("2".toInt())
-            val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-            layoutParams.setMargins(0, 0, 30, 850)
-        }*/
-      //  checkPermission()
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+        /*   googleMap?.setOnMapClickListener {
+               Toast.makeText(context, "ww", Toast.LENGTH_LONG).show()
+               getAddressFromLocation(it)
+           }*/
+        /*    val gMapView = mapView.view
+            if (gMapView?.findViewById<View>("1".toInt()) != null) {
+                val locationButton = (gMapView.findViewById<View>("1".toInt()).parent as View).findViewById<View>("2".toInt())
+                val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+                layoutParams.setMargins(0, 0, 30, 850)
+            }*/
+        //  checkPermission()
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), Constants.LOCATION_REQUEST_CODE
+            )
             return
         }
         googleMap?.isMyLocationEnabled = true
@@ -170,15 +204,26 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
     }
 
 
-    fun myLocation(googleMap: GoogleMap?){
+    fun myLocation(googleMap: GoogleMap?) {
         //checkPermission()
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) }
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
             != PackageManager.PERMISSION_GRANTED && context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             } != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION), Constants.LOCATION_REQUEST_CODE)
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), Constants.LOCATION_REQUEST_CODE
+            )
             return
         }
         getLocationProvider()?.lastLocation?.addOnSuccessListener {
@@ -194,7 +239,9 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                 googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
                 mapClicked(currentLocation)
                 //  getAddress(context, location.latitude, location.longitude, pickupAddressTextField)
-            } else { displayLocationSettingsRequest() }
+            } else {
+                displayLocationSettingsRequest()
+            }
         }
             ?.addOnFailureListener {
                 it.printStackTrace()
@@ -213,7 +260,12 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         task?.addOnFailureListener { locationException: java.lang.Exception? ->
             if (locationException is ResolvableApiException) {
                 try {
-                    activity?.let { locationException.startResolutionForResult(it, Constants.LOCATION_REQUEST_CODE) }
+                    activity?.let {
+                        locationException.startResolutionForResult(
+                            it,
+                            Constants.LOCATION_REQUEST_CODE
+                        )
+                    }
                 } catch (senderException: IntentSender.SendIntentException) {
                     senderException.printStackTrace()
                     /*  Snackbar.make(context, binding.root,"Please enable location setting to use your current address.",
@@ -223,7 +275,11 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                           )*/
 
                     val snackbar = Snackbar
-                        .make(binding.root, "Please enable location setting to use your current address.", Snackbar.LENGTH_LONG)
+                        .make(
+                            binding.root,
+                            "Please enable location setting to use your current address.",
+                            Snackbar.LENGTH_LONG
+                        )
                         .setAction("Retry") {
                             displayLocationSettingsRequest()
                         }
@@ -237,7 +293,6 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
     }
 
 
-
     fun getLocationProvider(): FusedLocationProviderClient? {
         return activity?.let { LocationServices.getFusedLocationProviderClient(it) }
     }
@@ -246,7 +301,11 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mapView.getMapAsync(this)
@@ -265,23 +324,23 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
                 val address = if (addresses.isNotEmpty())
                     addresses[0].getAddressLine(0)
                 else ""
-                if (locationField == binding.startAddressField){
-                    if (locations.isEmpty()){
+                if (locationField == binding.startAddressField) {
+                    if (locations.isEmpty()) {
                         locations += LocationModel(location.latitude, location.longitude, address)
-                    }else{
+                    } else {
                         locations[0] = LocationModel(location.latitude, location.longitude, address)
                     }
-                }else{
-                    if (locations.size == 1){
+                } else {
+                    if (locations.size == 1) {
                         locations += LocationModel(location.latitude, location.longitude, address)
-                    }else{
+                    } else {
                         locations[1] = LocationModel(location.latitude, location.longitude, address)
                     }
                 }
                 locationField.setText(address)
 
             }
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
 
         }
@@ -294,22 +353,22 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
     }
 
     override fun onMapLongClick(p0: LatLng?) {
-     //   Toast.makeText(context, "sds 2222 333", Toast.LENGTH_LONG).show()
-     mapClicked(p0)
+        //   Toast.makeText(context, "sds 2222 333", Toast.LENGTH_LONG).show()
+        mapClicked(p0)
         Log.i("onMapClick Long", p0?.longitude.toString())
         Log.i("onMapClick Lat", p0?.latitude.toString())
     }
 
-    fun mapClicked(p0: LatLng?){
+    fun mapClicked(p0: LatLng?) {
         getAddressFromLocation(p0)
 
         //remove previously placed Marker
         marker?.remove()
 
         var id = 0
-        id = if (locationField == binding.startAddressField){
+        id = if (locationField == binding.startAddressField) {
             R.drawable.ic_marker_pick
-        }else{
+        } else {
             R.drawable.ic_marker_drop
         }
 
@@ -321,8 +380,6 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
             }
         )
     }
-
-
 
 
 }
