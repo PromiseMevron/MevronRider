@@ -15,6 +15,12 @@
     <uses-feature android:name="android.hardware.autofocus" />
     <uses-feature android:name="android.hardware.flash" />
 
+    <queries>
+        <package android:name="com.whatsapp"/>
+        <package android:name="org.telegram.messenger"/>
+        <package android:name="org.thoughtcrime.securesms"/>
+    </queries>
+
     <application
         android:name="com.mevron.rides.rider.App"
         android:allowBackup="true"
