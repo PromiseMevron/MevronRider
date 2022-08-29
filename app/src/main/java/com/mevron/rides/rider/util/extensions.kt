@@ -124,6 +124,7 @@ fun Fragment.getGeoLocation(
     gMap: GoogleMap,
     isArrival: Boolean = false,
     onTrip: Boolean = false,
+    onlyResponse: Boolean = false,
     addMarker: (GeoDirectionsResponse) -> Unit
 ) {
 
@@ -139,18 +140,23 @@ fun Fragment.getGeoLocation(
             response: Response<GeoDirectionsResponse?>
         ) {
             if (response.isSuccessful) {
-                response.body().let {
+                response.body()?.let {
                     val directionsPayload = it
                     if (directionsPayload != null) {
-                        if (isArrival) {
-                            plotPolyLinesForDriverArrival(directionsPayload, gMap, addMarker)
-                        } else {
-                            if (onTrip) {
-                                plotPolyLinesForOnTrip(directionsPayload, gMap, addMarker)
+                        if (onlyResponse){
+                            addMarker(it)
+                        }else{
+                            if (isArrival) {
+                                plotPolyLinesForDriverArrival(directionsPayload, gMap, addMarker)
                             } else {
-                                plotPolyLines(directionsPayload, gMap, addMarker)
+                                if (onTrip) {
+                                    plotPolyLinesForOnTrip(directionsPayload, gMap, addMarker)
+                                } else {
+                                    plotPolyLines(directionsPayload, gMap, addMarker)
+                                }
                             }
                         }
+
                     } else {
                     }
                 }

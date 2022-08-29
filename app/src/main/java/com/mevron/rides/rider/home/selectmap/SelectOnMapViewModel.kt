@@ -2,6 +2,7 @@ package com.mevron.rides.rider.home.selectmap
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.sharedprefrence.domain.usescases.SetPreferenceUseCase
 import com.mevron.rides.rider.util.Constants
@@ -9,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SelectOnMapViewModel @Inject constructor(private val setPreferenceUseCase: SetPreferenceUseCase) : ViewModel() {
+class SelectOnMapViewModel @Inject constructor(private val setPreferenceUseCase: SetOrderPropertiesUseCase) : ViewModel() {
 
     fun updateOrderStatus(model: Array<LocationModel>){
         Log.d("DIRECTION", model[0].lat.toString())

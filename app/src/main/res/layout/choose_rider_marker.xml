@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="4dp"
     android:elevation="10dp"
     app:cardMaxElevation="10dp"
@@ -21,27 +21,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="To"
+        tools:text="To"
         android:id="@+id/state"
         android:textColor="#333333"
         android:textAllCaps="true"
         android:textAlignment="viewStart"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_7ssp"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="jdcdkcdcdkc"
+        tools:text="jdcdkcdcdkc"
         android:id="@+id/address"
         android:textColor="#333333"
         android:textStyle="bold"
         android:maxLines="1"
         android:textAlignment="viewStart"
         android:fontFamily="@font/poppins_regular"
-        android:textSize="@dimen/_7ssp"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintTop_toBottomOf="@id/state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

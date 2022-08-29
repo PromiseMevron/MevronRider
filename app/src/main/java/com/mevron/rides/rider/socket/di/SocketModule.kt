@@ -1,7 +1,9 @@
 package com.mevron.rides.rider.socket.di
 
+import com.mevron.rides.rider.data.DriverLocationRepository
 import com.mevron.rides.rider.data.OpenBookedStateRepository
 import com.mevron.rides.rider.data.TripStateRepository
+import com.mevron.rides.rider.domain.IDriverLocationRepository
 import com.mevron.rides.rider.domain.IOpenBookedStateRepository
 import com.mevron.rides.rider.domain.ITripStateRepository
 import com.mevron.rides.rider.sharedprefrence.domain.repository.IPreferenceRepository
@@ -27,13 +29,20 @@ object SocketModule {
 
     @Provides
     @Singleton
+    fun provideDriverLocationRepository(): IDriverLocationRepository = DriverLocationRepository()
+
+
+    @Provides
+    @Singleton
     fun provideSocketManager(
         preferenceRepository: IPreferenceRepository,
         tripRepository: ITripStateRepository,
-        openBookedStateRepository: IOpenBookedStateRepository
+        openBookedStateRepository: IOpenBookedStateRepository,
+        driverLocationRepository: IDriverLocationRepository
     ): ISocketManager = SocketManager(
         preferenceRepository,
         tripRepository,
-        openBookedStateRepository
+        openBookedStateRepository,
+        driverLocationRepository
     )
 }

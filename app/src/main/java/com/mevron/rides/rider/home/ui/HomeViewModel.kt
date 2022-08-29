@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
+import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
 import com.mevron.rides.rider.home.domain.GetProfileUseCase
@@ -28,7 +29,7 @@ class HomeViewModel @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val tripStateUseCase: GetTripStateUseCase,
-    private val setPreferenceUseCase: SetPreferenceUseCase
+    private val setPreferenceUseCase: SetOrderPropertiesUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY

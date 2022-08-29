@@ -5,16 +5,20 @@ import com.mevron.rides.rider.authentication.domain.model.VerifyOTPDomainModel
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.TripState
 import com.mevron.rides.rider.domain.update
+import com.mevron.rides.rider.domain.usecase.GetDriverLocationUseCase
+import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.BookedTripState
 import com.mevron.rides.rider.home.booked.domain.UNDEFINED_COORDINATE
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
+import com.mevron.rides.rider.home.model.DriverLocationModel
 import com.mevron.rides.rider.payment.data.RateDriverRequest
 import com.mevron.rides.rider.payment.domain.RateRiderUseCase
 import com.mevron.rides.rider.payment.domain.SendTipAndReviewUseCase
 import com.mevron.rides.rider.payment.domain.TipAndReviewData
 import com.mevron.rides.rider.shared.ui.BaseViewModel
+import com.mevron.rides.rider.sharedprefrence.domain.usescases.GetPreferenceUseCase
 import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +32,9 @@ import javax.inject.Inject
 class BookedViewModel @Inject constructor(
     private val getTripStateUseCase: GetTripStateUseCase,
     private val tipReview: SendTipAndReviewUseCase,
-    private val rateRider: RateRiderUseCase
+    private val rateRider: RateRiderUseCase,
+    private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
+    private val getDriverLocationUseCase: GetDriverLocationUseCase
 ) : BaseViewModel<BookedTripState, BookedTripEvent>() {
 
     override fun createInitialState(): BookedTripState = BookedTripState.EMPTY
@@ -66,12 +72,28 @@ class BookedViewModel @Inject constructor(
         }
     }
 
+    fun getLocationModels(){
+        setState {
+            copy(
+                pickupAddress = getOrderPropertiesUseCase(Constants.PICK_UP_ADD),
+                destinationAddress = getOrderPropertiesUseCase(Constants.DROP_OFF_ADD),
+                pickupLatitude = getOrderPropertiesUseCase(Constants.PICK_UP_LAT).toDouble(),
+                pickupLongitude = getOrderPropertiesUseCase(Constants.PICK_UP_LNG).toDouble(),
+                dropOffLatitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LAT).toDouble(),
+                dropOffLongitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LNG).toDouble(),
+            )
+        }
+    }
+
     fun updateTipValue(amount: Int) {
         setState {
             copy(
                 tipRider = amount
             )
         }
+    }
+    fun markerAdded() {
+        setState { copy(isMarkerRendered = true) }
     }
 
     fun updateRateComment(customerComment: String) {
@@ -160,6 +182,33 @@ class BookedViewModel @Inject constructor(
                         copy(
                           //  error = "Error in rating driver",
                           //  loading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun getDriverLocation(){
+        viewModelScope.launch {
+            getDriverLocationUseCase().collect { tripState ->
+                /*    if (tripState is TripState.TripStatusState) {
+                        setState {
+                            copy(
+                                currentStatus = tripState.data.metaData.status.toTripStatus(),
+                                pickupLatitude = tripState.data.metaData.trip.pickupLatitude.toNonNullDouble(),
+                                pickupLongitude = tripState.data.metaData.trip.pickupLongitude.toNonNullDouble(),
+                                dropOffLatitude = tripState.data.metaData.trip.destinationLatitude.toNonNullDouble(),
+                                dropOffLongitude = tripState.data.metaData.trip.destinationLongitude.toNonNullDouble(),
+                                pickupAddress = tripState.data.metaData.trip.pickupAddress,
+                                destinationAddress = tripState.data.metaData.trip.destinationAddress
+                            )
+                        }
+                    }*/
+                if (tripState != DriverLocationModel.EMPTY) {
+                    setState {
+                        copy(
+                            driverLocation =tripState
                         )
                     }
                 }

@@ -16,3 +16,13 @@ data class LocationModel(
         val EMPTY = LocationModel(Double.MIN_VALUE, Double.MIN_VALUE, "")
     }
 }
+
+data class DriverLocationModel(
+    val lat: Double,
+    val long: Double,
+    val direction: Float? = 0.0F,
+){
+    companion object {
+        val EMPTY = DriverLocationModel(Double.MIN_VALUE, Double.MIN_VALUE, 0.0F)
+    }
+}

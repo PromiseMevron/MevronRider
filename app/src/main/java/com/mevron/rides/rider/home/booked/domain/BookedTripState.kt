@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home.booked.domain
 
+import com.mevron.rides.rider.home.model.DriverLocationModel
 import com.mevron.rides.rider.socket.domain.models.MetaData
 
 const val UNDEFINED_COORDINATE = Double.NEGATIVE_INFINITY
@@ -20,7 +21,9 @@ data class BookedTripState(
     val isSuccess: Boolean,
     val error: String,
     val loading: Boolean,
-    val customRating: String
+    val customRating: String,
+    val isMarkerRendered: Boolean,
+    val driverLocation: DriverLocationModel
 ) {
 
     val hasValidCoordinates: Boolean
@@ -44,7 +47,9 @@ data class BookedTripState(
             isSuccess = false,
             error = "",
             loading = false,
-            customRating = ""
+            customRating = "",
+            isMarkerRendered = false,
+            driverLocation = DriverLocationModel.EMPTY
         )
     }
 }

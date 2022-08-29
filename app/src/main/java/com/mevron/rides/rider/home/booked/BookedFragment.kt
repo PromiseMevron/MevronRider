@@ -5,10 +5,12 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -253,6 +255,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         ratingView.setEventListener(this)
         bottomView.setUpAddFund(requireContext(), title = "Add a Custom Tip")
         ratingView.setUp(requireContext())
+        viewModel.getLocationModels()
+        viewModel.getDriverLocation()
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 Toast.makeText(context, "back pressed", Toast.LENGTH_LONG).show()
@@ -570,8 +574,12 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     // gMap.animateCamera(cu)
 
                     getGeoLocation(locationModels, gMap, true) {
-                        gMap.clear()
-                        addMarkerToPolyLines(it)
+                        if (!uiState.isMarkerRendered){
+                            gMap.clear()
+                            addMarkerToPolyLines(it, locationModels) {
+                                viewModel.markerAdded()
+                            }
+                        }
                     }
                 }
             }
@@ -597,10 +605,17 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         googleMap?.isMyLocationEnabled = true
     }
 
-    private fun addMarkerToPolyLines(geoDirections: GeoDirectionsResponse) {
-
-        val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+    private fun addMarkerToPolyLines(
+        geoDirections: GeoDirectionsResponse,
+        location: Array<LocationModel>,
+        onMarkerAdded: () -> Unit = {}
+    ) {
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
+        val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
+        var loc1 = location[0].address
+        if (loc1.length > 20) {
+            loc1 = location[0].address.substring(0..20)
+        }
 
         var loc2 = location[1].address
         if (loc2.length > 20) {
@@ -612,38 +627,101 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         val sLl2 = (endLocation?.lat ?: 0.0)
         val sLlg2 = (endLocation?.lng ?: 0.0)
-
-        var sec = 0L
-        geoDirections.routes?.forEach {
-            it.legs?.forEach { it1 ->
-                val sec2 = it1.duration?.value ?: 0L
-                sec += sec2
-            }
-        }
-        val mSec = sec.toInt()
-        var tim = ""
-        var min = mSec / 60
-        tim = min.toString() + "min"
-
-        if (min > 60) {
-            min /= 60
-            tim = min.toString() + "hr"
-        }
-
-
+        Log.d("the latlng", "the start ${sLl}, $sLlg")
+        Log.d("the latlng", "the end ${sLl2}, $sLlg2")
+        val marker1 = MarkerOptions()
         val marker2 = MarkerOptions()
-            .position(LatLng(sLl2, sLlg2))
-            .anchor(1.05f, 1.05f)
-            .icon(BitmapDescriptorFactory.fromBitmap(createClusterBitmap(add = loc2, tim)))
 
+        if (sLlg2 < sLlg){
+            Log.d("the latlng", "the start bigger")
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            loc = "Start",
+                            color = "#F57519"
+                        )
+                    )
+                )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            loc = "To",
+                            color = "#F9170F"
+                        )
+                    )
+                )
+        }else{
+            Log.d("the latlng", "the start smaller")
+            marker1.position(LatLng(sLl, sLlg))
+                .anchor(0.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc1,
+                            loc = "Start",
+                            color = "#F57519"
+                        )
+                    )
+                )
+
+            marker2 .position(LatLng(sLl2, sLlg2))
+                .anchor(1.05f, 1.05f)
+                .icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        createClusterBitmap(
+                            add = loc2,
+                            loc = "To",
+                            color = "#F9170F"
+                        )
+                    )
+                )
+        }
+
+
+        /*   val marker1 = MarkerOptions()
+               .position(LatLng(sLl, sLlg))
+               .anchor(1.05f, 1.05f)
+               .icon(
+                   BitmapDescriptorFactory.fromBitmap(
+                       createClusterBitmap(
+                           add = loc1,
+                           loc = "Start",
+                           color = "#F57519"
+                       )
+                   )
+               )*/
+
+        /*  val marker2 = MarkerOptions()
+              .position(LatLng(sLl2, sLlg2))
+              .anchor(0.05f, 1.05f)
+              .icon(
+                  BitmapDescriptorFactory.fromBitmap(
+                      createClusterBitmap(
+                          add = loc2,
+                          loc = "To",
+                          color = "#F9170F"
+                      )
+                  )
+              )*/
+
+        val marker3 = MarkerOptions()
+            .position(LatLng(startLocation?.lat ?: 0.0, startLocation?.lng ?: 0.0))
+            .icon(bitmapFromVector(R.drawable.ic_driver_pick))
 
         val marker4 = MarkerOptions()
             .position(LatLng(endLocation?.lat ?: 0.0, endLocation?.lng ?: 0.0))
-            .icon(bitmapFromVector(R.drawable.ic_drop_blue))
+            .icon(bitmapFromVector(R.drawable.ic_driver_dest))
 
-
+        gMap.addMarker(marker1)
         gMap.addMarker(marker2)
-
+        gMap.addMarker(marker3)
         gMap.addMarker(marker4)
 
         val builder = LatLngBounds.Builder()
@@ -663,23 +741,24 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val bounds = builder.build()
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.3).toInt()
+        val padding = (width * 0.2).toInt()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-      //  gMap.moveCamera(boundsUpdate)
+        //  gMap.animateCamera(boundsUpdate)
+        //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+        onMarkerAdded()
     }
 
-    private fun createClusterBitmap(add: String, min: String): Bitmap {
+    private fun createClusterBitmap(add: String, loc: String, color: String): Bitmap {
         val cluster: View = LayoutInflater.from(context).inflate(
-            R.layout.on_trip_marker,
+            R.layout.choose_rider_marker,
             null
         )
         val clusterSizeText = cluster.findViewById<View>(R.id.address) as TextView
         clusterSizeText.text = add
-
-        val clusterSizeText2 = cluster.findViewById<View>(R.id.min) as TextView
-        clusterSizeText2.text = min
-
+        val clusterSizeText2 = cluster.findViewById<View>(R.id.state) as TextView
+        clusterSizeText2.text = loc
+        clusterSizeText2.setTextColor(Color.parseColor(color))
 
         //  clusterSizeText.text = clusterSize.toString()
         cluster.measure(
@@ -695,6 +774,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         cluster.draw(canvas)
         return clusterBitmap
     }
+
 
     private fun displayLocationSettingsRequest() {
         val locationRequest = LocationRequest.create()

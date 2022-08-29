@@ -2,18 +2,14 @@ package com.mevron.rides.rider.socket.data
 
 import android.util.Log
 import com.google.gson.Gson
+import com.mevron.rides.rider.data.DriverLocationRepository
+import com.mevron.rides.rider.domain.IDriverLocationRepository
 import com.mevron.rides.rider.domain.IOpenBookedStateRepository
 import com.mevron.rides.rider.domain.ITripStateRepository
 import com.mevron.rides.rider.domain.TripState
+import com.mevron.rides.rider.home.model.DriverLocationModel
 import com.mevron.rides.rider.sharedprefrence.domain.repository.IPreferenceRepository
-import com.mevron.rides.rider.socket.domain.CONNECTED
-import com.mevron.rides.rider.socket.domain.Connected
-import com.mevron.rides.rider.socket.domain.EVENT_STARTED
-import com.mevron.rides.rider.socket.domain.ISocketManager
-import com.mevron.rides.rider.socket.domain.SEARCH_DRIVERS
-import com.mevron.rides.rider.socket.domain.SocketEvent
-import com.mevron.rides.rider.socket.domain.TRIP_STATE_MACHINE
-import com.mevron.rides.rider.socket.domain.TRIP_STATUS
+import com.mevron.rides.rider.socket.domain.*
 import com.mevron.rides.rider.socket.domain.models.*
 import com.mevron.rides.rider.util.Constants
 import io.socket.client.IO
@@ -27,7 +23,8 @@ private const val TAG = "SocketManager"
 class SocketManager(
     private val preferenceRepository: IPreferenceRepository,
     private val tripStateRepository: ITripStateRepository,
-    private val openBookedStateRepository: IOpenBookedStateRepository
+    private val openBookedStateRepository: IOpenBookedStateRepository,
+    private val driverLocationRepository: IDriverLocationRepository
 ) : ISocketManager {
 
     private var socket: Socket? = null
@@ -61,6 +58,7 @@ class SocketManager(
             observeSearchingDriverEvent()
             observeNearByDrivers()
             observeStateMachine()
+            observeDriverLocation()
            print ("121212122 ${socket?.connected()}")
             Log.d("SOCKET", "The socket bool is 1 ${socket?.connected()}")
             next()
@@ -117,6 +115,22 @@ class SocketManager(
                 }
             } catch (error: Throwable) {
                 Log.e(TAG, "Error observing state machine $error")
+            }
+        }
+    }
+
+    private fun observeDriverLocation() {
+        socket?.on(TRIP_LOCATION) {
+            try {
+                if (it.isNotEmpty()) {
+                    val data = it[0].toString()
+                    val gson = Gson()
+                    val locationData = gson.fromJson(data, DriverLocationModel::class.java)
+                    driverLocationRepository.settDriverState(locationData)
+                    Log.d(TAG, "driverLocation: $locationData")
+                }
+            } catch (error: Throwable) {
+                Log.e(TAG, "Error observing driverLocation $error")
             }
         }
     }

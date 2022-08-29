@@ -305,7 +305,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
         val bounds = builder.build()
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.1).toInt()
+        val padding = (width * 0.2).toInt()
 
         val boundsUpdate = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
         //  gMap.animateCamera(boundsUpdate)
