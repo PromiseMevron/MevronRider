@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.PayTypeItemBinding
+import com.mevron.rides.rider.payment.domain.PAYTYPE
 import com.mevron.rides.rider.payment.domain.PaymentCard
 import com.mevron.rides.rider.payment.domain.getCardImage
 import com.mevron.rides.rider.payment.domain.isCash
@@ -47,13 +48,6 @@ class PaymentAdapter(
         Log.d("we reached here", "we reached here 44444")
         holder.binding.next.visibility = View.INVISIBLE
         val currentPaymentMethod = getItem(position)
-        if (currentPaymentMethod.isCash()) {
-            holder.binding.image.setImageResource(R.drawable.ic_cash_add)
-            holder.binding.typeName.text = "Cash"
-        } else {
-            holder.binding.image.setImageResource(currentPaymentMethod.getCardImage())
-            holder.binding.typeName.text = "****" + currentPaymentMethod.lastDigits
-        }
         holder.binding.clicjButton.setOnClickListener {
             paySelected.onPaymentMethodSelected(
                 currentPaymentMethod
@@ -70,6 +64,21 @@ class PaymentAdapter(
         if (selectedPosition != -1) {
             if (position == selectedPosition) {
                 holder.binding.rootView.setBackgroundResource(R.drawable.rounded_border_car)
+            }
+        }
+
+        when(currentPaymentMethod.isCash()){
+            PAYTYPE.CARD -> {
+                holder.binding.image.setImageResource(currentPaymentMethod.getCardImage())
+                holder.binding.typeName.text = "****" + currentPaymentMethod.lastDigits
+            }
+            PAYTYPE.CASH ->  {
+                holder.binding.image.setImageResource(R.drawable.ic_cash_add)
+                holder.binding.typeName.text = "Cash"
+            }
+            PAYTYPE.WALLET -> {
+                holder.binding.image.setImageResource(R.drawable.ic_wallet)
+                holder.binding.typeName.text = "Wallet"
             }
         }
     }

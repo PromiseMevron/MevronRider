@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -147,10 +148,18 @@ dependencies {
     // ViewBinding flow
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
 
- /*   //zendex
-    implementation group: 'com.zendesk', name: 'chat', version: '3.3.6'
-    implementation group: 'com.zendesk', name: 'messaging', version: '5.2.5'
-*/
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.1.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.7'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.12'
+    implementation 'com.google.firebase:firebase-appdistribution-api-ktx:16.0.0-beta03'
+
+
+    /*   //zendex
+       implementation group: 'com.zendesk', name: 'chat', version: '3.3.6'
+       implementation group: 'com.zendesk', name: 'messaging', version: '5.2.5'
+   */
 
     //socket.io
     implementation ('io.socket:socket.io-client:2.0.0') {

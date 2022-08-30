@@ -26,7 +26,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
 import com.mevron.rides.rider.home.HomeAdapter
@@ -92,6 +94,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         setUpAdapter()
         getAddress()
         viewModel.setEvent(HomeEvent.ObserveTripState)
+        fetchAndUpdateToken()
+
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
@@ -106,6 +110,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                 }
                 if (it.hideStateCheckCover){
                     binding.stateCover.visibility = View.GONE
+                }
+
+                if (it.tokenSuccessful){
+                    binding.tokenCover.visibility = View.GONE
                 }
 
                 if (it.shouldOpenBookedRide) {
@@ -217,6 +225,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         gotToMyLocation()
     }
 
+    private fun fetchAndUpdateToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                // 2
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                // 3
+                val token = task.result
+                viewModel.updateToken(token)
+            })
+    }
+
+
     fun onBackPressed() {
         activity?.finish()
     }
@@ -233,7 +255,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                     ) //Store these lat lng values somewhere. These should be constant.
                     add = arrayListOf()
                     add.add(it)
-                    val location = CameraUpdateFactory.newLatLngZoom(coordinate, 15f)
+                    val location = CameraUpdateFactory.newLatLngZoom(coordinate, 3f)
                     googleMap?.animateCamera(location)
                     binding.placeCover.visibility = View.GONE
                 },

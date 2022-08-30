@@ -8,6 +8,8 @@ import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
+import com.mevron.rides.rider.home.data.DeviceID
+import com.mevron.rides.rider.home.domain.FCMTokenUseCase
 import com.mevron.rides.rider.home.domain.GetProfileUseCase
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.home.model.LocationModel
@@ -15,21 +17,20 @@ import com.mevron.rides.rider.savedplaces.domain.model.GetAddressDomainData
 import com.mevron.rides.rider.savedplaces.domain.usecase.GetAddressUseCase
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.shared.ui.SingleStateEvent
-import com.mevron.rides.rider.sharedprefrence.domain.usescases.SetPreferenceUseCase
 import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val tripStateUseCase: GetTripStateUseCase,
-    private val setPreferenceUseCase: SetOrderPropertiesUseCase
+    private val setPreferenceUseCase: SetOrderPropertiesUseCase,
+    private val fcmTokenUseCase: FCMTokenUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY
@@ -43,11 +44,11 @@ class HomeViewModel @Inject constructor(
                 val networkData = getAddressUseCase()
                 if (networkData is DomainModel.Success) {
                     val data = (networkData.data as GetAddressDomainData).savedAddresses
-                    for (d in data){
-                        if (d.type == Constants.HOME){
+                    for (d in data) {
+                        if (d.type == Constants.HOME) {
                             setPreferenceUseCase(Constants.HOME, d.address)
                         }
-                        if (d.type == Constants.WORK){
+                        if (d.type == Constants.WORK) {
                             setPreferenceUseCase(Constants.WORK, d.address)
                         }
                     }
@@ -102,7 +103,7 @@ class HomeViewModel @Inject constructor(
             tripStateUseCase().collect { tripState ->
                 Log.d("sdsdd", "sdsdss 5 $tripState")
                 if (tripState is TripState.NearByDriversState) {
-                 //   setState { copy(markerLocations = tripState.data.locations) }
+                    //   setState { copy(markerLocations = tripState.data.locations) }
                 }
                 when (tripState) {
                     is TripState.DriverSearchState -> {
@@ -112,9 +113,9 @@ class HomeViewModel @Inject constructor(
                     is TripState.StateMachineState -> {
                         setState { copy(hideStateCheckCover = true) }
                         Log.d("sdsdd", "sdsdss")
-                       val currentStatus = tripState.data.meta_data.status.toTripStatus()
+                        val currentStatus = tripState.data.meta_data.status.toTripStatus()
                         Log.d("sdsdd", "sdsdss 595959m $currentStatus")
-                        if (currentStatus != TripStatus.UNKNOWN && currentStatus != TripStatus.COMPLETED){
+                        if (currentStatus != TripStatus.UNKNOWN && currentStatus != TripStatus.COMPLETED) {
                             Log.d("sdsdd", "sdsdss 444")
                             setState { copy(shouldOpenBookedRide = true) }
                         }
@@ -122,9 +123,15 @@ class HomeViewModel @Inject constructor(
 
                     is TripState.TripStatusState -> {
                         if (tripState.data.metaData.status.toTripStatus() == TripStatus.TRIP_COMPLETED) {
-                            setState { copy(shouldOpenTipView = SingleStateEvent<Unit>().apply { set(Unit) }) }
+                            setState {
+                                copy(shouldOpenTipView = SingleStateEvent<Unit>().apply {
+                                    set(
+                                        Unit
+                                    )
+                                })
+                            }
                         }
-                       // setState { copy(shouldOpenBookedRide = true) }
+                        // setState { copy(shouldOpenBookedRide = true) }
                     }
 
                     else -> {}
@@ -156,7 +163,44 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateOrderStatus(model: List<LocationModel>){
+    fun updateToken(id: String) {
+        setState {
+            copy(
+                deviceID = id
+            )
+        }
+        if (uiState.value.deviceID.isEmpty()) {
+            return
+        }
+        val theId = uiState.value.deviceID
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = fcmTokenUseCase(DeviceID(device_id = theId))
+
+                if (result is DomainModel.Success) {
+                    setState {
+                        copy(
+                            tokenSuccessful = true
+                        )
+                    }
+                } else {
+                    setState {
+                        copy(
+                            tokenSuccessful = true
+                        )
+                    }
+                }
+            } catch (ex: Exception) {
+                setState {
+                    copy(
+                        tokenSuccessful = true
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateOrderStatus(model: List<LocationModel>) {
         Log.d("DIRECTION", model[0].lat.toString())
         setPreferenceUseCase(Constants.PICK_UP_ADD, model[0].address)
         setPreferenceUseCase(Constants.DROP_OFF_ADD, model[1].address)

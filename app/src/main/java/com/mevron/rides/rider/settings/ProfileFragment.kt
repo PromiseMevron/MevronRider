@@ -1,6 +1,7 @@
 ﻿package com.mevron.rides.rider.settings
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -23,6 +24,7 @@ import com.mevron.rides.rider.authentication.data.models.profile.ProfileData
 import com.mevron.rides.rider.databinding.ProfileFragmentBinding
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.isValidEmail
 import com.mevron.rides.rider.util.toggleBusyDialog
 import com.squareup.picasso.Picasso
@@ -38,6 +40,7 @@ class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var binding: ProfileFragmentBinding
+    var mDialog: Dialog? = null
 
     val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
 
@@ -55,6 +58,7 @@ class ProfileFragment : Fragment() {
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }
+        getProfile()
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bitmap>("key")?.observe(viewLifecycleOwner) {result ->
             // Do something with the result.
@@ -116,8 +120,6 @@ class ProfileFragment : Fragment() {
                 binding.checkEmail.visibility = View.GONE
             }
 
-
-
             if (user.emailStatus == 0){
                 binding.emailCheck1.visibility = View.VISIBLE
                 binding.emailCheck2.visibility = View.VISIBLE
@@ -151,7 +153,7 @@ class ProfileFragment : Fragment() {
         viewModel.saveProfile(data).observe(viewLifecycleOwner, Observer {
             toggleBusyDialog(false)
             it.let {  res ->
-
+                toggleBusyDialog(false)
                 when(res){
 
                     is  GenericStatus.Success ->{
@@ -175,7 +177,7 @@ class ProfileFragment : Fragment() {
     }
 
     fun getProfile(){
-        toggleBusyDialog(true, "Uploading Data")
+        toggleBusyDialog(true, "Fetching Data")
         viewModel.getProfile().observe(viewLifecycleOwner, Observer {
             it.let {  res ->
                 toggleBusyDialog(false)
@@ -186,6 +188,24 @@ class ProfileFragment : Fragment() {
                         binding.riderName.setText("${user?.firstName}  ${user?.lastName}")
                         binding.riderEmail.setText("${user?.email}")
                         binding.phoneNumber.setText("${user?.phoneNumber}")
+
+                        if (user?.email.toString().isValidEmail()){
+                            binding.checkEmail.visibility = View.VISIBLE
+                        }else{
+                            binding.checkEmail.visibility = View.GONE
+                        }
+
+                        if (user?.emailStatus == 0){
+                            binding.emailCheck1.visibility = View.VISIBLE
+                            binding.emailCheck2.visibility = View.VISIBLE
+                            binding.resendLink.visibility = View.VISIBLE
+                        }else{
+                            binding.emailCheck1.visibility = View.GONE
+                            binding.emailCheck2.visibility = View.GONE
+                            binding.resendLink.visibility = View.GONE
+                        }
+
+                        if (user?.profilePicture.toString().isNotEmpty())
                         Picasso.get().load(user?.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(binding.profileImage)
                     }
 
@@ -199,6 +219,25 @@ class ProfileFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view =
+                        LayoutInflater.from(requireContext()).inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
+        }
     }
 
 }

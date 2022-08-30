@@ -31,6 +31,8 @@ import com.mevron.rides.rider.databinding.PaymentFragmentBinding
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.home.ui.HomeActivity
+import com.mevron.rides.rider.payment.domain.PAYTYPE
+import com.mevron.rides.rider.payment.domain.PAYTYPE.*
 import com.mevron.rides.rider.payment.domain.PaymentCard
 import com.mevron.rides.rider.payment.domain.isCash
 import com.mevron.rides.rider.payment.ui.PaymentViewEvent
@@ -109,14 +111,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                     binding.mevronPayBottom.addPaymentMethod.visibility = View.GONE
                 }
 
-
-
-                if (it.selectedPaymentCard.isCash()) {
-                    binding.payCash.text = "Pay with Cash"
-                } else {
-                    binding.payCash.text = "Pay with Card"
-                }
-
                 it.openConfirmRide.get {
                     findNavController().navigate(R.id.action_global_openConfirmRide)
                 }
@@ -125,6 +119,12 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
                     it.addPaymentClicked.get {
                         findNavController().navigate(R.id.action_paymentFragment2_to_paymentMethodFragment)
                     }
+                }
+
+                when(it.selectedPaymentCard.isCash()){
+                    CARD -> binding.payCash.text = "Pay with Card"
+                    CASH ->  binding.payCash.text = "Pay with Cash"
+                    WALLET -> binding.payCash.text = "Pay with Wallet"
                 }
             }
         }

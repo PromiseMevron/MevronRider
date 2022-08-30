@@ -81,6 +81,7 @@ class PaymentViewModel @Inject constructor(
             val result = getPaymentMethodsUseCase()
             if (result is DomainModel.Success) {
                 theData.add(PaymentCard.EMPTY)
+                theData.add(PaymentCard.WALLET)
                 val data = result.data as PaymentCardDomainModel
                 theData.addAll(data.cards)
                 setState { copy(isLoading = false, paymentCards = theData, error = "") }

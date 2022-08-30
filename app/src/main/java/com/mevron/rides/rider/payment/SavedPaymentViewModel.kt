@@ -64,6 +64,7 @@ class SavedPaymentViewModel @Inject constructor(
         updateState(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val result = getPaymentMethodsUseCase()
+            updateState(isLoading = false)
             if (result is DomainModel.Success) {
                 theData.add(PaymentCard.EMPTY)
                 val data = result.data as PaymentCardDomainModel

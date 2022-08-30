@@ -271,7 +271,7 @@
 
     <string name="account_success">Your wallet creation and onboarding was successful- your wallet will be active in a moment as soon as we review your data</string>
     <string name="referral_bonus_received">Referral bonus received</string>
-    <string name="help_amp_support"><![CDATA[Help & Support]]></string>
+    <string name="help_amp_support">Support</string>
     <string name="emergency_contacts">Emergency Contacts</string>
     <string name="keep_your_friends_and_family_informed_by_sharing_your_trip_status">Keep your friends and family informed, by sharing your trip status.</string>
     <string name="add_contacts">Add Contacts</string>

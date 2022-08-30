@@ -22,18 +22,43 @@ data class PaymentCard(
             type = "cash",
             uuid = "cash"
         )
+
+        val WALLET = PaymentCard(
+            bin = "",
+            brand = "",
+            expiryMonth = "",
+            expiryYear = "",
+            lastDigits = "",
+            type = "wallet",
+            uuid = "wallet"
+        )
     }
 }
 
-fun PaymentCard.isCash(): Boolean = type.lowercase() == "cash".lowercase()
+fun PaymentCard.isCash(): PAYTYPE{
+    if (type.lowercase() == "cash".lowercase()){
+        return PAYTYPE.CASH
+    }
+    if (type.lowercase() == "wallet".lowercase()){
+        return PAYTYPE.WALLET
+    }
+    return PAYTYPE.CARD
+}
 
 @DrawableRes
 fun PaymentCard.getCardImage(): Int =
     when (brand.lowercase()) {
         "mastercard" -> R.drawable.master_card_logo_svg
+        "visa" -> R.drawable.ic_visa_card
+        "verve" -> R.drawable.verve
         else -> R.drawable.ic_card
     }
 
 data class PaymentCardDomainModel(
     val cards: List<PaymentCard> = listOf()
 )
+enum class PAYTYPE{
+    CARD,
+    CASH,
+    WALLET,
+}

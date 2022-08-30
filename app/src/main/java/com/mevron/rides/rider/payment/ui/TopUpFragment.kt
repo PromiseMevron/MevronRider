@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.payment.ui
 
+import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +23,7 @@ import com.mevron.rides.rider.payment.OnPaymentMethodSelectedListener
 import com.mevron.rides.rider.payment.PaySelected2
 import com.mevron.rides.rider.payment.PaymentAdapter
 import com.mevron.rides.rider.payment.domain.PaymentCard
+import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +36,7 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
     private val viewModel: TopUpViewModel by viewModels()
     private lateinit var binding: FragmentTopUpBinding
     private lateinit var adapter: PaymentAdapter
+    private var mDialog: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +74,11 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                         binding.webView.visibility = View.GONE
                     }
                 }
+
+                toggleBusyDialog(
+                    state.loading,
+                    desc = if (state.loading) "Processing..." else null
+                )
 
                 if (state.cardData.isNotEmpty()) {
                     Log.d("THE CARDS ARE", "THE CARDS ARE ${state.cardData}")
@@ -121,6 +129,25 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
         binding.addCard.setOnClickListener {
             viewModel.updateState(addFund = "100", addCard = true)
             viewModel.getPayLink()
+        }
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
         }
     }
 

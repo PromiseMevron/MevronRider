@@ -20,6 +20,19 @@ class ProfileRepository(private val api: ProfileApi) : IProfileRepository {
         } catch (error: Throwable) {
             DomainModel.Error(Throwable("Error connecting to network to fetch profile data"))
         }
+
+    override suspend fun sendToken(id: DeviceID): DomainModel =
+        try {
+            val result = api.updateToken(id)
+            if (result.isSuccessful) {
+                DomainModel.Success(data = Unit)
+            } else {
+                DomainModel.Success(data = Unit)
+            }
+        } catch (error: Throwable) {
+            DomainModel.Success(data = Unit)
+        }
+
 }
 
 private fun ProfileData.toDomainModel(): DomainModel.Success =

@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/drawable/ic_bussiness_ride.xml" value="0.246" />
         <entry key="app/src/main/res/drawable/ic_car_icon__1.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_car_marker.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_cash_add.xml" value="0.1905" />
         <entry key="app/src/main/res/drawable/ic_check.xml" value="0.1435" />
         <entry key="app/src/main/res/drawable/ic_check_green.xml" value="0.213" />
         <entry key="app/src/main/res/drawable/ic_cleanliness.xml" value="0.15" />
@@ -105,6 +106,8 @@
         <entry key="app/src/main/res/drawable/ic_stop_new_ride.xml" value="0.1921875" />
         <entry key="app/src/main/res/drawable/ic_telegram.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_verified_fill.xml" value="0.1545" />
+        <entry key="app/src/main/res/drawable/ic_visa_card.xml" value="0.1905" />
+        <entry key="app/src/main/res/drawable/ic_wallet.xml" value="0.1905" />
         <entry key="app/src/main/res/drawable/ic_whatsapp.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_work_black.xml" value="0.25625" />

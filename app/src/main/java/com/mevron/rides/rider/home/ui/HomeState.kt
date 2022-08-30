@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.home.ui
 
+import com.mevron.rides.rider.home.data.DeviceID
 import com.mevron.rides.rider.home.domain.ProfileDomainData
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
@@ -24,7 +25,9 @@ data class HomeState(
     val hideStateCheckCover: Boolean,
     val shouldOpenConfirmRide: Boolean,
     val shouldOpenTipView: SingleStateEvent<Unit>,
-    val markerLocations: List<NearByDriver>
+    val markerLocations: List<NearByDriver>,
+    val tokenSuccessful: Boolean,
+    val deviceID: String,
 ) {
 
     companion object {
@@ -46,7 +49,9 @@ data class HomeState(
             shouldOpenConfirmRide = false,
             shouldOpenTipView = SingleStateEvent(),
             markerLocations = listOf(),
-            hideStateCheckCover = false
+            hideStateCheckCover = false,
+            tokenSuccessful = false,
+            deviceID = ""
         )
     }
 }
