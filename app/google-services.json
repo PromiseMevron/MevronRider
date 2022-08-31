@@ -1,0 +1,341 @@
+{
+  "project_info": {
+    "project_number": "210013538605",
+    "firebase_url": "https://mevron-1330b.firebaseio.com",
+    "project_id": "mevron-1330b",
+    "storage_bucket": "mevron-1330b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210013538605:android:7317b5ff8c18cf862b6ba4",
+        "android_client_info": {
+          "package_name": "com.mevron.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210013538605-6mrf676539bml1gssuehtj6eg9emrhp6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "70c53f3e08a7d9c258714ab6d6a1a5ecb98fc0cb"
+          }
+        },
+        {
+          "client_id": "210013538605-9ro6ras7qus9qs920dcdvk3nou66dnbp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "ddc84bfc9de63d12de3317e0b3424a3446354e6e"
+          }
+        },
+        {
+          "client_id": "210013538605-9vu8t4fgs03udt825ak31hkktbp1dghh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "38065f88292cad9801309324239fb7780f675a57"
+          }
+        },
+        {
+          "client_id": "210013538605-duhuq0rjooupdmvkjg2l8m0p6cg75lv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "2c0160c791729e25dacb491bed1a7e3b24f2141c"
+          }
+        },
+        {
+          "client_id": "210013538605-ncu9hcpfvq17dlpfg4cosoeqtp9ajnh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "f3c6fbdce3cdd3fe9b1f5ab7a2700570a4b776e4"
+          }
+        },
+        {
+          "client_id": "210013538605-nt2ol4051o0r42hfi9s2lgdj70obo8nh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "08b4e4fd77c942a57b5de5d977e311cebba9d72a"
+          }
+        },
+        {
+          "client_id": "210013538605-q2ssc0mean5plm1i1jlc2ot51q313q9h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "8ec151c0c035fb9fb06a0906a6fd0bdb2623d6fe"
+          }
+        },
+        {
+          "client_id": "210013538605-v0nm3gc4hbhrrdqs4eotde9e84j48vhd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.driver",
+            "certificate_hash": "fd8629c8ade4842547b6f6a49d44018239b084c5"
+          }
+        },
+        {
+          "client_id": "210013538605-c2oqgaoid6n2peaonpv045t4s7js94v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQrENVPBxPg6EB-AhJv2b3KNWHM0eZrM0"
+        },
+        {
+          "current_key": "AIzaSyD0kjDlGJhukjuDOobSDaUqfLFBXpNjlic"
+        },
+        {
+          "current_key": "AIzaSyCwLrjS0EhQGTXSva0lrvNk6pEX_uV6H3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210013538605-0iik1cjrb83nmipk318nukqthlrngvru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210013538605-08uu8q74n2ufn3p1lbaqjqu5dqdjlmeb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mevron.rider"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210013538605:android:bc694977291bba102b6ba4",
+        "android_client_info": {
+          "package_name": "com.mevron.fleet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210013538605-24a6l6vj918tv9b57kjf2gaeoo0edg7r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.fleet",
+            "certificate_hash": "2c0160c791729e25dacb491bed1a7e3b24f2141c"
+          }
+        },
+        {
+          "client_id": "210013538605-c2oqgaoid6n2peaonpv045t4s7js94v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQrENVPBxPg6EB-AhJv2b3KNWHM0eZrM0"
+        },
+        {
+          "current_key": "AIzaSyD0kjDlGJhukjuDOobSDaUqfLFBXpNjlic"
+        },
+        {
+          "current_key": "AIzaSyCwLrjS0EhQGTXSva0lrvNk6pEX_uV6H3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210013538605-0iik1cjrb83nmipk318nukqthlrngvru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210013538605-08uu8q74n2ufn3p1lbaqjqu5dqdjlmeb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mevron.rider"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210013538605:android:227a14e0b85fbf4c2b6ba4",
+        "android_client_info": {
+          "package_name": "com.mevron.rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210013538605-b9m3gj11umem55ekfa684d7mi4e5822k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "8ec151c0c035fb9fb06a0906a6fd0bdb2623d6fe"
+          }
+        },
+        {
+          "client_id": "210013538605-dsvh40vbtru89la2263rdo5rf1vkgccq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "38065f88292cad9801309324239fb7780f675a57"
+          }
+        },
+        {
+          "client_id": "210013538605-f16q6quaguhna74vv8kl1h24a8d7vumc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "08b4e4fd77c942a57b5de5d977e311cebba9d72a"
+          }
+        },
+        {
+          "client_id": "210013538605-gc37mt3q5sbn3rduc2ioop6ocj0mj5j1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "d3838085cfdd97dc7c32adb20f6dca9a8726f295"
+          }
+        },
+        {
+          "client_id": "210013538605-kliil9tg920nitslb6rkq69dau6ki7s1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "f3c6fbdce3cdd3fe9b1f5ab7a2700570a4b776e4"
+          }
+        },
+        {
+          "client_id": "210013538605-kotcp408fcarqvi923sitjogga6fjbuh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mevron.rider",
+            "certificate_hash": "2c0160c791729e25dacb491bed1a7e3b24f2141c"
+          }
+        },
+        {
+          "client_id": "210013538605-c2oqgaoid6n2peaonpv045t4s7js94v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQrENVPBxPg6EB-AhJv2b3KNWHM0eZrM0"
+        },
+        {
+          "current_key": "AIzaSyD0kjDlGJhukjuDOobSDaUqfLFBXpNjlic"
+        },
+        {
+          "current_key": "AIzaSyCwLrjS0EhQGTXSva0lrvNk6pEX_uV6H3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210013538605-0iik1cjrb83nmipk318nukqthlrngvru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210013538605-08uu8q74n2ufn3p1lbaqjqu5dqdjlmeb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mevron.rider"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210013538605:android:0214bcedc5b676d12b6ba4",
+        "android_client_info": {
+          "package_name": "com.mevron.rides.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210013538605-c2oqgaoid6n2peaonpv045t4s7js94v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQrENVPBxPg6EB-AhJv2b3KNWHM0eZrM0"
+        },
+        {
+          "current_key": "AIzaSyD0kjDlGJhukjuDOobSDaUqfLFBXpNjlic"
+        },
+        {
+          "current_key": "AIzaSyCwLrjS0EhQGTXSva0lrvNk6pEX_uV6H3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210013538605-0iik1cjrb83nmipk318nukqthlrngvru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210013538605-08uu8q74n2ufn3p1lbaqjqu5dqdjlmeb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mevron.rider"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210013538605:android:570d8f4733e69b182b6ba4",
+        "android_client_info": {
+          "package_name": "com.mevron.rides.rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210013538605-c2oqgaoid6n2peaonpv045t4s7js94v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQrENVPBxPg6EB-AhJv2b3KNWHM0eZrM0"
+        },
+        {
+          "current_key": "AIzaSyD0kjDlGJhukjuDOobSDaUqfLFBXpNjlic"
+        },
+        {
+          "current_key": "AIzaSyCwLrjS0EhQGTXSva0lrvNk6pEX_uV6H3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210013538605-0iik1cjrb83nmipk318nukqthlrngvru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "210013538605-08uu8q74n2ufn3p1lbaqjqu5dqdjlmeb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mevron.rider"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
