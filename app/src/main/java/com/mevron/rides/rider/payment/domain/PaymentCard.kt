@@ -48,14 +48,15 @@ fun PaymentCard.isCash(): PAYTYPE{
 @DrawableRes
 fun PaymentCard.getCardImage(): Int =
     when (brand.lowercase()) {
-        "mastercard" -> R.drawable.master_card_logo_svg
+        "mastercard" -> R.drawable.master_card_logo
         "visa" -> R.drawable.ic_visa_card
-        "verve" -> R.drawable.verve
+        "verve" -> R.drawable.verve_logo
         else -> R.drawable.ic_card
     }
 
 data class PaymentCardDomainModel(
-    val cards: List<PaymentCard> = listOf()
+    val cards: List<PaymentCard> = listOf(),
+    val balance: Double = 0.0
 )
 enum class PAYTYPE{
     CARD,

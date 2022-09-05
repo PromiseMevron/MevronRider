@@ -4,6 +4,7 @@ data class Data(
     val currency: String,
     val dropOffTime: String,
     val fare: String,
+    val fare2: List<Fare2>,
     val id: Int,
     val image: String,
     val name: String,

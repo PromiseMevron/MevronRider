@@ -87,6 +87,7 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         super.onViewCreated(view, savedInstanceState)
         viewModel.updateLocationStatus()
         viewModel.setUpPaymentMethod("cash")
+
         lifecycleScope.launch {
             viewModel.uiState.collect {
 
@@ -94,7 +95,6 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
                 val selectedPosition = it.paymentCards.indexOf(it.selectedPaymentCard)
                 val position = if (selectedPosition < 0) 0 else selectedPosition
-
                 adapter = PaymentAdapter(this@PaymentFragment, position)
                 binding.mevronPayBottom.recyclerView.adapter = adapter
                 adapter.submitList(it.paymentCards)
@@ -142,9 +142,17 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
 
         binding.payCash.setOnClickListener {
             val selectedCard = viewModel.uiState.value.selectedPaymentCard
+            val maxValue = viewModel.uiState.value.maxvalue
+            val walletBalance = viewModel.uiState.value.walletBalance
             if (selectedCard.type.isEmpty()) {
                 Toast.makeText(context, "Select a payment method", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            }
+            if (selectedCard.type == "wallet") {
+                if (walletBalance < maxValue){
+                    Toast.makeText(context, "Your wallet balance is insufficient  for this ride, top-up your wallet to continue", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
             }
             viewModel.setEvent(PaymentViewEvent.OpenConfirmRide)
         }

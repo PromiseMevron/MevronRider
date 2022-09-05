@@ -76,12 +76,12 @@ class FaceLivenessDetectionFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateSingleFaceCheck()
-        updateSmilingCheck()
-        updateBlinkCheck()
-        updateLeftEyeOpenCheck()
-        updateRightEyeOpenCheck()
-        updateLookRightEyeCheck()
-        updateLookLefttEyeCheck()
+       // updateSmilingCheck()
+        //updateBlinkCheck()
+       // updateLeftEyeOpenCheck()
+      //  updateRightEyeOpenCheck()
+       // updateLookRightEyeCheck()
+     //   updateLookLefttEyeCheck()
 
 
      /*   binding.toolbar5.setNavigationOnClickListener {
@@ -210,6 +210,7 @@ class FaceLivenessDetectionFragment() : Fragment() {
                                         if (faces.size == 1) {
                                             isSingleFaceDetected.value = true
                                             binding.faceDetectedTxt.visibility = View.VISIBLE
+                                            cropImage(bitmap, faces[0])
 
                                             for (face in faces) {
                                                 val leftEye =
@@ -313,10 +314,10 @@ class FaceLivenessDetectionFragment() : Fragment() {
                                                 //validate2 && !isFaceLeft && !isFaceRight
                                                 //println("snap image %%%%%%%%%% $isValidImage")
 
-                                                if (isValidImage) {
-                                                    cropImage(bitmap, face)
+                                               // if (isValidImage) {
+                                                  //  cropImage(bitmap, face)
                                                     break
-                                                }
+                                              //  }
                                             }
 
                                         } else {

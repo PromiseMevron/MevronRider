@@ -111,11 +111,4 @@ interface MevronAPI {
     suspend fun getNotifications(): Response<NotificationResponse>
 
 
-
-
-
-
-
-
-
 }

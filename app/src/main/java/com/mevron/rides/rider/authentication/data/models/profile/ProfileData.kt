@@ -9,5 +9,6 @@ data class ProfileData(
     val phoneNumberStatus: Int?,
     val profilePicture: String?,
     val rating: Double?,
-    val uuid: String?
+    val uuid: String?,
+    val supportNumber: String?
 )

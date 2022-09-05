@@ -103,7 +103,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                 if (uiState.isOpenPaymentClicked) {
                     val action =
                         SelectRideFragmentDirections.actionSelectRideFragmentToPaymentFragment2(
-                            uiState.locationWrapper.model
+                            uiState.locationWrapper.model, uiState.minValue, uiState.maxValue
                         )
                     findNavController().navigate(action)
                     viewModel.setState { copy(isOpenPaymentClicked = false) }
@@ -422,8 +422,9 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
             )
     }
 
-    override fun onCarSelected(pos: Int, car: String) {
+    override fun onCarSelected(pos: Int, car: String, max: String, min: String) {
         viewModel.setUpPaymentMethod(cars[pos].id.toString())
+        viewModel.setUpPaymentValue(max = max, min = min)
         context?.let { _ ->
             this.pos = pos
             adapter = CarsAdapter(pos, this)

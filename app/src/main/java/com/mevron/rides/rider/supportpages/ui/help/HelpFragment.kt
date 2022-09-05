@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.mevron.rides.rider.R
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -19,8 +20,11 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.app.ActivityCompat
+import com.mevron.rides.rider.App
 
 import com.mevron.rides.rider.databinding.HelpFragmentBinding
+import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.Constants.SUPPORT_NUMBER
 
 class HelpFragment : Fragment() {
 
@@ -30,6 +34,9 @@ class HelpFragment : Fragment() {
 
     private lateinit var binding: HelpFragmentBinding
     private val requestCall = 1
+
+    val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,7 +73,7 @@ class HelpFragment : Fragment() {
                 )
             }
         } else {
-            val dial = "tel:08033214929"
+            val dial = "tel:${sPref.getString(SUPPORT_NUMBER, "")}"
             startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
         }
     }

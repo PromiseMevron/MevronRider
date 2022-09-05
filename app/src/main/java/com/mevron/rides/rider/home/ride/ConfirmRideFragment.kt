@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,10 +34,7 @@ import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.socket.domain.CONNECTED
 import com.mevron.rides.rider.socket.domain.Connected
-import com.mevron.rides.rider.util.Constants
-import com.mevron.rides.rider.util.bitmapFromVector
-import com.mevron.rides.rider.util.displayLocationSettingsRequest
-import com.mevron.rides.rider.util.getGeoLocation
+import com.mevron.rides.rider.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -54,6 +53,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
     private lateinit var apiInterface: GeoAPIInterface
     private lateinit var location: Array<LocationModel>
     private var isCard = false
+    private var mDialog: Dialog? = null
 
     companion object {
         fun newInstance() = ConfirmRideFragment()
@@ -120,6 +120,19 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         binding.cancelButton.setOnClickListener {
             showRideCancellationDialog()
         }
+        binding.cancelReasonLayout.close.setOnClickListener {
+            binding.cancelReasonLayout.cancelBottom.visibility = View.GONE
+        }
+
+        binding.cancelReasonLayout.submitFeedback.setOnClickListener {
+            if (viewModel.uiState.value.reasonForCancel.isEmpty()){
+                Toast.makeText(requireContext(), "Please select a reason for cancellation", Toast.LENGTH_LONG).show()
+            }else{
+                binding.cancelReasonLayout.cancelBottom.visibility = View.GONE
+                viewModel.cancelARide()
+            }
+        }
+
         displayLocationSettingsRequest(binding)
 
         lifecycleScope.launch {
@@ -141,12 +154,140 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                     binding.findingFoundDriver.visibility = View.GONE
                     binding.confirmingDriver.visibility = View.VISIBLE
                 }
+
+                if (uiState.isRideCancelled){
+                    findNavController().navigate(R.id.action_global_homeFragment)
+                }
+
+                toggleBusyDialog(
+                    uiState.isLoading,
+                    desc = if (uiState.isLoading) "Submitting Data..." else null
+                )
             }
         }
         viewModel.setEvent(ConfirmRideEvent.ConfirmRideRequest)
         viewModel.setEvent(ConfirmRideEvent.CollectSocketData)
+
+
+        binding.cancelReasonLayout.inefficientRoute.setOnClickListener {
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.GONE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("inefficient route")
+        }
+
+        binding.cancelReasonLayout.inefficientRoute1.setOnClickListener {
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("")
+        }
+
+        binding.cancelReasonLayout.bookedByMistake.setOnClickListener {
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("Booked by mistake")
+        }
+
+        binding.cancelReasonLayout.bookedByMistake1.setOnClickListener {
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("")
+        }
+
+        binding.cancelReasonLayout.changeInPlan.setOnClickListener {
+            binding.cancelReasonLayout.changeInPlan.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("Change in plan")
+        }
+
+        binding.cancelReasonLayout.changeInPlan1.setOnClickListener {
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            setAlphaForButtons("")
+        }
+
+        binding.cancelReasonLayout.other.setOnClickListener {
+            binding.cancelReasonLayout.other.visibility = View.GONE
+            binding.cancelReasonLayout.other1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+
+            setAlphaForButtons("other")
+        }
+
+        binding.cancelReasonLayout.other1.setOnClickListener {
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+
+            setAlphaForButtons("")
+        }
+
+
+
     }
 
+    private fun setAlphaForButtons(value: String){
+        viewModel.updateCancelValue(value)
+    }
     private fun addMarkerToPolyLines(geoDirections: GeoDirectionsResponse) {
         val startLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.startLocation
         val endLocation = geoDirections.routes?.get(0)?.legs?.get(0)?.endLocation
@@ -193,6 +334,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         val noBtn = dialog.findViewById(R.id.dont) as MaterialButton
         yesBtn.setOnClickListener {
             dialog.dismiss()
+            binding.cancelReasonLayout.cancelBottom.visibility = View.VISIBLE
         }
         noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
@@ -260,6 +402,25 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
             }
+        }
+    }
+
+    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
         }
     }
 

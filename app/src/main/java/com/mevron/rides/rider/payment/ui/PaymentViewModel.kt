@@ -16,6 +16,7 @@ import com.mevron.rides.rider.shared.ui.SingleStateEvent
 import com.mevron.rides.rider.util.Constants.DROP_OFF_ADD
 import com.mevron.rides.rider.util.Constants.DROP_OFF_LAT
 import com.mevron.rides.rider.util.Constants.DROP_OFF_LNG
+import com.mevron.rides.rider.util.Constants.MAX_VALUE
 import com.mevron.rides.rider.util.Constants.PICK_UP_ADD
 import com.mevron.rides.rider.util.Constants.PICK_UP_LAT
 import com.mevron.rides.rider.util.Constants.PICK_UP_LNG
@@ -69,7 +70,8 @@ class PaymentViewModel @Inject constructor(
                 startLocationLat = getOrderPropertiesUseCase(PICK_UP_LAT).toDouble(),
                 startLocationLng = getOrderPropertiesUseCase(PICK_UP_LNG).toDouble(),
                 endLocationLat = getOrderPropertiesUseCase(DROP_OFF_LAT).toDouble(),
-                endLocationLng = getOrderPropertiesUseCase(DROP_OFF_LNG).toDouble()
+                endLocationLng = getOrderPropertiesUseCase(DROP_OFF_LNG).toDouble(),
+                maxvalue = getOrderPropertiesUseCase(MAX_VALUE).toDoubleOrNull() ?: 0.0
             )
         }
     }
@@ -84,9 +86,9 @@ class PaymentViewModel @Inject constructor(
                 theData.add(PaymentCard.WALLET)
                 val data = result.data as PaymentCardDomainModel
                 theData.addAll(data.cards)
-                setState { copy(isLoading = false, paymentCards = theData, error = "") }
+                setState { copy(isLoading = false, paymentCards = theData, error = "", walletBalance = data.balance) }
             } else {
-                setState { copy(error = (result as DomainModel.Error).error.toString()) }
+                setState { copy(error = (result as DomainModel.Error).error.toString(), isLoading = false) }
             }
         }
     }

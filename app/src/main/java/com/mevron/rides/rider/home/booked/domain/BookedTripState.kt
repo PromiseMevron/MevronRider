@@ -23,7 +23,9 @@ data class BookedTripState(
     val loading: Boolean,
     val customRating: String,
     val isMarkerRendered: Boolean,
-    val driverLocation: DriverLocationModel
+    val driverLocation: DriverLocationModel,
+    val reasonForCancel: String,
+    val isRideCancelled: Boolean
 ) {
 
     val hasValidCoordinates: Boolean
@@ -49,7 +51,9 @@ data class BookedTripState(
             loading = false,
             customRating = "",
             isMarkerRendered = false,
-            driverLocation = DriverLocationModel.EMPTY
+            driverLocation = DriverLocationModel.EMPTY,
+            reasonForCancel = "",
+            isRideCancelled = false
         )
     }
 }

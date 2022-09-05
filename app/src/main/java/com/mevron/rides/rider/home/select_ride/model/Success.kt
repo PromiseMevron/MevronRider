@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Success(
     @SerializedName("data")
-    val data: List<Data>,
+    val `data`: List<Data>,
     val message: String,
     val status: String
 )

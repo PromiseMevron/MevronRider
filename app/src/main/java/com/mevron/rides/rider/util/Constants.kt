@@ -1,7 +1,8 @@
 package com.mevron.rides.rider.util
 
 object Constants {
-      const val BASE_URL = "https://sandbox.mevron.com/"
+    const val TRIP_ID: String = "TRIP_ID"
+    const val BASE_URL = "https://sandbox.mevron.com/"
   //  const val BASE_URL = "http://staging.mevron.com:8083/"
     const val SHARED_PREF_KEY = "com.mevron.rides.riderMeveronApp.PREF_NAME"
     const val TOKEN = "TOKEN"
@@ -15,6 +16,8 @@ object Constants {
     const val LOCATION_REQUEST_CODE = 4555
     const val PHONE_NUMBER = "PHONE_NUMBER"
     val CAR = "CAR"
+   val MAX_VALUE = "CAR"
+   val MIN_VALUE = "CAR"
     val ThePaymentModel = "PaymentModel"
     val PICK_UP_LAT = "PICK_UP_LAT"
     val DROP_OFF_LAT = "DROP_OFF_LAT"
@@ -23,6 +26,7 @@ object Constants {
     val PICK_UP_ADD = "PICK_UP_ADD"
     val DROP_OFF_ADD = "DROP_OFF_ADD"
     val HOME = "home"
+    val SUPPORT_NUMBER = "SUPPORT_NUMBER"
     val WORK = "work"
     val OTHER = "others"
 

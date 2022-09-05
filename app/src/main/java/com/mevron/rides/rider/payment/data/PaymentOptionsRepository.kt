@@ -4,6 +4,7 @@ import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.home.model.AddCard
 import com.mevron.rides.rider.home.model.GetLinkAmount
 import com.mevron.rides.rider.home.model.getCard.Data
+import com.mevron.rides.rider.home.model.getCard.WalletData
 import com.mevron.rides.rider.payment.domain.*
 
 // TODO add unit test for this class
@@ -118,9 +119,11 @@ private fun PaymentDetailsResponse.toDomainModel() = DomainModel.Success(
     )
 )
 
-private fun List<Data>.toDomainModel(): PaymentCardDomainModel {
+private fun WalletData.toDomainModel(): PaymentCardDomainModel {
+    val card = this.card
     return PaymentCardDomainModel(
-        cards = map { it.toDomainModel() }.apply { toMutableList().add(PaymentCard.EMPTY.copy(type = "cash")) }
+        cards = card.map { it.toDomainModel() }.apply { toMutableList().add(PaymentCard.EMPTY.copy(type = "cash")) },
+        balance = this.balance.toDoubleOrNull() ?: 0.0
     )
 }
 

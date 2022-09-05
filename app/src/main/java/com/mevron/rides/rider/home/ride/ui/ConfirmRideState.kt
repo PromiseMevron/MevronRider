@@ -18,7 +18,10 @@ data class ConfirmRideState(
     val isCoordinateRendered: Boolean,
     val isSearchingDrivers: Boolean,
     val isBookingConfirmed: Boolean,
-    val error: String
+    val isRideCancelled: Boolean,
+    val error: String,
+    val reasonForCancel: String,
+    val trip_Id: String
 ) {
 
     val isValidCoordinate: Boolean
@@ -42,7 +45,10 @@ data class ConfirmRideState(
             isBookingConfirmed = false,
             error = "",
             payId = "cash",
-            vehicleId = ""
+            vehicleId = "",
+            reasonForCancel = "",
+            trip_Id = "",
+            isRideCancelled = false
         )
     }
 }

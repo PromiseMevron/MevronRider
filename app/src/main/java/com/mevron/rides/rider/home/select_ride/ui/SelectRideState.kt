@@ -14,7 +14,9 @@ data class SelectRideState(
     val isListLoaded: Boolean,
     val isMarkerRendered: Boolean,
     val isLocationLoaded: Boolean,
-    val error: String
+    val error: String,
+    val minValue: String,
+    val maxValue: String
 ) {
     val isMobilityTypeAvailable: Boolean
         get() = mobilityTypes.isNotEmpty()
@@ -34,6 +36,8 @@ data class SelectRideState(
             isMarkerRendered = false,
             isLocationLoaded = false,
             error = "",
+            maxValue = "0",
+            minValue = "0"
         )
     }
 }

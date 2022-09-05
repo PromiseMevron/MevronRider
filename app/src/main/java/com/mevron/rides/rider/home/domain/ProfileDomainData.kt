@@ -9,7 +9,8 @@ data class ProfileDomainData(
     val phoneNumberStatus: Int?,
     val profilePicture: String?,
     val rating: Double?,
-    val uuid: String?
+    val uuid: String?,
+    val supportNumber: String?
 ) {
     companion object {
         val EMPTY = ProfileDomainData(
@@ -21,7 +22,8 @@ data class ProfileDomainData(
             phoneNumberStatus = null,
             profilePicture = "",
             rating = null,
-            uuid = null
+            uuid = null,
+            supportNumber = null
         )
     }
 }

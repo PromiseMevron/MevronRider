@@ -18,7 +18,9 @@ data class PaymentViewState(
     val addPaymentClicked: SingleStateEvent<Unit>,
     val isCoordinateRendered: Boolean,
     val openConfirmRide: SingleStateEvent<Unit>,
-    val error: String
+    val error: String,
+    val maxvalue: Double,
+    val walletBalance: Double
 ) {
     companion object {
         val EMPTY = PaymentViewState(
@@ -35,7 +37,9 @@ data class PaymentViewState(
             isCoordinateRendered = false,
             openConfirmRide = SingleStateEvent(),
             error = "",
-            isMarkerRendered = false
+            isMarkerRendered = false,
+            maxvalue = 0.0,
+            walletBalance = 0.0
         )
     }
 

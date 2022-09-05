@@ -8,5 +8,7 @@ data class MobilityTypeDomainModel(
     val image: String,
     val name: String,
     val seats: Int,
-    val type: String
+    val type: String,
+    val maxValue: String,
+    val minValue: String
 )

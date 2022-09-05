@@ -58,7 +58,8 @@
             app:destination="@id/paymentFragment2" />
         <argument
             android:name="location"
-            app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+            app:argType="com.mevron.rides.rider.home.model.LocationModel[]"
+            />
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
@@ -76,6 +77,14 @@
         <argument
             android:name="location"
             app:argType="com.mevron.rides.rider.home.model.LocationModel[]" />
+        <argument
+            android:name="minValue"
+            app:argType="string"
+            />
+        <argument
+            android:name="maxValue"
+            app:argType="string"
+            />
         <action
             android:id="@+id/action_paymentFragment2_to_confirmRideFragment"
             app:destination="@id/confirmRideFragment" />

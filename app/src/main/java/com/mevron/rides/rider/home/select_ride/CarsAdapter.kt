@@ -64,14 +64,14 @@ class CarsAdapter(
         holder.binding.vehicleName.text = dt.name
         holder.binding.vehicleCount.text = dt.seats.toString()
 
-        holder.binding.vehiclePrice.text = "${dt.currency}${dt.fare}"
+        holder.binding.vehiclePrice.text = "${dt.currency}${dt.minValue} - ${dt.maxValue}"
 
         holder.binding.root.setOnClickListener {
-            selected.onCarSelected(position, dt.name)
+            selected.onCarSelected(position, dt.name, max = dt.maxValue, min = dt.minValue)
         }
     }
 }
 
 interface OnCarSelectedListener {
-    fun onCarSelected(pos: Int, car: String)
+    fun onCarSelected(pos: Int, car: String, max: String, min: String)
 }

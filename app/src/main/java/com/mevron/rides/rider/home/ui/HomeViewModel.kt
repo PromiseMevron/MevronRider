@@ -18,6 +18,7 @@ import com.mevron.rides.rider.savedplaces.domain.usecase.GetAddressUseCase
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.shared.ui.SingleStateEvent
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.Constants.SUPPORT_NUMBER
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val tripStateUseCase: GetTripStateUseCase,
     private val setPreferenceUseCase: SetOrderPropertiesUseCase,
-    private val fcmTokenUseCase: FCMTokenUseCase
+   // private val fcmTokenUseCase: FCMTokenUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY
@@ -147,6 +148,7 @@ class HomeViewModel @Inject constructor(
                 val profileResponse = getProfileUseCase()
 
                 if (profileResponse is DomainModel.Success) {
+                    setPreferenceUseCase(SUPPORT_NUMBER, (profileResponse.data as ProfileDomainData).supportNumber ?: "")
                     setState {
                         copy(
                             profileData = profileResponse.data as ProfileDomainData,
@@ -163,7 +165,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateToken(id: String) {
+  /*  fun updateToken(id: String) {
         setState {
             copy(
                 deviceID = id
@@ -198,7 +200,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 
     fun updateOrderStatus(model: List<LocationModel>) {
         Log.d("DIRECTION", model[0].lat.toString())

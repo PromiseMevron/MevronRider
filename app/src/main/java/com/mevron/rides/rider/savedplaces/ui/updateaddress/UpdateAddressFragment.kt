@@ -51,7 +51,7 @@ class UpdateAddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        add = UpdateAddressFragmentArgs.fromBundle(arguments!!).address
+        add = UpdateAddressFragmentArgs.fromBundle(requireArguments()).address
         binding.addressName.setText(add.name)
         binding.address.setText(add.address)
 

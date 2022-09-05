@@ -5,6 +5,7 @@ import com.mevron.rides.rider.home.select_ride.domain.IMobilityTypesRepository
 import com.mevron.rides.rider.home.select_ride.domain.MobilityTypeDomainModel
 import com.mevron.rides.rider.home.select_ride.domain.MobilityTypesRequest
 import com.mevron.rides.rider.home.select_ride.model.Data
+import com.mevron.rides.rider.home.select_ride.model.Fare2
 
 class MobilityTypesRepository (
     private val api: MobilityTypesApi
@@ -24,14 +25,27 @@ class MobilityTypesRepository (
             DomainModel.Error(error)
         }
 
-    private fun Data.toDomainModel() = MobilityTypeDomainModel(
-        currency = this.currency,
-        dropOffTime = this.dropOffTime,
-        fare = fare,
-        id = id,
-        image = image,
-        name = name,
-        seats = seats,
-        type = type
-    )
+    private fun Data.toDomainModel():MobilityTypeDomainModel{
+        var values = mutableListOf<String>()
+        for (v in this.fare2){
+            if (v.name.lowercase() == ("Estimated Total").lowercase()){
+               values = v.value.replace(" ", "").split("-").toMutableList()
+              break
+            }
+        }
+
+       return MobilityTypeDomainModel(
+            currency = this.currency,
+            dropOffTime = this.dropOffTime,
+            fare = fare,
+            id = id,
+            image = image,
+            name = name,
+            seats = seats,
+            type = type,
+            minValue = values[0],
+            maxValue = values[1]
+        )
+    }
+
 }

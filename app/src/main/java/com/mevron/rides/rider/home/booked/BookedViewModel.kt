@@ -8,18 +8,22 @@ import com.mevron.rides.rider.domain.update
 import com.mevron.rides.rider.domain.usecase.GetDriverLocationUseCase
 import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
+import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
 import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.BookedTripState
 import com.mevron.rides.rider.home.booked.domain.UNDEFINED_COORDINATE
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
 import com.mevron.rides.rider.home.model.DriverLocationModel
+import com.mevron.rides.rider.home.ride.domain.CancelRideRequestUseCase
 import com.mevron.rides.rider.payment.data.RateDriverRequest
 import com.mevron.rides.rider.payment.domain.RateRiderUseCase
 import com.mevron.rides.rider.payment.domain.SendTipAndReviewUseCase
 import com.mevron.rides.rider.payment.domain.TipAndReviewData
+import com.mevron.rides.rider.remote.model.CancelRideRequest
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.sharedprefrence.domain.usescases.GetPreferenceUseCase
 import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.Constants.TRIP_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -34,7 +38,9 @@ class BookedViewModel @Inject constructor(
     private val tipReview: SendTipAndReviewUseCase,
     private val rateRider: RateRiderUseCase,
     private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
-    private val getDriverLocationUseCase: GetDriverLocationUseCase
+    private val getDriverLocationUseCase: GetDriverLocationUseCase,
+    private val cancelRideRequestUseCase: CancelRideRequestUseCase,
+    private val setPrefrence: SetOrderPropertiesUseCase
 ) : BaseViewModel<BookedTripState, BookedTripEvent>() {
 
     override fun createInitialState(): BookedTripState = BookedTripState.EMPTY
@@ -56,6 +62,7 @@ class BookedViewModel @Inject constructor(
                         }
                     }*/
                 if (tripState is TripState.StateMachineState) {
+                    setPrefrence(TRIP_ID, tripState.data.meta_data.trip.tripId)
                     setState {
                         copy(
                             currentStatus = tripState.data.meta_data.status.toTripStatus(),
@@ -75,13 +82,41 @@ class BookedViewModel @Inject constructor(
     fun getLocationModels(){
         setState {
             copy(
-                pickupAddress = getOrderPropertiesUseCase(Constants.PICK_UP_ADD),
-                destinationAddress = getOrderPropertiesUseCase(Constants.DROP_OFF_ADD),
-                pickupLatitude = getOrderPropertiesUseCase(Constants.PICK_UP_LAT).toDouble(),
-                pickupLongitude = getOrderPropertiesUseCase(Constants.PICK_UP_LNG).toDouble(),
-                dropOffLatitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LAT).toDouble(),
-                dropOffLongitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LNG).toDouble(),
+              ////  pickupAddress = getOrderPropertiesUseCase(Constants.PICK_UP_ADD),
+               // destinationAddress = getOrderPropertiesUseCase(Constants.DROP_OFF_ADD),
+               // pickupLatitude = getOrderPropertiesUseCase(Constants.PICK_UP_LAT).toDouble(),
+              //  pickupLongitude = getOrderPropertiesUseCase(Constants.PICK_UP_LNG).toDouble(),
+              //  dropOffLatitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LAT).toDouble(),
+               // dropOffLongitude = getOrderPropertiesUseCase(Constants.DROP_OFF_LNG).toDouble(),
             )
+        }
+    }
+
+    fun cancelARide(){
+        val request = CancelRideRequest(trip_id = uiState.value.metaData?.trip?.tripId ?: getOrderPropertiesUseCase(
+            TRIP_ID), comment = uiState.value.reasonForCancel)
+        viewModelScope.launch {
+            val result = cancelRideRequestUseCase(request)
+
+            if (result is DomainModel.Success) {
+                setState {
+                    copy(
+                        isRideCancelled = true
+                    )
+                }
+            }else{
+                setState {
+                    copy(
+                        isRideCancelled = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateCancelValue(value: String) {
+        setState {
+            copy(reasonForCancel = value)
         }
     }
 

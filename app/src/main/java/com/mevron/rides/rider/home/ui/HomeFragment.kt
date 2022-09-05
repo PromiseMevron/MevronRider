@@ -94,8 +94,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         setUpAdapter()
         getAddress()
         viewModel.setEvent(HomeEvent.ObserveTripState)
-        fetchAndUpdateToken()
-
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
@@ -113,7 +111,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                 }
 
                 if (it.tokenSuccessful){
-                    binding.tokenCover.visibility = View.GONE
+                  //  binding.tokenCover.visibility = View.GONE
                 }
 
                 if (it.shouldOpenBookedRide) {
@@ -223,19 +221,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         })
 
         gotToMyLocation()
-    }
-
-    private fun fetchAndUpdateToken() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener(OnCompleteListener { task ->
-                // 2
-                if (!task.isSuccessful) {
-                    return@OnCompleteListener
-                }
-                // 3
-                val token = task.result
-                viewModel.updateToken(token)
-            })
     }
 
 

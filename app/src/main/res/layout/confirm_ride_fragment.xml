@@ -144,6 +144,10 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:id="@+id/bqck_button"/>
 
+    <include
+        android:id="@+id/cancel_reason_layout"
+        layout="@layout/cancel_reason_bottom"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

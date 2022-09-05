@@ -58,6 +58,12 @@ class SelectRideViewModel @Inject constructor(
         setOrderPropertiesUseCase(Constants.CAR, id)
     }
 
+    fun setUpPaymentValue(max: String, min: String){
+        setState { copy(minValue = min, maxValue = max) }
+        setOrderPropertiesUseCase(Constants.MAX_VALUE, max)
+        setOrderPropertiesUseCase(Constants.MIN_VALUE, min)
+    }
+
     override fun setEvent(event: SelectRideEvent) {
         when (event) {
             is SelectRideEvent.RequestRideEvent -> loadMobilityTypes()

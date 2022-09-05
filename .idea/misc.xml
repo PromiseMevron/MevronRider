@@ -111,6 +111,7 @@
         <entry key="app/src/main/res/drawable/ic_whatsapp.xml" value="0.183" />
         <entry key="app/src/main/res/drawable/ic_work_address.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_work_black.xml" value="0.25625" />
+        <entry key="app/src/main/res/drawable/master_card_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/next_enabled.xml" value="0.23958333333333334" />
         <entry key="app/src/main/res/drawable/next_unenabled.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/rounded_border_cancel.xml" value="0.1545" />
@@ -150,7 +151,7 @@
         <entry key="app/src/main/res/layout/balance_details_view.xml" value="0.25104166666666666" />
         <entry key="app/src/main/res/layout/balance_items.xml" value="0.25104166666666666" />
         <entry key="app/src/main/res/layout/booked_fragment.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/cancel_dialog.xml" value="0.24010416666666667" />
+        <entry key="app/src/main/res/layout/cancel_dialog.xml" value="0.1" />
         <entry key="app/src/main/res/layout/cancel_reason_bottom.xml" value="0.165" />
         <entry key="app/src/main/res/layout/card_details_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/choose_rider_marker.xml" value="0.25" />

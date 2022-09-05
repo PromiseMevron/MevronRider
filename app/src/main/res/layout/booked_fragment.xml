@@ -84,6 +84,10 @@
             layout="@layout/emergency_bottom_layout"
             android:visibility="visible" />
 
+        <include
+            android:id="@+id/cancel_reason_layout"
+            layout="@layout/cancel_reason_bottom"/>
+
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
