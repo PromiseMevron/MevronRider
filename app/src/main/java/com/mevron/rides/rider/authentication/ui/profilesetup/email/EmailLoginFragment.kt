@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.authentication.ui.profilesetup.email
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +20,8 @@ import com.mevron.rides.rider.authentication.ui.profilesetup.email.event.Registe
 import com.mevron.rides.rider.databinding.EmailLoginFragmentBinding
 import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.LauncherUtil
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -28,12 +31,13 @@ import reactivecircus.flowbinding.android.view.clicks
 import reactivecircus.flowbinding.android.widget.textChanges
 
 @AndroidEntryPoint
-class EmailLoginFragment : Fragment() {
+class EmailLoginFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     companion object {
         fun newInstance() = EmailLoginFragment()
     }
     private var mDialog: Dialog? = null
+    private val MY_PERMISSIONS_REQUEST_LOCATION = 10000
 
     private val registerEmailViewModel by viewModels<EmailSignViewModel>()
     private lateinit var binding: EmailLoginFragmentBinding
@@ -55,10 +59,10 @@ class EmailLoginFragment : Fragment() {
             activity?.onBackPressed()
         }
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+
                 registerEmailViewModel.state.collect { state ->
                     if (state.isSuccess){
-                        moveToHome()
+                        openHomeActivity()
                     }
 
                     if (state.error.isNotEmpty()){
@@ -69,7 +73,7 @@ class EmailLoginFragment : Fragment() {
                              desc = if (state.isLoading) "Submitting Data..." else null)
                     checkButton(state = state.isCorrect)
                 }
-            }
+
         }
 
         binding.nextButton.clicks().take(1).onEach {
@@ -82,10 +86,7 @@ class EmailLoginFragment : Fragment() {
         }.launchIn(lifecycleScope)
     }
 
-    private fun moveToHome(){
-        startActivity(Intent(activity, HomeActivity::class.java))
-        activity?.finish()
-    }
+
 
     private fun moveToFailure(message: String){
         Snackbar
@@ -113,9 +114,26 @@ class EmailLoginFragment : Fragment() {
         }
     }
 
+    private fun hasPermission(): Boolean{
+        return EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) || EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+    }
+
+    private fun requestPermission(){
+        EasyPermissions.requestPermissions(this, "We need access to the location to be able to serve you properly", MY_PERMISSIONS_REQUEST_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
     private fun validateEmail(){
        val email = binding.riderEmail.text.toString()
         registerEmailViewModel.updateState(email = email, isCorrect = AuthUtil.validateEmail(email))
+    }
+
+    private fun openHomeActivity(){
+        if (hasPermission()){
+            startActivity(Intent(activity, HomeActivity::class.java))
+            activity?.finish()
+        }else{
+            requestPermission()
+        }
     }
 
     private fun toggleBusyDialog(busy: Boolean, desc: String? = null){
@@ -134,5 +152,27 @@ class EmailLoginFragment : Fragment() {
         }else{
             mDialog?.dismiss()
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)){
+            SettingsDialog.Builder(requireContext()).build().show()
+        }else{
+            requestPermission()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+       openHomeActivity()
     }
 }

@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".payment.AddTipFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:id="@+id/root_view"
@@ -40,7 +45,7 @@
             android:fontFamily="@font/poppins_regular"
             android:lineHeight="@dimen/_28sdp"
             android:text="@string/rate_your_experience_with_the_driver"
-
+            android:visibility="gone"
             android:textAlignment="center"
             android:textColor="#9C9C9C"
             android:textSize="@dimen/_12ssp"
@@ -89,7 +94,7 @@
             android:layout_height="@dimen/_102sdp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:layout_marginBottom="@dimen/_50sdp"
+            android:layout_marginBottom="@dimen/_80sdp"
             android:gravity="center_vertical|center_horizontal"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -281,20 +286,37 @@
             app:layout_constraintTop_toBottomOf="@id/reason" />
 
         <TextView
-            android:id="@+id/add_tip"
+            android:id="@+id/trip_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_28sdp"
+            android:layout_marginTop="@dimen/_14sdp"
             android:fontFamily="@font/poppins_regular"
             android:lineHeight="@dimen/_32sdp"
-            android:text="@string/add_a_tip_to_the_driver"
+            tools:text="#400"
             android:textColor="#383838"
-            android:textSize="@dimen/_18ssp"
+            android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
+            tools:targetApi="p" />
+
+        <TextView
+            android:id="@+id/add_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/poppins_regular"
+            android:lineHeight="@dimen/_32sdp"
+            android:text="@string/add_a_tip_to_the_driver"
+            android:textColor="#383838"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/trip_amount"
             tools:targetApi="p" />
 
 
@@ -431,12 +453,12 @@
             android:layout_height="@dimen/_55sdp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:text="@string/done"
             android:textAllCaps="false"
             android:textFontWeight="400"
             android:textSize="@dimen/_14ssp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tip_layout"
             tools:targetApi="p" />
 
         <com.mevron.rides.rider.payment.ui.CashOutAddFundLayout
@@ -451,5 +473,6 @@
             android:id="@+id/rating_custom"
             android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </layout>

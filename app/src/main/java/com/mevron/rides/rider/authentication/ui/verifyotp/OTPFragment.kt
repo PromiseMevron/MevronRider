@@ -1,5 +1,6 @@
 package com.mevron.rides.rider.authentication.ui.verifyotp
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -19,17 +20,20 @@ import com.mevron.rides.rider.authentication.ui.verifyotp.event.VerifyOTPEvent
 import com.mevron.rides.rider.databinding.OTFragmentBinding
 import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.LauncherUtil
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class OTPFragment : Fragment() {
+class OTPFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     companion object {
         fun newInstance() = OTPFragment()
     }
 
     // private val viewModel: OTViewModel by viewModels()
+    private val MY_PERMISSIONS_REQUEST_LOCATION = 10000
     private val verifyOTPViewModel by viewModels<VerifyOTPViewModel>()
     private lateinit var binding: OTFragmentBinding
     private var phoneNumber = ""
@@ -64,7 +68,6 @@ class OTPFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 verifyOTPViewModel.state.collect { state ->
                     toggleBusyDialog(
                         state.isLoading,
@@ -79,9 +82,17 @@ class OTPFragment : Fragment() {
                         handleSuccess(state.isNew)
                     }
 
-                }
+
             }
         }
+    }
+
+    private fun hasPermission(): Boolean{
+        return EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) || EasyPermissions.hasPermissions(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+    }
+
+    private fun requestPermission(){
+        EasyPermissions.requestPermissions(this, "We need access to your location to be able to serve you properly", MY_PERMISSIONS_REQUEST_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
@@ -121,9 +132,40 @@ class OTPFragment : Fragment() {
                 OTPFragmentDirections.actionOTPFragmentToNameSignUpFragment()
             findNavController().navigate(action)
         } else {
+            openHomeActivity()
+        }
+    }
+
+    private fun openHomeActivity(){
+        if (hasPermission()){
             startActivity(Intent(activity, HomeActivity::class.java))
             activity?.finish()
+        }else{
+            requestPermission()
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)){
+            SettingsDialog.Builder(requireContext()).build().show()
+        }else{
+            requestPermission()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+      openHomeActivity()
+
     }
 
 }

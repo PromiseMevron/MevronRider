@@ -22,6 +22,7 @@
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/ic_black_background.xml" value="0.135" />
         <entry key="app/src/main/res/drawable/ic_bussiness_ride.xml" value="0.246" />
+        <entry key="app/src/main/res/drawable/ic_cancel_img.xml" value="0.1275" />
         <entry key="app/src/main/res/drawable/ic_car_icon__1.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_car_marker.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_cash_add.xml" value="0.1905" />
@@ -228,12 +229,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.1" />
-      </ProjectState>
-    </option>
   </component>
 </project>

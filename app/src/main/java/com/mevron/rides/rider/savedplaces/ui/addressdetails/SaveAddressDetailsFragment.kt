@@ -55,7 +55,7 @@ class SaveAddressDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         location = SaveAddressDetailsFragmentArgs.fromBundle(
-            arguments!!
+            requireArguments()
         ).addressModel
         binding.address.setText(location.address)
 
@@ -67,8 +67,15 @@ class SaveAddressDetailsFragment : Fragment() {
         )
         binding.address.setText(location.address)
 
+        binding.backButton.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
+        binding.editAddress.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     toggleBusyDialog(
                         state.isLoading,
@@ -86,19 +93,20 @@ class SaveAddressDetailsFragment : Fragment() {
 
                     if (state.error.isNotEmpty()) {
                         Toast.makeText(context, "Failure to save address", Toast.LENGTH_LONG).show()
+                        viewModel.updateState(error = "")
                     }
 
                 }
-            }
+
         }
 
-        binding.editAddress.clicks().onEach {
+     /*   binding.editAddress.clicks().onEach {
             viewModel.handleEvent(SaveAddressDetailsEvent.BackButtonPressed)
         }.launchIn(lifecycleScope)
 
         binding.backButton.clicks().onEach {
             viewModel.handleEvent(SaveAddressDetailsEvent.BackButtonPressed)
-        }.launchIn(lifecycleScope)
+        }.launchIn(lifecycleScope)*/
 
         binding.saveAddress.clicks().onEach {
             viewModel.handleEvent(SaveAddressDetailsEvent.SaveAddressClicked)

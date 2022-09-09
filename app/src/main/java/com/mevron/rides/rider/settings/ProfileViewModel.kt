@@ -12,11 +12,13 @@ import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.remote.HTTPErrorHandler
 import com.mevron.rides.rider.remote.MevronRepo
 import com.mevron.rides.rider.authentication.data.models.profile.GetProfileResponse
+import com.mevron.rides.rider.remote.model.GeneralResponse
 import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -95,4 +97,21 @@ class ProfileViewModel @Inject constructor (private val repository: MevronRepo) 
         return result
     }
 
+    fun uploadProfile(data: MultipartBody.Part): LiveData<GenericStatus<GeneralResponse>> {
+        val result = MutableLiveData<GenericStatus<GeneralResponse>>()
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                val response = repository.uploadProfile(data)
+                if(response.isSuccessful)
+                    result.postValue(GenericStatus.Success(response.body()))
+                else
+                    result.postValue(GenericStatus.Error(HTTPErrorHandler.handleErrorWithCode(response)))
+            }catch (ex: Exception){
+                ex.printStackTrace()
+                result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
+            }
+        }
+
+        return  result
+    }
 }

@@ -27,6 +27,7 @@ import com.mevron.rides.rider.settings.referal.data.model.GetReferalHistory
 import com.mevron.rides.rider.settings.referal.data.model.ReferalReport
 import com.mevron.rides.rider.settings.referal.data.model.SetReferal
 import com.mevron.rides.rider.supportpages.data.model.NotificationResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -116,6 +117,10 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     suspend fun getReferralReport(data: ReferalReport): Response<GeneralResponse> {
         return api.getReferralReport(data = data)
+    }
+
+    suspend fun uploadProfile(data: MultipartBody.Part): Response<GeneralResponse>{
+        return api.uploadProfile(data)
     }
 
     suspend fun saveReferInDb(add: ReferalDetail) {

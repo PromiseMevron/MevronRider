@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.mevron.rides.rider.App
 import com.mevron.rides.rider.R
@@ -29,6 +30,13 @@ import com.mevron.rides.rider.util.isValidEmail
 import com.mevron.rides.rider.util.toggleBusyDialog
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 
 @AndroidEntryPoint
@@ -41,6 +49,7 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var binding: ProfileFragmentBinding
     var mDialog: Dialog? = null
+    private var returnedImage: Bitmap? = null
 
     val sPref= App.ApplicationContext.getSharedPreferences(Constants.SHARED_PREF_KEY, Context.MODE_PRIVATE)
 
@@ -62,7 +71,10 @@ class ProfileFragment : Fragment() {
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bitmap>("key")?.observe(viewLifecycleOwner) {result ->
             // Do something with the result.
+            returnedImage = result
             binding.profileImage.setImageBitmap(result)
+            createFile()
+
         }
 
         binding.changeImage.setOnClickListener {
@@ -205,7 +217,7 @@ class ProfileFragment : Fragment() {
                             binding.resendLink.visibility = View.GONE
                         }
 
-                        if (user?.profilePicture.toString().isNotEmpty())
+                        if (user?.profilePicture.toString().isNotEmpty() && returnedImage == null)
                         Picasso.get().load(user?.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(binding.profileImage)
                     }
 
@@ -216,6 +228,61 @@ class ProfileFragment : Fragment() {
                     is GenericStatus.Unaunthenticated -> {
                         // toggleBusyDialog(false)
                     }
+                }
+            }
+        })
+    }
+    private fun createFile(){
+        val file = File(requireContext().cacheDir, "mevron_app_rider")
+        file.createNewFile()
+
+//Convert bitmap to byte array
+        val bitmap = returnedImage
+        val bos =  ByteArrayOutputStream();
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos)
+        val bitmapdata = bos.toByteArray()
+
+//write the bytes in file
+        var fos: FileOutputStream?  = null;
+        try {
+            fos =  FileOutputStream(file);
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
+        try {
+            fos?.write(bitmapdata);
+            fos?.flush();
+            fos?.close();
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
+        val reqFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val body: MultipartBody.Part =
+            MultipartBody.Part.createFormData("document", file.name, reqFile)
+        toggleBusyDialog(true, "Uploading Profile...")
+
+        viewModel.uploadProfile(body).observe(viewLifecycleOwner, Observer {
+
+            it.let { res ->
+                when(res){
+                    is GenericStatus.Error -> {
+                        toggleBusyDialog(false)
+                        val snackbar = res.error?.error?.message?.let { it1 ->
+                            Snackbar
+                                .make(binding.root, it1, Snackbar.LENGTH_LONG).setAction("Retry", View.OnClickListener {
+
+                                })
+                        }
+                        snackbar?.show()
+
+                    }
+
+                    is  GenericStatus.Success ->{
+                        toggleBusyDialog(false)
+                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
+                        //  findNavController().navigate(R.id.action_uploadInsuranceFragment_to_uploadStickerFragment)
+                    }
+                    else -> {}
                 }
             }
         })

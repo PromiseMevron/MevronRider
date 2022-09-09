@@ -4,6 +4,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://zendesk.jfrog.io/artifactory/repo"
+        }
      //   jcenter() // Warning: this repository is going to shut down soon
     }
 }

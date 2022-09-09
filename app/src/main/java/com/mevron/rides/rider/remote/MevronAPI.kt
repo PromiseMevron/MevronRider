@@ -25,6 +25,7 @@ import com.mevron.rides.rider.settings.referal.data.model.GetReferalHistory
 import com.mevron.rides.rider.settings.referal.data.model.ReferalReport
 import com.mevron.rides.rider.settings.referal.data.model.SetReferal
 import com.mevron.rides.rider.supportpages.data.model.NotificationResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -81,6 +82,10 @@ interface MevronAPI {
 
     @DELETE("api/v1/rider/auth/payment-method/{uiid}/remove")
     suspend fun deleteCard(@Path("uiid") identifier: String): Response<GeneralResponse>
+
+    @Multipart
+    @POST("api/v1/rider/auth/upload/profile-photo")
+    suspend fun uploadProfile(@Part image: MultipartBody.Part): Response<GeneralResponse>
 
     @GET("api/v1/rider/auth/trips")
     suspend fun getAllTrips(): Response<GeneralResponse>

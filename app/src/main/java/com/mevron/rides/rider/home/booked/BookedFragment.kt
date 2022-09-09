@@ -246,10 +246,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
        // binding.tipDriverLayout.rootView.visibility = View.GONE
       //  binding.ratingDriverLayout.rootView.visibility = View.VISIBLE
         binding.tipDriverLayout.nameDisplay.text = "How was your ride with ${data?.driver?.firstName}?"
-        binding.tipDriverLayout.rating.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+        binding.tipDriverLayout.rating.setOnRatingBarChangeListener { _, rating, _ ->
            // binding.tipDriverLayout.rating.rating = rating
             viewModel.rateCustom(rating)
         }
+       // binding.tipDriverLayout.tripAmount.text = data?.fare?.last()?.amount
     }
 
     private fun bindTripStarted(data: MetaData?) {

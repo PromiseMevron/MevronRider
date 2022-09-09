@@ -25,6 +25,7 @@ import com.mevron.rides.rider.App
 import com.mevron.rides.rider.databinding.HelpFragmentBinding
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Constants.SUPPORT_NUMBER
+import zendesk.android.Zendesk
 
 class HelpFragment : Fragment() {
 
@@ -55,6 +56,9 @@ class HelpFragment : Fragment() {
 
         binding.callButton.setOnClickListener {
             makePhoneCall()
+        }
+        binding.chatButton.setOnClickListener {
+            Zendesk.instance.messaging.showMessaging(requireContext())
         }
     }
 
