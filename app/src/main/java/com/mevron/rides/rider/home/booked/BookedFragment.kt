@@ -42,10 +42,7 @@ import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.TripStatus
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
-import com.mevron.rides.rider.payment.ui.CashOutAddFundEventListener
-import com.mevron.rides.rider.payment.ui.CashOutAddFundLayout
-import com.mevron.rides.rider.payment.ui.CustomRatingEventListener
-import com.mevron.rides.rider.payment.ui.CustomRatingLayout
+import com.mevron.rides.rider.payment.ui.*
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.socket.domain.models.MetaData
 import com.mevron.rides.rider.util.Constants
@@ -58,7 +55,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
-    CashOutAddFundEventListener, CustomRatingEventListener {
+    CashOutAddFundEventListener, CustomRatingEventListener, CustomCancelEventListener {
 
     companion object {
         fun newInstance() = BookedFragment()
@@ -72,6 +69,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var reachedBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var bottomView: CashOutAddFundLayout
     private lateinit var ratingView: CustomRatingLayout
+    private lateinit var cancelView: CustomCancelLayout
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawer: ImageButton
@@ -182,8 +180,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             setAlphaCancelForButtons("")
         }
 
-        binding.cancelReasonLayout.other.setOnClickListener {
-            binding.cancelReasonLayout.other.visibility = View.GONE
+      //  binding.cancelReasonLayout.other.setOnClickListener {
+          /*  binding.cancelReasonLayout.other.visibility = View.GONE
             binding.cancelReasonLayout.other1.visibility = View.VISIBLE
 
             binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
@@ -193,11 +191,11 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
             binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
 
-            setAlphaCancelForButtons("other")
-        }
+            setAlphaCancelForButtons("other")*/
+     //   }
 
-        binding.cancelReasonLayout.other1.setOnClickListener {
-            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+       // binding.cancelReasonLayout.other1.setOnClickListener {
+          /*  binding.cancelReasonLayout.other.visibility = View.VISIBLE
             binding.cancelReasonLayout.other1.visibility = View.GONE
 
             binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
@@ -207,8 +205,8 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
             binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
 
-            setAlphaCancelForButtons("")
-        }
+            setAlphaCancelForButtons("")*/
+      //  }
     }
 
     private fun bindDriverArrived(data: MetaData?) {
@@ -383,10 +381,13 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onViewCreated(view, savedInstanceState)
         bottomView = binding.tipDriverLayout.bottomView
         ratingView = binding.tipDriverLayout.ratingCustom
+        cancelView = binding.cancelReasonLayout.ratingCustom
         bottomView.setEventListener(this)
         ratingView.setEventListener(this)
+        cancelView.setEventListener(this)
         bottomView.setUpAddFund(requireContext(), title = "Add a Custom Tip")
         ratingView.setUp(requireContext())
+        cancelView.setUp(requireContext())
         viewModel.getLocationModels()
         viewModel.getDriverLocation()
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(false) {
@@ -589,6 +590,42 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             ratingView.setUp(requireContext())
             ratingView.visibility = View.VISIBLE
             binding.tipDriverLayout.doneButtonTipRate.visibility = View.GONE
+
+
+        }
+
+
+        binding.cancelReasonLayout.other.setOnClickListener {
+            cancelView.setUp(requireContext())
+            cancelView.visibility = View.VISIBLE
+            binding.cancelReasonLayout.submitFeedback.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.GONE
+            binding.cancelReasonLayout.other1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+        }
+
+        binding.cancelReasonLayout.other1.setOnClickListener {
+            cancelView.visibility = View.GONE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+            viewModel.updateCancelValue("")
+
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
         }
 
         binding.tipDriverLayout.other2.setOnClickListener {
@@ -1113,6 +1150,43 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun addFundAmount(amount: String) {
        // bottomView.visibility = View.GONE
         setAlphaForButtons(binding.tipDriverLayout.fourth, (amount.toDoubleOrNull() ?: 0.0).toInt())
+    }
+
+    override fun closeCustomCancelButton() {
+        cancelView.visibility = View.GONE
+        binding.cancelReasonLayout.other1.visibility = View.GONE
+        binding.cancelReasonLayout.other.visibility = View.VISIBLE
+        binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+        viewModel.updateCancelValue("")
+
+        binding.cancelReasonLayout.other.visibility = View.VISIBLE
+        binding.cancelReasonLayout.other1.visibility = View.GONE
+
+        binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+        binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+        binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+        binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+        binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+        binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+
+    }
+
+    override fun ratingCancelDone() {
+        cancelView.visibility = View.GONE
+        binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+        binding.cancelReasonLayout.other.visibility = View.GONE
+        binding.cancelReasonLayout.other1.visibility = View.VISIBLE
+
+        binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+        binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+        binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+        binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+        binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+        binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+    }
+
+    override fun addRCancelRating(rating: String) {
+        viewModel.updateCancelValue(rating)
     }
 
 }

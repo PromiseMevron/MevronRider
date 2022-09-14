@@ -29,6 +29,9 @@ import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.home.ride.ui.ConfirmRideEvent
 import com.mevron.rides.rider.home.ride.ui.ConfirmRideViewModel
+import com.mevron.rides.rider.payment.ui.CustomCancelEventListener
+import com.mevron.rides.rider.payment.ui.CustomCancelLayout
+import com.mevron.rides.rider.payment.ui.CustomRatingEventListener
 import com.mevron.rides.rider.remote.geolocation.GeoAPIClient
 import com.mevron.rides.rider.remote.geolocation.GeoAPIInterface
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
@@ -45,7 +48,7 @@ import java.net.URISyntaxException
 
 
 @AndroidEntryPoint
-class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
+class ConfirmRideFragment : Fragment(), OnMapReadyCallback, CustomCancelEventListener {
 
     private lateinit var binding: ConfirmRideFragmentBinding
     private lateinit var mapView: SupportMapFragment
@@ -54,6 +57,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
     private lateinit var location: Array<LocationModel>
     private var isCard = false
     private var mDialog: Dialog? = null
+    private lateinit var cancelView: CustomCancelLayout
 
     companion object {
         fun newInstance() = ConfirmRideFragment()
@@ -67,27 +71,6 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-       /* var mSocket: Socket? = null
-
-        try {
-            mSocket = IO.socket("http://staging.mevron.com:8086")
-            Log.d("TAG", "Connecting socket")
-
-        } catch (e: URISyntaxException) {
-            Log.d("TAG", "Error Connecting socket $e")
-        }
-        mSocket?.on("event") {
-            Log.d("TAG", "abcd $it")
-            val type = "rider"
-            val json = JSONObject(Connected.toData(arrayOf("uuid", "type"), arrayOf("c83be6ac-9b7e-4033-b0d7-1e7ea2e21a9c", type))).toString()
-            mSocket.emit(CONNECTED, "{\"uuid\":\"c83be6ac-9b7e-4033-b0d7-1e7ea2e21a9c\", \"type\": \"rider\"}")
-        } ?:  Log.d("TAG", "abcd 333")
-        //search_drivers
-        mSocket?.on("search_drivers") {
-            Log.d("TAG", "abcd 2 $it")
-        } ?:  Log.d("TAG", "abcd 4444")
-        //  mSocket?.connect()
-        mSocket?.open()*/
 
         binding =
             DataBindingUtil.inflate(inflater, R.layout.confirm_ride_fragment, container, false)
@@ -106,6 +89,9 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
 
         apiInterface = GeoAPIClient().getClient()?.create(GeoAPIInterface::class.java)!!
         viewModel.updateOrderParamStatus()
+        cancelView = binding.cancelReasonLayout.ratingCustom
+        cancelView.setEventListener(this)
+        cancelView.setUp(requireContext())
 
         // TODO Refactor this to use the PaymentOptionsRepository
        // isCard = arguments?.let { ConfirmRideFragmentArgs.fromBundle(it).isCard }!!
@@ -150,10 +136,21 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                 if (uiState.isRideConfirmed) {
                     binding.findingFoundDriver.visibility = View.VISIBLE
                     binding.confirmingDriver.visibility = View.GONE
-                } else {
+                    binding.findingDriverFailed.visibility = View.GONE
+                }
+
+                if (uiState.isRideConfirmedFailed) {
+                    binding.findingFoundDriver.visibility = View.GONE
+                    binding.confirmingDriver.visibility = View.GONE
+                    binding.findingDriverFailed.visibility = View.VISIBLE
+                }
+
+                if (!uiState.isRideConfirmedFailed && !uiState.isRideConfirmed) {
                     binding.findingFoundDriver.visibility = View.GONE
                     binding.confirmingDriver.visibility = View.VISIBLE
+                    binding.findingDriverFailed.visibility = View.GONE
                 }
+
 
                 if (uiState.isRideCancelled){
                     findNavController().navigate(R.id.action_global_homeFragment)
@@ -165,8 +162,45 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
                 )
             }
         }
+        binding.homeButton.setOnClickListener {
+            findNavController().navigate(R.id.action_global_homeFragment)
+        }
+
         viewModel.setEvent(ConfirmRideEvent.ConfirmRideRequest)
         viewModel.setEvent(ConfirmRideEvent.CollectSocketData)
+
+        binding.cancelReasonLayout.other.setOnClickListener {
+            cancelView.setUp(requireContext())
+            cancelView.visibility = View.VISIBLE
+            binding.cancelReasonLayout.submitFeedback.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.GONE
+            binding.cancelReasonLayout.other1.visibility = View.VISIBLE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+        }
+
+        binding.cancelReasonLayout.other1.setOnClickListener {
+            cancelView.visibility = View.GONE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+            viewModel.updateCancelValue("")
+
+            binding.cancelReasonLayout.other.visibility = View.VISIBLE
+            binding.cancelReasonLayout.other1.visibility = View.GONE
+
+            binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+            binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+            binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+            binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+            binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+            binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+        }
 
 
         binding.cancelReasonLayout.inefficientRoute.setOnClickListener {
@@ -253,7 +287,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
             setAlphaForButtons("")
         }
 
-        binding.cancelReasonLayout.other.setOnClickListener {
+    /*    binding.cancelReasonLayout.other.setOnClickListener {
             binding.cancelReasonLayout.other.visibility = View.GONE
             binding.cancelReasonLayout.other1.visibility = View.VISIBLE
 
@@ -279,7 +313,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
             binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
 
             setAlphaForButtons("")
-        }
+        }*/
 
 
 
@@ -433,5 +467,42 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback {
         if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mapView.getMapAsync(this)
         }
+    }
+
+    override fun closeCustomCancelButton() {
+        cancelView.visibility = View.GONE
+        binding.cancelReasonLayout.other1.visibility = View.GONE
+        binding.cancelReasonLayout.other.visibility = View.VISIBLE
+        binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+        viewModel.updateCancelValue("")
+
+        binding.cancelReasonLayout.other.visibility = View.VISIBLE
+        binding.cancelReasonLayout.other1.visibility = View.GONE
+
+        binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+        binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+        binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+        binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+        binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+        binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+
+    }
+
+    override fun ratingCancelDone() {
+        cancelView.visibility = View.GONE
+        binding.cancelReasonLayout.submitFeedback.visibility = View.VISIBLE
+        binding.cancelReasonLayout.other.visibility = View.GONE
+        binding.cancelReasonLayout.other1.visibility = View.VISIBLE
+
+        binding.cancelReasonLayout.inefficientRoute.visibility = View.VISIBLE
+        binding.cancelReasonLayout.inefficientRoute1.visibility = View.GONE
+        binding.cancelReasonLayout.bookedByMistake.visibility = View.VISIBLE
+        binding.cancelReasonLayout.bookedByMistake1.visibility = View.GONE
+        binding.cancelReasonLayout.changeInPlan.visibility = View.VISIBLE
+        binding.cancelReasonLayout.changeInPlan1.visibility = View.GONE
+    }
+
+    override fun addRCancelRating(rating: String) {
+        viewModel.updateCancelValue(rating)
     }
 }

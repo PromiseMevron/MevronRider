@@ -66,5 +66,6 @@ data class AllTripsData(
     val status: String,
     val time: String,
     val title: String,
-    val vehicleName: String
+    val vehicleName: String,
+    val polyLine: String?
 )

@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#4D000000"
     android:layout_height="match_parent">
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/ride_experience"
+            android:text="@string/cancel_this_ride"
             android:fontFamily="@font/poppins_bold"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"

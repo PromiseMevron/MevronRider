@@ -55,7 +55,8 @@ class MyRideRepository(private val api: MyRideAPI) : IMyRideRepo {
                 destinationLongitude = it.destinationLongitude,
                 pickupLatitude = it.pickupLatitude,
                 pickupLongitude = it.pickupLongitude,
-                driverProfile = it.riderPicture
+                driverProfile = it.riderPicture,
+                polyLine = it.polyLine
             )
         })
     )
@@ -77,7 +78,8 @@ class MyRideRepository(private val api: MyRideAPI) : IMyRideRepo {
                 startLng = it.trip.pickupLongitude,
                 endLat = it.trip.destinationLatitude,
                 endLng = it.trip.destinationLongitude,
-                total = "${it.trip.currencyCode} ${it.trip.amount}"
+                total = "${it.trip.currencyCode} ${it.trip.amount}",
+                polyLine = it.trip.polyLine
             )
         }
         return DomainModel.Success(

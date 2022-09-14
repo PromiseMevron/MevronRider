@@ -181,7 +181,6 @@
                 android:fontFamily="@font/poppins_regular"
                 android:background="@drawable/rounded_border_colored"/>
 
-
             <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -198,9 +197,13 @@
         </LinearLayout>
 
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.mevron.rides.rider.payment.ui.CustomCancelLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rating_custom"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

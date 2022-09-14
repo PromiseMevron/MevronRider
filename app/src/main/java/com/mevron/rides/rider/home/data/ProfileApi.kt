@@ -14,4 +14,7 @@ interface ProfileApi {
 
     @POST("api/v1/rider/auth/update-device-id")
     fun updateToken(@Body id: DeviceID): Call<Any>
+
+    @POST("api/v1/rider/auth/update-device-id")
+    suspend fun postToken(@Body id: DeviceID): Response<Any>
 }

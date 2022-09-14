@@ -2,8 +2,11 @@ package com.mevron.rides.rider.home.search
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -41,9 +44,9 @@ import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.displayLocationSettingsRequest
 import com.mevron.rides.rider.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
+
 
 @AndroidEntryPoint
 class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
@@ -79,6 +82,16 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val tm = activity?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val countryCodeValue = tm.networkCountryIso
+
+        viewModel.setState {
+            copy(
+                defaultCountry = countryCodeValue
+            )
+        }
+
 
         homeAdapter = context?.let {
             HomeAdapter(this, it)
@@ -359,11 +372,13 @@ class SearchLocationFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener,
 
     private fun initSearchConfig(query: String, sessionToken: AutocompleteSessionToken) {
         val query1 = selectedField?.text?.toString()
+        val code: String? = viewModel.uiState.value.defaultCountry.ifEmpty { null }
         if (query1.isNullOrEmpty()){
             return
         }
         val placeRequest = FindAutocompletePredictionsRequest.builder()
             .setSessionToken(sessionToken)
+            .setCountry(code)
             .setQuery(query1)
             .build()
 

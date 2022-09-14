@@ -53,5 +53,6 @@ data class Trip(
     val updatedAt: String,
     val uuid: String,
     val vehicleType: String,
-    val verificationCode: String
+    val verificationCode: String,
+    val polyLine: String?
 )

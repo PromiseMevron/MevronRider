@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val tripStateUseCase: GetTripStateUseCase,
     private val setPreferenceUseCase: SetOrderPropertiesUseCase,
-   // private val fcmTokenUseCase: FCMTokenUseCase
+    private val fcmTokenUseCase: FCMTokenUseCase
 ) : BaseViewModel<HomeState, HomeEvent>() {
 
     override fun createInitialState(): HomeState = HomeState.EMPTY
@@ -102,9 +102,8 @@ class HomeViewModel @Inject constructor(
     private fun loadTripState() {
         viewModelScope.launch {
             tripStateUseCase().collect { tripState ->
-                Log.d("sdsdd", "sdsdss 5 $tripState")
                 if (tripState is TripState.NearByDriversState) {
-                    //   setState { copy(markerLocations = tripState.data.locations) }
+               //        setState { copy(markerLocations = tripState.data.locations) }
                 }
                 when (tripState) {
                     is TripState.DriverSearchState -> {
@@ -113,11 +112,8 @@ class HomeViewModel @Inject constructor(
 
                     is TripState.StateMachineState -> {
                         setState { copy(hideStateCheckCover = true) }
-                        Log.d("sdsdd", "sdsdss")
                         val currentStatus = tripState.data.meta_data.status.toTripStatus()
-                        Log.d("sdsdd", "sdsdss 595959m $currentStatus")
                         if (currentStatus != TripStatus.UNKNOWN && currentStatus != TripStatus.COMPLETED) {
-                            Log.d("sdsdd", "sdsdss 444")
                             setState { copy(shouldOpenBookedRide = true) }
                         }
                     }
@@ -165,13 +161,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-  /*  fun updateToken(id: String) {
+    fun updateToken(id: String) {
         setState {
             copy(
                 deviceID = id
             )
         }
         if (uiState.value.deviceID.isEmpty()) {
+            setState {
+                copy(
+                    tokenSuccessful = true
+                )
+            }
             return
         }
         val theId = uiState.value.deviceID
@@ -200,7 +201,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-    }*/
+    }
 
     fun updateOrderStatus(model: List<LocationModel>) {
         Log.d("DIRECTION", model[0].lat.toString())

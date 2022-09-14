@@ -299,6 +299,11 @@
     <string name="please_elaborate_your_thoughts_here">Please elaborate your thoughts here</string>
     <string name="tell_us_more_about_the_issue">Tell us more about the issue</string>
     <string name="smile_into_the_camera">Smile into the camera</string>
+    <string name="opps_something_went_wrong">Opps, something went wrong!</string>
+    <string name="we_found_a_driver_nearby">Finding drivers nearby</string>
+    <string name="we_can_t_process_your_ride_booking_request_please_try_again_after_sometime_if_issue_persist_reach_out_to_support_mevron_com">We can’t process your ride booking request.Please try again after sometime. If issue persist reach out to <font color='#E01E1E'>support@mevron.com</font></string>
+    <string name="your_ride_is_confirmed_now_contacting_drivers_nearby">Your ride is confirmed, now contacting drivers nearby.</string>
+    <string name="you_can_be_charged_after_cancelling_this_ride">You can be charged, after cancelling this ride.</string>
 
 
 </resources>

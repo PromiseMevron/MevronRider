@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
@@ -33,6 +34,8 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
 import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.OnAddressSelectedListener
+import com.mevron.rides.rider.home.data.DeviceID
+import com.mevron.rides.rider.home.data.ProfileApi
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
@@ -42,6 +45,7 @@ import com.mevron.rides.rider.util.LocationSingleton.getAddressFromLocation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -94,6 +98,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         setUpAdapter()
         getAddress()
         viewModel.setEvent(HomeEvent.ObserveTripState)
+            // 1
+        FirebaseMessaging.getInstance().token
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    // 2
+                    if (!task.isSuccessful) {
+                        return@OnCompleteListener
+                    }
+                    // 3
+                    val token = task.result
+                    viewModel.updateToken(token)
+                })
+
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
@@ -111,14 +127,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                 }
 
                 if (it.tokenSuccessful){
-                  //  binding.tokenCover.visibility = View.GONE
+                    binding.tokenCover.visibility = View.GONE
                 }
 
                 if (it.shouldOpenBookedRide) {
-                    Log.d("sdsdd", "sdsdss 2")
                     if (findNavController().currentDestination?.id == R.id.homeFragment){
                         binding.stateCover.visibility = View.GONE
-                        Log.d("sdsdd", "sdsdss 222")
                         findNavController().navigate(R.id.action_global_bookedFragment)
                         viewModel.resolveOpenBookedRide()
                     }
@@ -190,7 +204,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         }
 
         binding.mevronHomeBottom.myLocation.setOnClickListener {
-            requestLocationPermissionIfnNotEnabled()
+            gotToMyLocation()
+          //  requestLocationPermissionIfnNotEnabled()
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object :
@@ -208,12 +223,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
 
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
-                        binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                      //  binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
                         binding.mevronHomeBottom.myLocation.visibility = View.VISIBLE
                     }
                     else -> {
                         binding.mevronHomeBottom.allSavedLayout.visibility = View.GONE
-                        binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
+                      //  binding.mevronHomeBottom.scheduleButton.visibility = View.VISIBLE
                         binding.mevronHomeBottom.myLocation.visibility = View.VISIBLE
                     }
                 }
@@ -276,6 +291,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         MapsInitializer.initialize(activity?.applicationContext)
+
         requestLocationPermissionIfnNotEnabled {
             googleMap?.isMyLocationEnabled = true
             googleMap?.uiSettings?.isMyLocationButtonEnabled = false
@@ -358,6 +374,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
             mDialog?.dismiss()
         }
     }
+
 
     override fun onAddressSelected(data: LocationModel, dt: GetSavedAddressData) {
         // what's the plan for dt variable?

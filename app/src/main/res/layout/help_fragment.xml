@@ -46,6 +46,7 @@ tools:context=".supportpages.ui.help.HelpFragment">
     <WebView
         android:layout_marginTop="@dimen/_100sdp"
         android:id="@+id/webView"
+        android:layout_marginBottom="@dimen/_90sdp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -93,11 +93,43 @@
           android:layout_marginBottom="@dimen/_1sdp"
           android:layout_marginEnd="@dimen/_14sdp" />
 
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/poppins_regular"
+          android:textColor="#ffffff"
+          tools:text="09/32"
+          android:textAlignment="center"
+          android:textSize="@dimen/_10ssp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          android:layout_marginBottom="@dimen/_10sdp"
+          android:layout_marginStart="@dimen/_14sdp"
+          android:id="@+id/card_name"/>
 
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/poppins_regular"
+          android:textColor="#ffffff"
+          android:text="@string/name"
+          android:textAlignment="center"
+          android:textSize="@dimen/_10ssp"
+          app:layout_constraintBottom_toTopOf="@id/expiry_number"
+          app:layout_constraintStart_toStartOf="parent"
+          android:layout_marginBottom="@dimen/_1sdp"
+          android:layout_marginStart="@dimen/_14sdp" />
 
-
-
-
+      <ImageView
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          tools:scaleType="fitXY"
+          android:id="@+id/card_logo"
+          android:src="@drawable/master_card_logo"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          android:layout_marginTop="@dimen/_5sdp"
+          android:layout_marginEnd="@dimen/_14sdp" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 

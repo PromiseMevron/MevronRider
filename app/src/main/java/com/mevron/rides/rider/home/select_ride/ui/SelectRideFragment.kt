@@ -204,7 +204,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                     BitmapDescriptorFactory.fromBitmap(
                         createClusterBitmap(
                             add = loc1,
-                            loc = "Start",
+                            loc = "From",
                             color = "#F57519"
                         )
                     )
@@ -229,7 +229,7 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
                     BitmapDescriptorFactory.fromBitmap(
                         createClusterBitmap(
                             add = loc1,
-                            loc = "Start",
+                            loc = "From",
                             color = "#F57519"
                         )
                     )

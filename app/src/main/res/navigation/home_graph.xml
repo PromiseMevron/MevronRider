@@ -210,7 +210,7 @@
         android:label="CardDetailsFragment" >
         <argument
             android:name="card"
-            app:argType="com.mevron.rides.rider.home.model.getCard.Data" />
+            app:argType="com.mevron.rides.rider.payment.domain.PaymentCard" />
     </fragment>
     <fragment
         android:id="@+id/my_rides_fragment"

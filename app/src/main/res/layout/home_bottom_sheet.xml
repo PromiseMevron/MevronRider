@@ -25,7 +25,7 @@
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_schedule"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:id="@+id/recenter"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_location" />

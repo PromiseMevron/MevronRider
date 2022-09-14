@@ -12,7 +12,7 @@ import androidx.core.widget.doOnTextChanged
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.util.hideKeyboard
 
-class CustomRatingLayout @JvmOverloads constructor(
+class CustomCancelLayout @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -24,10 +24,10 @@ class CustomRatingLayout @JvmOverloads constructor(
     private var headingText: TextView
     private var doneButton: ImageButton
     private var backGround: Button
-    private var customEventListener: CustomRatingEventListener? = null
+    private var customEventListener: CustomCancelEventListener? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.add_custom_rating_layout, this, true)
+        LayoutInflater.from(context).inflate(R.layout.add_custom_cancel_layout, this, true)
         closeButton = findViewById(R.id.close_add_fund)
         ratingField = findViewById(R.id.add_custom_rating)
         doneButton = findViewById(R.id.add_fund_done)
@@ -36,11 +36,11 @@ class CustomRatingLayout @JvmOverloads constructor(
         backGround = findViewById(R.id.touch_background)
         closeButton.setOnClickListener {
             hideKeyboard()
-            customEventListener?.closeCustomButton()
+            customEventListener?.closeCustomCancelButton()
         }
         backGround.setOnClickListener {
             hideKeyboard()
-            customEventListener?.closeCustomButton()
+            customEventListener?.closeCustomCancelButton()
         }
         ratingField.doOnTextChanged { text, _, _, _ ->
 
@@ -49,7 +49,7 @@ class CustomRatingLayout @JvmOverloads constructor(
 
     }
 
-    fun setEventListener(listener: CustomRatingEventListener) {
+    fun setEventListener(listener: CustomCancelEventListener) {
         customEventListener = listener
     }
 
@@ -60,8 +60,8 @@ class CustomRatingLayout @JvmOverloads constructor(
                 return@setOnClickListener
             }
             hideKeyboard()
-            customEventListener?.addRating(ratingField.text.toString())
-            customEventListener?.ratingDone()
+            customEventListener?.addRCancelRating(ratingField.text.toString())
+            customEventListener?.ratingCancelDone()
 
         }
         heading?.let {
@@ -72,8 +72,8 @@ class CustomRatingLayout @JvmOverloads constructor(
 
 }
 
-interface CustomRatingEventListener {
-    fun closeCustomButton()
-    fun ratingDone()
-    fun addRating(rating: String)
+interface CustomCancelEventListener {
+    fun closeCustomCancelButton()
+    fun ratingCancelDone()
+    fun addRCancelRating(rating: String)
 }

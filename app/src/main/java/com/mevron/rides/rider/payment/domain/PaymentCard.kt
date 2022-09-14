@@ -1,8 +1,11 @@
 package com.mevron.rides.rider.payment.domain
 
+import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import com.mevron.rides.rider.R
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class PaymentCard(
     val bin: String,
     val brand: String,
@@ -11,7 +14,7 @@ data class PaymentCard(
     val lastDigits: String,
     val type: String,
     val uuid: String
-) {
+): Parcelable {
     companion object {
         val EMPTY = PaymentCard(
             bin = "",

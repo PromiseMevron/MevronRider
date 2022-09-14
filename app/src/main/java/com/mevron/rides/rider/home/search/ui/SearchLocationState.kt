@@ -12,7 +12,8 @@ data class SearchLocationState(
     val isCurrentLocationClicked: Boolean,
     val isSetLocationOnTheMapClicked: Boolean,
     val savedAddresses: List<GetSavedAddressData>,
-    val error: String
+    val error: String,
+    val defaultCountry: String
 ) {
     val isAddressEntered: Boolean
         get() = origin.isNotEmpty() && destination.isNotEmpty()
@@ -28,7 +29,8 @@ data class SearchLocationState(
             isCurrentLocationClicked = false,
             isSetLocationOnTheMapClicked = false,
             savedAddresses = listOf(),
-            error = ""
+            error = "",
+            defaultCountry = ""
         )
     }
 }

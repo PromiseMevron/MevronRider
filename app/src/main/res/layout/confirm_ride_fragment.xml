@@ -56,36 +56,30 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="#ffffff"
+        android:background="@drawable/rounded_corner"
         android:visibility="gone"
         android:id="@+id/finding_found_driver"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="wrap_content">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/gradient_background"
-            android:layout_marginEnd="@dimen/_75sdp"
-            android:layout_marginStart="@dimen/_75sdp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/gradient"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gradient"
-            android:src="@drawable/ic_driver_found"
-            android:layout_marginTop="@dimen/_26sdp"
-            android:id="@+id/driver_image"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:id="@+id/animation_view"
+            app:lottie_rawRes="@raw/animation"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="We found a driver nearby"
-            app:layout_constraintTop_toBottomOf="@id/driver_image"
+            android:text="@string/we_found_a_driver_nearby"
+            app:layout_constraintTop_toBottomOf="@id/animation_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/_30sdp"
@@ -101,7 +95,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Your ride is confirmed, now contacting drivers nearby."
+            android:text="@string/your_ride_is_confirmed_now_contacting_drivers_nearby"
             app:layout_constraintTop_toBottomOf="@id/driver_state"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -129,6 +123,74 @@
             android:layout_marginBottom="@dimen/_30sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/cancel_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/rounded_corner"
+        android:visibility="gone"
+        android:id="@+id/finding_driver_failed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_alert_circle_fill"
+            android:layout_marginTop="@dimen/_26sdp"
+            android:id="@+id/ic_alert_circle_fill"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opps_something_went_wrong"
+            app:layout_constraintTop_toBottomOf="@id/ic_alert_circle_fill"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:lineHeight="@dimen/_32sdp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_15ssp"
+            android:textColor="#383838"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:textFontWeight="600"
+            android:id="@+id/driver_state2"
+            tools:targetApi="p" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/we_can_t_process_your_ride_booking_request_please_try_again_after_sometime_if_issue_persist_reach_out_to_support_mevron_com"
+            app:layout_constraintTop_toBottomOf="@id/driver_state2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="1dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="#9c9c9c"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:textFontWeight="600"
+            android:id="@+id/type_name2"
+            tools:targetApi="p" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_home"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/type_name2"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_30sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/home_button"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         )
         val token = sPref.getString(Constants.TOKEN, null)
         val uuid = sPref.getString(Constants.UUID, null)
-        if (token.isNullOrEmpty() || uuid.isNullOrEmpty()) {
+        val email = sPref.getString(Constants.EMAIL, null)
+        if (token.isNullOrEmpty() || uuid.isNullOrEmpty() || email.isNullOrEmpty()) {
             startActivity(Intent(this, IntroScreenActivity::class.java))
             finish()
         } else {

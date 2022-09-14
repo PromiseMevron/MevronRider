@@ -11,6 +11,8 @@ import androidx.fragment.app.viewModels
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.CardDetailsFragmentBinding
 import com.mevron.rides.rider.home.model.getCard.Data
+import com.mevron.rides.rider.payment.domain.PaymentCard
+import com.mevron.rides.rider.payment.domain.getCardImage
 import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.util.toggleBusyDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +26,7 @@ class CardDetailsFragment : Fragment() {
 
     private  val viewModel: CardDetailsViewModel by viewModels()
     private lateinit var binding: CardDetailsFragmentBinding
-    private lateinit var cards: Data
+    private lateinit var cards: PaymentCard
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +46,9 @@ class CardDetailsFragment : Fragment() {
 
         binding.cardNumber.text = "****${cards.lastDigits}"
         binding.expiryNumber.text = "${cards.expiryMonth}/${cards.expiryYear}"
+        binding.cardName.text = "*****"
+        binding.cardLogo.setImageResource(cards.getCardImage())
+
 
         binding.removeCard.setOnClickListener {
             deleteCard()

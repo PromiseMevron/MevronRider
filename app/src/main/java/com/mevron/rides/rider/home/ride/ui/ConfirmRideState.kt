@@ -15,6 +15,7 @@ data class ConfirmRideState(
     val destinationAddress: String,
     val isLoading: Boolean,
     val isRideConfirmed: Boolean,
+    val isRideConfirmedFailed: Boolean,
     val isCoordinateRendered: Boolean,
     val isSearchingDrivers: Boolean,
     val isBookingConfirmed: Boolean,
@@ -48,7 +49,8 @@ data class ConfirmRideState(
             vehicleId = "",
             reasonForCancel = "",
             trip_Id = "",
-            isRideCancelled = false
+            isRideCancelled = false,
+            isRideConfirmedFailed = false
         )
     }
 }

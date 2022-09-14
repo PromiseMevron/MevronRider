@@ -114,7 +114,7 @@ class ConfirmRideViewModel @Inject constructor(
     private fun makeRideRequest() {
        // setState { copy(isLoading = true) }
 
-       /* val request = RideRequest(
+       val request = RideRequest(
             cardId = null,
             destinationAddress = uiState.value.destinationAddress,
             destinationLatitude = uiState.value.endLocationLat.toString(),
@@ -124,9 +124,9 @@ class ConfirmRideViewModel @Inject constructor(
             pickupLatitude = uiState.value.startLocationLat.toString(),
             pickupLongitude = uiState.value.startLocationLng.toString(),
             vehicleType = uiState.value.vehicleId
-        )*/
+        )
 
-        val request = RideRequest(
+     /*   val request = RideRequest(
             cardId = null,
             destinationAddress = "Qwerty",
             destinationLatitude = "6.570466",
@@ -136,7 +136,7 @@ class ConfirmRideViewModel @Inject constructor(
             pickupLatitude = "6.408059",
             pickupLongitude = "3.239489",
             vehicleType = uiState.value.vehicleId
-        )
+        )*/
 
         viewModelScope.launch {
             val result = makeRideRequestUseCase(request)
@@ -153,6 +153,12 @@ class ConfirmRideViewModel @Inject constructor(
                 }
 
                 // send Socket Event
+            }else{
+                setState {
+                    copy(
+                        isRideConfirmedFailed = true
+                    )
+                }
             }
         }
     }

@@ -67,7 +67,7 @@ class RideDetailsFragment : Fragment() {
                         Picasso.get().load(this.driverProfile).error(R.drawable.profile)
                             .placeholder(R.drawable.profile).into(binding.driverImage)
                     }
-                    val mapImage = "https://maps.googleapis.com/maps/api/staticmap?size=300x300&path=color:0xFF9B04|weight:3|${this.startLat},${this.startLng}|${this.endLat},${this.endLng}&markers=icon:https://firebasestorage.googleapis.com/v0/b/mevron-1330b.appspot.com/o/MapMarkerImage%2FEllipse%203%20(1).png?alt=media&token=43a50b97-b6a1-475d-bacc-fd30a2d22446|${this.startLat},${this.startLng}&markers=icon:https://firebasestorage.googleapis.com/v0/b/mevron-1330b.appspot.com/o/MapMarkerImage%2FEllipse%203.png?alt=media&token=65f90d1d-0e93-4636-acbf-9ab01e006e4f|${this.endLat},${this.endLng}&sensor=false&key=AIzaSyACHmEwJsDug1l3_IDU_E4WEN4Qo_i_NoE"
+                    val mapImage = "https://maps.googleapis.com/maps/api/staticmap?size=300x300&path=color:0xFF9B04|weight:3|enc%3A${this.polyLine}&markers=icon:https://firebasestorage.googleapis.com/v0/b/mevron-1330b.appspot.com/o/MapMarkerImage%2FEllipse%203%20(1).png?alt=media&token=43a50b97-b6a1-475d-bacc-fd30a2d22446|${this.startLat},${this.startLng}&markers=icon:https://firebasestorage.googleapis.com/v0/b/mevron-1330b.appspot.com/o/MapMarkerImage%2FEllipse%203.png?alt=media&token=65f90d1d-0e93-4636-acbf-9ab01e006e4f|${this.endLat},${this.endLng}&sensor=false&key=AIzaSyABngGIaOGJLtjRYxo08l2vClumZ9sIPpg"
                     Picasso.get().load(mapImage).error(R.drawable.street_map).placeholder(R.drawable.street_map).into(binding.googleMap)
                 }
                 if (state.error.isNotEmpty()) {

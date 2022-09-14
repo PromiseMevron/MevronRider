@@ -20,11 +20,13 @@
         <entry key="app/src/main/res/drawable/ic_avatar_emerge.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_back_black.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/ic_back_button.xml" value="0.2523076923076923" />
+        <entry key="app/src/main/res/drawable/ic_back_home.xml" value="0.197" />
         <entry key="app/src/main/res/drawable/ic_black_background.xml" value="0.135" />
         <entry key="app/src/main/res/drawable/ic_bussiness_ride.xml" value="0.246" />
         <entry key="app/src/main/res/drawable/ic_cancel_img.xml" value="0.1275" />
         <entry key="app/src/main/res/drawable/ic_car_icon__1.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_car_marker.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_card.xml" value="0.197" />
         <entry key="app/src/main/res/drawable/ic_cash_add.xml" value="0.1905" />
         <entry key="app/src/main/res/drawable/ic_check.xml" value="0.1435" />
         <entry key="app/src/main/res/drawable/ic_check_green.xml" value="0.213" />
@@ -61,6 +63,7 @@
         <entry key="app/src/main/res/drawable/ic_image_69.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_location.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/drawable/ic_log_out.xml" value="0.194" />
         <entry key="app/src/main/res/drawable/ic_map_pin.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_marker_drop.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_marker_pick.xml" value="0.140625" />
@@ -132,6 +135,7 @@
         <entry key="app/src/main/res/drawable/rounded_corner_rating.xml" value="0.25625" />
         <entry key="app/src/main/res/drawable/rounded_corner_save_button.xml" value="0.2523076923076923" />
         <entry key="app/src/main/res/drawable/unchecked.xml" value="0.1715" />
+        <entry key="app/src/main/res/drawable/verve_logo.xml" value="0.197" />
         <entry key="app/src/main/res/font/.xml" value="0.2569230769230769" />
         <entry key="app/src/main/res/font/space_grotesk_semibold.xml" value="0.2558974358974359" />
         <entry key="app/src/main/res/font/sssss.xml" value="0.128125" />
@@ -139,6 +143,7 @@
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.11764705882352941" />
         <entry key="app/src/main/res/layout/activity_intro_screen.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2234375" />
+        <entry key="app/src/main/res/layout/add_custom_cancel_layout.xml" value="0.2453125" />
         <entry key="app/src/main/res/layout/add_custom_rating_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/add_emergency_fragment.xml" value="0.335" />
         <entry key="app/src/main/res/layout/add_fund_cash_out_layout.xml" value="0.10989583333333333" />
@@ -171,7 +176,7 @@
         <entry key="app/src/main/res/layout/fragment_top_up.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_wallet.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/help_fragment.xml" value="0.14241803278688525" />
-        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/home_bottom_sheet.xml" value="0.1" />
         <entry key="app/src/main/res/layout/home_button_sheet.xml" value="0.335" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/logout_dialod.xml" value="0.24010416666666667" />
@@ -192,7 +197,7 @@
         <entry key="app/src/main/res/layout/on_trip_marker.xml" value="0.5" />
         <entry key="app/src/main/res/layout/pay_bottom.xml" value="0.1" />
         <entry key="app/src/main/res/layout/pay_type_item.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/payment_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/payment_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/payment_method_fragment.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/phone_login_fragment.xml" value="0.165" />
         <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.165" />

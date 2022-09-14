@@ -16,7 +16,7 @@ android {
         applicationId "com.mevron.rides.rider"
         minSdk 21
         targetSdk 32
-        versionCode 2
+        versionCode 4
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -162,6 +162,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:21.1.0'
     implementation 'com.google.firebase:firebase-appdistribution-api-ktx:16.0.0-beta03'
 
+    //lottie
+    implementation 'com.airbnb.android:lottie:5.2.0'
 
     //permissions
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'

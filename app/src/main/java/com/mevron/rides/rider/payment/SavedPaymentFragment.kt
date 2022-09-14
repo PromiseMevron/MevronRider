@@ -12,6 +12,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.compose.ui.text.toLowerCase
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -152,24 +153,19 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
     }
 
     override fun selected(data: Data) {
-        val action =
-            SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
-        findNavController().navigate(action)
+      //  val action =
+          //  SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
+      //  findNavController().navigate(action)
     }
 
     override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
-        val data = Data(
-            bin = paymentCard.bin,
-            brand = paymentCard.brand,
-            expiryMonth = paymentCard.expiryMonth,
-            expiryYear = paymentCard.expiryYear,
-            uuid = paymentCard.uuid,
-            lastDigits = paymentCard.lastDigits,
-            type = paymentCard.type
-        )
-        val action =
-            SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(data)
-        findNavController().navigate(action)
+        if (paymentCard.type.toLowerCase() != "cash" && paymentCard.type.toLowerCase() != "wallet") {
+            val action =
+                SavedPaymentFragmentDirections.actionSavedpaymentFragmentToCardDetailsFragment(
+                    paymentCard
+                )
+            findNavController().navigate(action)
+        }
     }
 
 

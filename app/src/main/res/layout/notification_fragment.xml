@@ -53,8 +53,8 @@ tools:context=".supportpages.ui.notification.NotificationFragment">
         tools:listitem="@layout/notification_item" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
         android:src="@drawable/ic_empty_data"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

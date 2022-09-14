@@ -30,6 +30,9 @@ class MevronFirebaseInstanceIDService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        val data = message.data
+        val isRequest = data["request"] == "1"
+        val soundUrl = if (isRequest) "android.resource://com.mevron.rides.rider/raw/ringtone2" else "android.resource://com.mevron.rides.rider/raw/ringtone1"
 
         val audioAttributesDefault = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -54,6 +57,11 @@ class MevronFirebaseInstanceIDService: FirebaseMessagingService() {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setAutoCancel(true)
+                .setSound(
+                    Uri.parse(
+                        soundUrl
+                    )
+                )
                 .setContentIntent(pendingIntent)
         val manager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -66,8 +74,8 @@ class MevronFirebaseInstanceIDService: FirebaseMessagingService() {
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.parseColor("#FF9B04")
             notificationChannel.enableVibration(true)
-           // notificationChannel.setSound(Uri.parse("android.resource://com.mevron.rides.rider/raw/ringtone2"),
-             //   audioAttributesDefault)
+            notificationChannel.setSound(Uri.parse(soundUrl),
+                audioAttributesDefault)
            // notificationChannel.vibrationPattern =
               //  longArrayOf(0, 100, 1000, 300, 200, 100, 500, 200, 100)
             manager.createNotificationChannel(notificationChannel)

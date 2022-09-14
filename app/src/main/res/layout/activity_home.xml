@@ -96,6 +96,7 @@
                       app:layout_constraintStart_toEndOf="@id/full_name"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
+                      android:progressTint="@color/primary"
                       style="?android:attr/ratingBarStyleSmall"
                       android:saveEnabled="true"
                       tools:rating="4.2"

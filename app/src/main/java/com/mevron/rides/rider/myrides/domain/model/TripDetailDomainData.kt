@@ -15,5 +15,6 @@ data class TripDetailDomainData (
     val endLat: String,
     val endLng: String,
     val total: String,
-    val driverProfile: String
+    val driverProfile: String,
+    val polyLine: String?
     )

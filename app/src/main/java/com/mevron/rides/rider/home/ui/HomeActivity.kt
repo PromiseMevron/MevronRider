@@ -120,11 +120,18 @@ class HomeActivity : AppCompatActivity() {
         drawer.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
+        image.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+            navController.navigateUp()
+            navController.navigate(R.id.profileFragment)
+        }
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
                 name.text = it.profileData.firstName
-                phone.text = it.profileData.lastName
+                phone.text = it.profileData.phoneNumber
+                rating.rating = it.profileData.rating?.toFloat() ?: 1f
                 it.profileData.profilePicture?.let { url ->
                     if (url.isNotEmpty()) {
                         Picasso.get().load(url)

@@ -23,7 +23,7 @@ data class MyRidesState(
             openNextPage = false,
             backButton = false,
             rideId = "",
-            rideDetail = TripDetailDomainData("", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
+            rideDetail = TripDetailDomainData("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")
         )
     }
 }

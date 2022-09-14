@@ -17,4 +17,5 @@ class AllTripsResult (
     val pickupLatitude: String,
     val pickupLongitude: String,
     val driverProfile: String,
+    val polyLine: String?
     )

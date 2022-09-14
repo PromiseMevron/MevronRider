@@ -46,6 +46,7 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
         super.onViewCreated(view, savedInstanceState)
         topView.setEventsClickListener(this)
         bottomView.setEventListener(this)
+
         lifecycleScope.launchWhenResumed {
                 viewModel.state.collect { state ->
                     topView.setUpView(state.balance)
@@ -53,10 +54,10 @@ class WalletFragment : Fragment(), OnBalanceDetailButtonClickListener,
                     if (state.data.isNotEmpty()){
                         setUpAdapter(data = state.data)
                     }
-                    toggleBusyDialog(
-                        state.loading,
-                        desc = if (state.loading) "Processing..." else null
-                    )
+                  //  toggleBusyDialog(
+                     //   state.loading,
+                     //   desc = if (state.loading) "Processing..." else null
+                  //  )
 
                     if (state.success){
                         Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show()
