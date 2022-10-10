@@ -10,6 +10,7 @@ import com.mevron.rides.rider.emerg.domain.model.GetContactDomainData
 import com.mevron.rides.rider.emerg.domain.usecase.GetContactUseCase
 import com.mevron.rides.rider.emerg.ui.EmergencyEvent
 import com.mevron.rides.rider.emerg.ui.EmergencyState
+import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,14 +28,13 @@ class EmergencyViewModel @Inject constructor(private val useCase: GetContactUseC
         get() = mutableState
 
     private fun getEmergency() {
-        updateState(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = useCase()) {
                 is DomainModel.Error -> mutableState.update {
                     mutableState.value.copy(
                         isLoading = false,
                         isSuccess = false,
-                        error = ""
+                        error = result.error.localizedMessage ?: Constants.UNEXPECTED_ERROR
                     )
                 }
                 is DomainModel.Success -> {
@@ -64,6 +64,7 @@ class EmergencyViewModel @Inject constructor(private val useCase: GetContactUseC
         savedAddresses: MutableList<Set>? = null,
         updateAddress: Boolean? = null,
         backButton: Boolean? = null,
+        error: String? = null,
         result: MutableList<GetContactDomainData>? = null
     ) {
         val currentState = mutableState.value
@@ -74,7 +75,8 @@ class EmergencyViewModel @Inject constructor(private val useCase: GetContactUseC
                 data = savedAddresses ?: currentState.data,
                 openNextPage = updateAddress ?: currentState.openNextPage,
                 backButton = backButton ?: currentState.backButton,
-                result = result ?: currentState.result
+                result = result ?: currentState.result,
+                error = error ?: currentState.error
             )
         }
     }

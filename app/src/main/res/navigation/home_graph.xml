@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_homeFragment_to_addTipFragment"
             app:destination="@id/addTipFragment" />
+        <argument
+            android:name="showLoader"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"

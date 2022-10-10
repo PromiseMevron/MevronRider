@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/place_cover"
-        tools:visibility="invisible"
+        tools:visibility="visible"
         android:background="@color/white">
 
         <ImageView
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/state_cover"
-        tools:visibility="invisible"
+        tools:visibility="visible"
         android:background="@color/white">
 
         <ImageView
@@ -93,7 +93,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/token_cover"
-        tools:visibility="invisible"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:background="@color/white">
 
         <ImageView

@@ -23,6 +23,7 @@ import com.mevron.rides.rider.authentication.data.models.profile.GetProfileRespo
 import com.mevron.rides.rider.emerg.data.model.AddContactRequest
 import com.mevron.rides.rider.emerg.data.model.GetContactsResponse
 import com.mevron.rides.rider.emerg.data.model.UpdateEmergencyContact
+import com.mevron.rides.rider.home.data.ShareTrip
 import com.mevron.rides.rider.settings.referal.data.model.GetReferalHistory
 import com.mevron.rides.rider.settings.referal.data.model.ReferalReport
 import com.mevron.rides.rider.settings.referal.data.model.SetReferal
@@ -40,6 +41,10 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     suspend fun validateOTP(data: ValidateOTPRequest): Response<OTPResponse> {
         return api.verifyOTP(data)
+    }
+
+    suspend fun resendOTP(data: ValidateOTPRequest): Response<GeneralResponse> {
+        return api.resendOTP(data)
     }
 
     suspend fun sendDetail(data: SaveDetailsRequest): Response<SaveResponse> {
@@ -142,6 +147,10 @@ class MevronRepo @Inject constructor (private val api: MevronAPI, private val da
 
     suspend fun updateEmergency(data: UpdateEmergencyContact, id: String): Response<GeneralResponse> {
         return api.updateEmergency(id = id, data = data)
+    }
+
+    suspend fun shareTripDetails(data: ShareTrip): Response<GeneralResponse> {
+        return api.shareTripDetails(data)
     }
 
     suspend fun deleteEmergency(id: String): Response<GeneralResponse> {

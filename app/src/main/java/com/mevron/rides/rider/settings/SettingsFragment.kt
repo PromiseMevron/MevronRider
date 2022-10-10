@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
@@ -26,9 +27,11 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.authentication.data.models.profile.ProfileData
 import com.mevron.rides.rider.databinding.SettingsFragmentBinding
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.savedplaces.ui.saveaddress.SaveAddressFragmentDirections
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
+import com.mevron.rides.rider.util.isValidEmail
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,6 +44,7 @@ class SettingsFragment : Fragment() {
     private lateinit var binding: SettingsFragmentBinding
 
     private  val viewModel: SettingsViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     private var mDialog: Dialog? = null
 
@@ -80,24 +84,18 @@ class SettingsFragment : Fragment() {
             binding.addWorkFilled.visibility = View.VISIBLE
             binding.textAddressWork.text = workAddres
         }
+        getProfile()
 
         lifecycleScope.launchWhenResumed {
 
             viewModel.state.collect { state ->
-                toggleBusyDialog(
-                    state.loader,
-                    desc = if (state.loader) "Submitting Data..." else null
-                )
                 if (state.error.isNotEmpty()){
                     Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
                     viewModel.updateState(error = "")
                 }
 
                 if (state.isSuccess){
-                    sPref.edit().clear().apply()
-                    val intent = Intent(activity, MainActivity::class.java)
-                    activity?.startActivity(intent)
-                    activity?.finishAffinity()
+
                 }
             }
         }
@@ -110,7 +108,6 @@ class SettingsFragment : Fragment() {
             binding.userEmail.text = user.email.toString()
             binding.userRating.text = user.rating.toString()
             Picasso.get().load(user.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(binding.profileImage)
-
         }
 
 
@@ -171,7 +168,36 @@ class SettingsFragment : Fragment() {
             showDialog()
         }
 
+
+
     }
+    fun getProfile(){
+      //  toggleBusyDialog(true, "Fetching Data")
+        profileViewModel.getProfile().observe(viewLifecycleOwner, Observer {
+            it.let {  res ->
+                toggleBusyDialog(false)
+                when(res){
+                    is  GenericStatus.Success ->{
+                        val user = res.data?.success?.profileData
+                        binding.userName.text = "${user?.firstName}  ${user?.lastName}"
+                        binding.userEmail.text = user?.email.toString()
+                        binding.userRating.text = user?.rating.toString()
+                        if (!user?.profilePicture.toString().isNullOrEmpty())
+                        Picasso.get().load(user?.profilePicture.toString()).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(binding.profileImage)
+                    }
+
+                    is  GenericStatus.Error ->{
+                        // toggleBusyDialog(false)
+                    }
+
+                    is GenericStatus.Unaunthenticated -> {
+                        // toggleBusyDialog(false)
+                    }
+                }
+            }
+        })
+    }
+
     private fun showDialog() {
         val dialog = activity?.let { Dialog(it) }!!
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -184,6 +210,10 @@ class SettingsFragment : Fragment() {
         yesBtn.setOnClickListener {
             dialog.dismiss()
             viewModel.logOutDevice()
+            sPref.edit().clear().apply()
+            val intent = Intent(activity, MainActivity::class.java)
+            activity?.startActivity(intent)
+            activity?.finishAffinity()
         }
         noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()

@@ -40,24 +40,24 @@ class AddEmergencyAdapter(val add: SaveNumber) :
     override fun onBindViewHolder(holder: AddEmergHolder, position: Int) {
         val cnt = getItem(position)
         holder.binding.checkb.setOnCheckedChangeListener(null)
+        holder.binding.checkb.isChecked = cnt.isSelected
         holder.binding.checkb.setOnCheckedChangeListener { _, b ->
-            holder.binding.checkb.isSelected = b
+            cnt.isSelected = b
             val ct =
                 Contact(name = cnt.name, phoneNumber = cnt.phoneNumber, isSelected = b, id = cnt.id)
             add.addRemoveContact(ct)
         }
         holder.binding.name.text = cnt.name
         holder.binding.number.text = cnt.phoneNumber
-        holder.binding.root.setOnClickListener {
-            holder.binding.checkb.isSelected = !holder.binding.checkb.isSelected
-            val ct = Contact(
-                name = cnt.name,
-                phoneNumber = cnt.phoneNumber,
-                isSelected = !holder.binding.checkb.isSelected,
-                id = cnt.id
-            )
-            add.addRemoveContact(ct)
-        }
+        /* holder.binding.root.setOnClickListener {
+             val ct = Contact(
+                 name = cnt.name,
+                 phoneNumber = cnt.phoneNumber,
+                 isSelected = !holder.binding.checkb.isSelected,
+                 id = cnt.id
+             )
+             add.addRemoveContact(ct)
+         }*/
     }
 
 }

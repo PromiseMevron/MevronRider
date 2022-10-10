@@ -1,6 +1,12 @@
 package com.mevron.rides.rider.util
 
+import org.json.JSONArray
+import org.json.JSONObject
+
 object Constants {
+    const val UNEXPECTED_ERROR = "An unexpected error occurred and we are working to fix it. If it persists, please contact our support team."
+    const val COUNTRY: String = "COUNTRY"
+    const val COMPLETE: String = "COMPLETE"
     const val TRIP_ID: String = "TRIP_ID"
     const val BASE_URL = "https://sandbox.mevron.com/"
   //  const val BASE_URL = "http://staging.mevron.com:8083/"
@@ -29,6 +35,38 @@ object Constants {
     val SUPPORT_NUMBER = "SUPPORT_NUMBER"
     val WORK = "work"
     val OTHER = "others"
+
+    private val allowedCardNetworks = JSONArray(listOf(
+         "AMEX",
+         "DISCOVER",
+         "INTERAC",
+         "JCB",
+         "MASTERCARD",
+         "MIR",
+         "VERVE",
+         "VISA"))
+
+    private val allowedCardAuthMethods = JSONArray().apply {
+        put("PAN_ONLY")
+        put("CRYPTOGRAM_3DS")
+    }
+
+    private val paymentMethodParameters = JSONObject().apply {
+        put("allowedAuthMethods", allowedCardAuthMethods)
+        put("allowedCardNetworks", allowedCardNetworks)
+    }
+
+    private val baseCardPaymentMethod = JSONObject().apply {
+        put("type", "CARD")
+        put("parameters", paymentMethodParameters)
+    }
+    private val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
+
+    val baseRequest = JSONObject().apply {
+        put("apiVersion", 2)
+        put("apiVersionMinor", 0)
+        put("allowedPaymentMethods", JSONArray().put(baseCardPaymentMethod))
+    }
 
 
     fun isNewNumberType(number: String): Boolean {

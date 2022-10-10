@@ -29,12 +29,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_height="300dp">
 
-               <ImageView
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:src="@drawable/map"
-                   android:id="@+id/google_map"
-                   android:scaleType="centerCrop"/>
+                <ImageView
+                    android:id="@+id/google_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/map"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="0dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -148,7 +150,7 @@
 
             <ImageView
                 android:layout_width="@dimen/_4sdp"
-                android:layout_height="@dimen/_70sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:src="@drawable/ic_rectangle"
                 android:id="@+id/drop_line"
                 android:background="@android:color/transparent"
@@ -177,7 +179,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/_14sdp"
                 app:layout_constraintTop_toBottomOf="@+id/pick_logo"
-                android:layout_marginTop="@dimen/_60sdp"/>
+                android:layout_marginTop="@dimen/_40sdp"/>
 
             <TextView
                 android:layout_width="wrap_content"

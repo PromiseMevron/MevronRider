@@ -3,7 +3,9 @@ package com.mevron.rides.rider
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mevron.rides.rider.home.ui.HomeActivity
 import com.mevron.rides.rider.util.Constants
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         )
         val token = sPref.getString(Constants.TOKEN, null)
         val uuid = sPref.getString(Constants.UUID, null)
-        val email = sPref.getString(Constants.EMAIL, null)
+        val email = sPref.getString(Constants.COMPLETE, null)
         if (token.isNullOrEmpty() || uuid.isNullOrEmpty() || email.isNullOrEmpty()) {
             startActivity(Intent(this, IntroScreenActivity::class.java))
             finish()
@@ -33,8 +35,17 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private fun openHomeActivity(){
         if (hasPermission()){
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            val mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val mGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+            if (mGPS) {
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+            }
+            else {
+                Toast.makeText(this, "Enable Location and try again", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, IntroScreenActivity::class.java))
+            }
         }else{
             requestPermission()
         }

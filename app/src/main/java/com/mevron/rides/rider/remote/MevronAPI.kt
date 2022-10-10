@@ -21,6 +21,7 @@ import com.mevron.rides.rider.authentication.data.models.profile.GetProfileRespo
 import com.mevron.rides.rider.emerg.data.model.AddContactRequest
 import com.mevron.rides.rider.emerg.data.model.GetContactsResponse
 import com.mevron.rides.rider.emerg.data.model.UpdateEmergencyContact
+import com.mevron.rides.rider.home.data.ShareTrip
 import com.mevron.rides.rider.settings.referal.data.model.GetReferalHistory
 import com.mevron.rides.rider.settings.referal.data.model.ReferalReport
 import com.mevron.rides.rider.settings.referal.data.model.SetReferal
@@ -37,6 +38,9 @@ interface MevronAPI {
 
     @POST("api/v1/rider/validate-otp")
     suspend fun verifyOTP(@Body data: ValidateOTPRequest): Response<OTPResponse>
+
+    @POST("api/v1/acquisation/rider/resend-otp")
+    suspend fun resendOTP(@Body data: ValidateOTPRequest): Response<GeneralResponse>
 
     @POST("api/v1/rider/auth/update-profile")
     suspend fun sendDetail(@Body data: SaveDetailsRequest): Response<SaveResponse>
@@ -103,7 +107,14 @@ interface MevronAPI {
     suspend fun getEmergency(): Response<GetContactsResponse>
 
     @POST("api/v1/rider/auth/emergency-contacts/{uiid}")
-    suspend fun updateEmergency(@Path("uiid") id: String, data: UpdateEmergencyContact): Response<GeneralResponse>
+    suspend fun updateEmergency(@Path("uiid") id: String, @Body data: UpdateEmergencyContact): Response<GeneralResponse>
+
+    @POST("api/v1/rider/auth/emergency-contacts/share/trip")
+    suspend fun shareTripDetails(data: ShareTrip): Response<GeneralResponse>
+
+
+    @GET("api/v1/rider/auth/emergency-contacts/{uiid}")
+    suspend fun getEmergencyDetails(@Path("uiid") id: String, data: UpdateEmergencyContact): Response<GeneralResponse>
 
 
     @DELETE("api/v1/rider/auth/emergency-contacts/{uiid}")

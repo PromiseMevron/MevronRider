@@ -153,7 +153,7 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback, CustomCancelEventLis
 
 
                 if (uiState.isRideCancelled){
-                    findNavController().navigate(R.id.action_global_homeFragment)
+                    binding.cancelReasonSuccess.baseLayout.visibility = View.VISIBLE
                 }
 
                 toggleBusyDialog(
@@ -163,7 +163,17 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback, CustomCancelEventLis
             }
         }
         binding.homeButton.setOnClickListener {
-            findNavController().navigate(R.id.action_global_homeFragment)
+            val  action = ConfirmRideFragmentDirections.actionGlobalHomeFragment().apply {
+                showLoader = false
+            }
+            findNavController().navigate(action)
+        }
+
+        binding.cancelReasonSuccess.doneButton.setOnClickListener {
+            val  action = ConfirmRideFragmentDirections.actionGlobalHomeFragment().apply {
+                showLoader = false
+            }
+            findNavController().navigate(action)
         }
 
         viewModel.setEvent(ConfirmRideEvent.ConfirmRideRequest)
@@ -374,16 +384,16 @@ class ConfirmRideFragment : Fragment(), OnMapReadyCallback, CustomCancelEventLis
         dialog.show()
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        if (googleMap != null) {
-            gMap = googleMap
+    override fun onMapReady(p0: GoogleMap) {
+        if (p0 != null) {
+            gMap = p0
         }
-        MapsInitializer.initialize(context?.applicationContext)
+        context?.applicationContext?.let { MapsInitializer.initialize(it) }
 
         locationProcessor.checkLocationPermission(
             context,
             onSuccess = {
-                googleMap?.isMyLocationEnabled = true
+                p0.isMyLocationEnabled = true
                 startObservingViewModelOnMapReady()
             },
             onPermissionRequired = { locationProcessor.requestLocationPermission(this) }

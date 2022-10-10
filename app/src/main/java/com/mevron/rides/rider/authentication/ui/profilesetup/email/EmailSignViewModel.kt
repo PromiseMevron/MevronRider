@@ -10,6 +10,8 @@ import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.update
 import com.mevron.rides.rider.sharedprefrence.domain.usescases.GetPreferenceUseCase
 import com.mevron.rides.rider.sharedprefrence.domain.usescases.SetPreferenceUseCase
+import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.Constants.COUNTRY
 import com.mevron.rides.rider.util.Constants.EMAIL
 import com.mevron.rides.rider.util.Constants.FIRST_NAME
 import com.mevron.rides.rider.util.Constants.LAST_NAME
@@ -70,7 +72,8 @@ class EmailSignViewModel @Inject constructor(
             email = email,
             firstName = getPreferenceUseCase(FIRST_NAME),
             lastName = getPreferenceUseCase(LAST_NAME),
-            phoneNumber = getPreferenceUseCase(PHONE_NUMBER)
+            phoneNumber = getPreferenceUseCase(PHONE_NUMBER),
+            country = getPreferenceUseCase(COUNTRY)
         )
 
     private fun DomainModel.Error.toState(): String =

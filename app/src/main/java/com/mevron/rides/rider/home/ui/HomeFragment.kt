@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 
@@ -34,8 +33,6 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.HomeFragmentBinding
 import com.mevron.rides.rider.home.HomeAdapter
 import com.mevron.rides.rider.home.OnAddressSelectedListener
-import com.mevron.rides.rider.home.data.DeviceID
-import com.mevron.rides.rider.home.data.ProfileApi
 import com.mevron.rides.rider.home.model.LocationModel
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
@@ -43,9 +40,7 @@ import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.LocationSingleton.getAddressFromLocation
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -98,6 +93,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         setUpAdapter()
         getAddress()
         viewModel.setEvent(HomeEvent.ObserveTripState)
+        val showLoader = HomeFragmentArgs.fromBundle(requireArguments()).showLoader
+        if (!showLoader){
+            binding.tokenCover.visibility = View.GONE
+            binding.stateCover.visibility = View.GONE
+            binding.placeCover.visibility = View.GONE
+        }
+        binding.tokenCover.visibility = View.GONE
+        binding.stateCover.visibility = View.GONE
+        binding.placeCover.visibility = View.GONE
             // 1
         FirebaseMessaging.getInstance().token
                 .addOnCompleteListener(OnCompleteListener { task ->
@@ -136,7 +140,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                         findNavController().navigate(R.id.action_global_bookedFragment)
                         viewModel.resolveOpenBookedRide()
                     }
-
                 }
 
                 if (it.isOpenSearchClicked) {
@@ -260,6 +263,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
                     binding.placeCover.visibility = View.GONE
                 },
                 {
+                    binding.placeCover.visibility = View.GONE
                     requestLocationPermissionIfnNotEnabled()
                 }
             )
@@ -284,16 +288,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
     }
 
     // @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap?) {
-        if (googleMap != null) {
-            this.googleMap = googleMap
+    override fun onMapReady(p0: GoogleMap) {
+        if (p0 != null) {
+            this.googleMap = p0
         }
         googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-        MapsInitializer.initialize(activity?.applicationContext)
+        activity?.applicationContext?.let { MapsInitializer.initialize(it) }
 
         requestLocationPermissionIfnNotEnabled {
-            googleMap?.isMyLocationEnabled = true
+            p0?.isMyLocationEnabled = true
             googleMap?.uiSettings?.isMyLocationButtonEnabled = false
             gotToMyLocation()
         }
@@ -375,10 +379,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, OnAddress
         }
     }
 
+    private fun renderCarsOnMap(locations: List<String>){
 
-    override fun onAddressSelected(data: LocationModel, dt: GetSavedAddressData) {
+    }
+
+    override fun onAddressSelected(locationModel: LocationModel, savedAddress: GetSavedAddressData) {
         // what's the plan for dt variable?
-        viewModel.setState { (copy(locationModel = data, isLocationAdded = true)) }
+        viewModel.setState { (copy(locationModel = locationModel, isLocationAdded = true)) }
     }
 
 }

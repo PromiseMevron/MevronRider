@@ -7,6 +7,7 @@ import com.mevron.rides.rider.emerg.domain.model.GetContactDomainData
 data class EmergencyState(
     val isLoading: Boolean,
     val isSuccess: Boolean,
+    val isSuccessAdd: Boolean,
     val error: String,
     val data: MutableList<Set>,
     val openNextPage: Boolean,
@@ -19,6 +20,7 @@ data class EmergencyState(
         val EMPTY = EmergencyState(
             isLoading = false,
             isSuccess = false,
+            isSuccessAdd = false,
             error = "",
             data = mutableListOf(),
             openNextPage = false,

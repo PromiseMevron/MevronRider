@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.savedplaces.data.repository
 
 import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.remote.HTTPErrorHandler
 import com.mevron.rides.rider.remote.model.GeneralResponse
 import com.mevron.rides.rider.savedplaces.data.model.GetSavedAddress
 import com.mevron.rides.rider.savedplaces.data.model.SaveAddressRequest
@@ -10,32 +11,36 @@ import com.mevron.rides.rider.savedplaces.domain.model.AddressDomainData
 import com.mevron.rides.rider.savedplaces.domain.model.GetAddressDomainData
 import com.mevron.rides.rider.savedplaces.domain.model.GetSavedAddressData
 import com.mevron.rides.rider.savedplaces.domain.repository.IAddressRepository
+import com.mevron.rides.rider.util.Constants
 
 class AddressRepository(private val addressAPI: AddressAPI) : IAddressRepository {
 
     override suspend fun getSavedAddresses(): DomainModel = addressAPI.getAddress().let {
         if (it.isSuccessful) {
-            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("No saved address found"))
+            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         } else {
-            DomainModel.Error(Throwable(it.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(it)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 
     override suspend fun addAnAddress(data: SaveAddressRequest): DomainModel =
         addressAPI.saveAddress(data).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Address not saved"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     override suspend fun updateAnAddress(identifier: String, data: UpdateAddress): DomainModel =
         addressAPI.updateAddress(identifier = identifier, data = data).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Address not saved"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 

@@ -23,15 +23,8 @@ object AuthUtil {
         return email.matches(emailPattern.toRegex())
     }
 
-    fun validateFullName(name: String): Boolean {
-        val fullName = name.split(" ")
-        if (fullName.size < 2){
-            return false
-        }
-        if (fullName[1].replace(" ", "").length < 2){
-            return false
-        }
-        return  name.contains(" ") && fullName.isNotEmpty() && fullName.size > 1
+    fun validateFullName(fname: String, lname: String): Boolean {
+        return  fname.isNotEmpty() && lname.isNotEmpty()
     }
 
 

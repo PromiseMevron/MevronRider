@@ -3,6 +3,8 @@ package com.mevron.rides.rider.payment.data
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.payment.domain.IRatingRepository
 import com.mevron.rides.rider.payment.domain.RateData
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 
 class RatingRepository(private val ratingApi: RatingApi) : IRatingRepository {
 
@@ -11,7 +13,8 @@ class RatingRepository(private val ratingApi: RatingApi) : IRatingRepository {
         return if (request.isSuccessful) {
             DomainModel.Success(data = Unit)
         } else {
-            DomainModel.Error(Throwable(request.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(request)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 

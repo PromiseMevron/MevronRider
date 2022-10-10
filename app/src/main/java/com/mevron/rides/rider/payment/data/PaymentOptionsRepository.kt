@@ -6,6 +6,8 @@ import com.mevron.rides.rider.home.model.GetLinkAmount
 import com.mevron.rides.rider.home.model.getCard.Data
 import com.mevron.rides.rider.home.model.getCard.WalletData
 import com.mevron.rides.rider.payment.domain.*
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 
 // TODO add unit test for this class
 class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOptionsRepository {
@@ -16,10 +18,11 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             if (response.isSuccessful) {
                 DomainModel.Success(data = Unit)
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error deleting card $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -29,10 +32,11 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             if (response.isSuccessful) {
                 DomainModel.Success(data = Unit)
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error adding card $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -45,10 +49,11 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
                         ?: PaymentCardDomainModel()
                 )
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error fetching cards $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -62,18 +67,20 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
                         ?: PaymentCardDomainModel()*/
                 )
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error adding cards $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 
     override suspend fun getWalletDetails(): DomainModel  = api.getWalletDetails().let {
         if (it.isSuccessful) {
-            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Wallet details not found"))
+            it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         } else {
-            DomainModel.Error(Throwable(it.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(it)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -83,10 +90,11 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             if (response.isSuccessful) {
                 DomainModel.Success(data = Unit)
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error adding fund $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -96,21 +104,22 @@ class PaymentOptionsRepository(private val api: PaymentOptionsApi) : IPaymentOpt
             if (response.isSuccessful) {
                 DomainModel.Success(data = Unit)
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error adding fund $error"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
     }
 }
 
 private fun PaymentDetailsResponse.toDomainModel() = DomainModel.Success(
     data = PaymentDetailsDomainData(
-        balance = "${this.paySuccess.payData.currency}${paySuccess.payData.balance}",
+        balance = "${this.paySuccess.payData.currencySymbol}${paySuccess.payData.balance}",
         data = this.paySuccess.payData.transactions.map {
             PaymentDetailsDomainDatum(
-                amount = "${this.paySuccess.payData.currency}${it.amount}", date = it.date,
-                icon = it.icon,
+                amount = "${this.paySuccess.payData.currencySymbol}${it.amount}", date = it.date,
+                icon = it.icon ?: "",
                 method = it.method,
                 narration = it.narration,
                 time = it.time

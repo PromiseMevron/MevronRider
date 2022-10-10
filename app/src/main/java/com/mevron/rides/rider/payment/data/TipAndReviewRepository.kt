@@ -3,6 +3,8 @@ package com.mevron.rides.rider.payment.data
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.payment.domain.ITipAndReviewRepository
 import com.mevron.rides.rider.payment.domain.TipAndReviewData
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 
 class TipAndReviewRepository(private val api: TipAndReviewApi) : ITipAndReviewRepository {
 
@@ -11,7 +13,8 @@ class TipAndReviewRepository(private val api: TipAndReviewApi) : ITipAndReviewRe
         return if (result.isSuccessful) {
             DomainModel.Success(data = Unit)
         } else {
-            DomainModel.Error(Throwable(result.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(result)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -20,7 +23,8 @@ class TipAndReviewRepository(private val api: TipAndReviewApi) : ITipAndReviewRe
         return if (result.isSuccessful) {
             DomainModel.Success(data = Unit)
         } else {
-            DomainModel.Error(Throwable(result.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(result)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 }

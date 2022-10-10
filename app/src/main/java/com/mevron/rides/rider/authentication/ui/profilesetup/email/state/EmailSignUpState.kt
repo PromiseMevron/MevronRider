@@ -7,6 +7,7 @@ data class EmailSignUpState(
     val isLoading: Boolean,
     val isSuccess: Boolean,
     val error: String,
+    val country: String,
     val phoneNuumber: String,
 ) {
     companion object {
@@ -17,7 +18,8 @@ data class EmailSignUpState(
             isLoading = false,
             isSuccess = false,
             error = "",
-            phoneNuumber = ""
+            phoneNuumber = "",
+            country = ""
         )
     }
 }

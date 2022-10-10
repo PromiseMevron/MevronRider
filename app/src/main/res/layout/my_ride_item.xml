@@ -21,7 +21,7 @@
     <ImageView
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_height="180dp"
         android:id="@+id/street_map"
         android:src="@drawable/street_map"
         android:scaleType="centerCrop"/>
@@ -79,8 +79,8 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginStart="@dimen/_14sdp"
             android:textFontWeight="500"
-            android:fontFamily="@font/poppins_regular"
-            android:textSize="@dimen/_10ssp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/_12ssp"
             tools:targetApi="p" />
 
 
@@ -94,7 +94,7 @@
         android:id="@+id/profile_image"
         app:layout_constraintBottom_toTopOf="@id/bottom"
         android:layout_marginBottom="@dimen/_minus24sdp"
-        android:src="@drawable/ic_logo"/>
+        android:src="@drawable/profile"/>
 
 
 

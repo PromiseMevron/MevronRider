@@ -50,7 +50,6 @@ class AddSavedPlaceFragment : Fragment(), OnAddressSelectedListener {
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     if (state.backButton) {
                         activity?.onBackPressed()
@@ -59,12 +58,14 @@ class AddSavedPlaceFragment : Fragment(), OnAddressSelectedListener {
                     if (state.openNextPage) {
                         migrateToUpdate()
                     }
-
-                    if (state.data.isNotEmpty()) {
-                        setUpAdapter(state.data)
+                    setUpAdapter(state.data)
+                    if (state.data.isEmpty()){
+                        binding.emptyData.visibility = View.VISIBLE
+                    }else{
+                        binding.emptyData.visibility = View.GONE
                     }
+
                 }
-            }
         }
 
         viewModel.handleEvent(AddSavedAddressEvent.GetNewAddress)

@@ -385,14 +385,14 @@ class PaymentFragment : Fragment(), OnMapReadyCallback, OnPaymentMethodSelectedL
         return clusterBitmap
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
+    override fun onMapReady(p0: GoogleMap) {
         if (p0 != null) {
             gMap = p0
         }
         gMap.mapType = GoogleMap.MAP_TYPE_NORMAL
       //  renderCoordinates()
 
-        MapsInitializer.initialize(context?.applicationContext)
+        context?.applicationContext?.let { MapsInitializer.initialize(it) }
 
         renderCoordinates()
 

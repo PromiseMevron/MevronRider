@@ -8,6 +8,8 @@ import com.mevron.rides.rider.myrides.domain.model.AllTripsResult
 import com.mevron.rides.rider.myrides.domain.model.GetAllTripsDomainData
 import com.mevron.rides.rider.myrides.domain.model.TripDetailDomainData
 import com.mevron.rides.rider.myrides.domain.repository.IMyRideRepo
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.toReadableDate
 
 
@@ -16,34 +18,37 @@ class MyRideRepository(private val api: MyRideAPI) : IMyRideRepo {
     override suspend fun getScheduledRide(): DomainModel =
         api.getAllTrips().let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Trips not found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     override suspend fun addAllRides(): DomainModel =
         api.getAllTrips().let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Trips not found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     override suspend fun getASpecificRide(identifier: String): DomainModel =
         api.getTripDetail(identifier).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Trips not found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     private fun AllTripsResponse.toDomainModel() = DomainModel.Success(
         data = GetAllTripsDomainData(data = this.success.data.map {
             AllTripsResult(
-                amount = it.amount,
+                amount = "${it.currency}${it.amount}",
                 time = it.time,
                 date = it.date,
                 id = it.id,

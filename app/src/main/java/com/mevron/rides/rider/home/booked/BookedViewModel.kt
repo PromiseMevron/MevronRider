@@ -1,5 +1,7 @@
 package com.mevron.rides.rider.home.booked
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mevron.rides.rider.authentication.domain.model.VerifyOTPDomainModel
 import com.mevron.rides.rider.domain.DomainModel
@@ -9,22 +11,29 @@ import com.mevron.rides.rider.domain.usecase.GetDriverLocationUseCase
 import com.mevron.rides.rider.domain.usecase.GetOrderPropertiesUseCase
 import com.mevron.rides.rider.domain.usecase.GetTripStateUseCase
 import com.mevron.rides.rider.domain.usecase.SetOrderPropertiesUseCase
+import com.mevron.rides.rider.emerg.data.model.UpdateEmergencyContact
 import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.BookedTripState
 import com.mevron.rides.rider.home.booked.domain.UNDEFINED_COORDINATE
 import com.mevron.rides.rider.home.booked.domain.toTripStatus
+import com.mevron.rides.rider.home.data.ShareTrip
 import com.mevron.rides.rider.home.model.DriverLocationModel
 import com.mevron.rides.rider.home.ride.domain.CancelRideRequestUseCase
 import com.mevron.rides.rider.payment.data.RateDriverRequest
 import com.mevron.rides.rider.payment.domain.RateRiderUseCase
 import com.mevron.rides.rider.payment.domain.SendTipAndReviewUseCase
 import com.mevron.rides.rider.payment.domain.TipAndReviewData
+import com.mevron.rides.rider.remote.GenericStatus
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.remote.MevronRepo
 import com.mevron.rides.rider.remote.model.CancelRideRequest
+import com.mevron.rides.rider.remote.model.GeneralResponse
 import com.mevron.rides.rider.shared.ui.BaseViewModel
 import com.mevron.rides.rider.sharedprefrence.domain.usescases.GetPreferenceUseCase
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.Constants.TRIP_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -40,6 +49,7 @@ class BookedViewModel @Inject constructor(
     private val getOrderPropertiesUseCase: GetOrderPropertiesUseCase,
     private val getDriverLocationUseCase: GetDriverLocationUseCase,
     private val cancelRideRequestUseCase: CancelRideRequestUseCase,
+    private val repo: MevronRepo,
     private val setPrefrence: SetOrderPropertiesUseCase
 ) : BaseViewModel<BookedTripState, BookedTripEvent>() {
 
@@ -249,6 +259,34 @@ class BookedViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun shareTrip(
+        data: ShareTrip
+    ): LiveData<GenericStatus<GeneralResponse>> {
+
+        val result = MutableLiveData<GenericStatus<GeneralResponse>>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = repo.shareTripDetails(data = data)
+                if (response.isSuccessful) {
+                    result.postValue(GenericStatus.Success(response.body()))
+                } else {
+                    result.postValue(
+                        GenericStatus.Error(
+                            HTTPErrorHandler.handleErrorWithCode(
+                                response
+                            )
+                        )
+                    )
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                result.postValue(GenericStatus.Error(HTTPErrorHandler.httpFailWithCode(ex)))
+            }
+        }
+        return result
     }
 
     override fun setEvent(event: BookedTripEvent) {

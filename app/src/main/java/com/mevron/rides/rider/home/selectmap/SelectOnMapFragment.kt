@@ -149,17 +149,17 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         mapView.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(p0: GoogleMap) {
 
-        if (googleMap != null) {
-            gMap = googleMap
+        if (p0 != null) {
+            gMap = p0
 
             gMap?.setOnMapClickListener(this)
             gMap?.setOnMapLongClickListener(this)
         }
 
 
-        MapsInitializer.initialize(activity?.applicationContext)
+        activity?.applicationContext?.let { MapsInitializer.initialize(it) }
 
         /*   googleMap?.setOnMapClickListener {
                Toast.makeText(context, "ww", Toast.LENGTH_LONG).show()
@@ -194,11 +194,11 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
             )
             return
         }
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+        p0?.isMyLocationEnabled = true
+        p0?.isMyLocationEnabled = true
+        p0?.uiSettings?.isMyLocationButtonEnabled = false
 
-        myLocation(googleMap)
+        myLocation(p0)
 
 
     }
@@ -346,13 +346,13 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         }
     }
 
-    override fun onMapClick(p0: LatLng?) {
+    override fun onMapClick(p0: LatLng) {
         mapClicked(p0)
         Log.i("onMapClick Long", p0?.longitude.toString())
         Log.i("onMapClick Lat", p0?.latitude.toString())
     }
 
-    override fun onMapLongClick(p0: LatLng?) {
+    override fun onMapLongClick(p0: LatLng) {
         //   Toast.makeText(context, "sds 2222 333", Toast.LENGTH_LONG).show()
         mapClicked(p0)
         Log.i("onMapClick Long", p0?.longitude.toString())
@@ -373,12 +373,14 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, LocationListener, On
         }
 
         //place marker where user just clicked
-        marker = gMap?.addMarker(
-            p0?.let {
-                MarkerOptions().position(it).title("")
-                    .icon(context?.let { bitmapFromVector(id) })
-            }
-        )
+        marker = p0?.let {
+            MarkerOptions().position(it).title("")
+                .icon(context?.let { bitmapFromVector(id) })
+        }?.let {
+            gMap?.addMarker(
+                it
+            )
+        }
     }
 
 

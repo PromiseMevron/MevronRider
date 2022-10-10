@@ -67,6 +67,7 @@ class SavedPaymentViewModel @Inject constructor(
             updateState(isLoading = false)
             if (result is DomainModel.Success) {
                 theData.add(PaymentCard.EMPTY)
+                theData.add(PaymentCard.WALLET)
                 val data = result.data as PaymentCardDomainModel
                 theData.addAll(data.cards)
                 updateState(paymentCards = theData, isLoading = false)

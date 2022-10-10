@@ -35,7 +35,8 @@
                 android:layout_marginBottom="@dimen/_260sdp"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_schedule"
+                android:visibility="gone"
+                android:src="@drawable/ic_emergency"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -79,14 +80,23 @@
             android:visibility="visible"
             layout="@layout/add_tip_fragment"/>
 
-        <include
-            android:id="@+id/booked_emergency_bottom"
-            layout="@layout/emergency_bottom_layout"
-            android:visibility="visible" />
 
         <include
             android:id="@+id/cancel_reason_layout"
             layout="@layout/cancel_reason_bottom"/>
+
+        <include
+            android:id="@+id/cancel_reason_success"
+            layout="@layout/cancel_sucess_layout"/>
+
+        <include
+            android:id="@+id/share_trip_details"
+            layout="@layout/share_trip_layout"/>
+
+        <include
+            android:id="@+id/booked_emergency_bottom"
+            layout="@layout/emergency_bottom_layout"
+            android:visibility="visible" />
 
 
 

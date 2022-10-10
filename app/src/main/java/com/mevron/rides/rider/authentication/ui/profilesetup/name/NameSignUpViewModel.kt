@@ -40,28 +40,17 @@ class NameSignUpViewModel @Inject constructor(
     fun updateState(
         name: String? = null,
         isSuccess: Boolean? = false,
-        openNestScreen: Boolean? = false
-
+        openNestScreen: Boolean? = false,
+        firstName: String? = null,
+        lastName: String? = null,
     ) {
         val currentValue = mutableState.value
-
-        val fullName = name?.split(" ")
-        val fName = fullName?.get(0)
-        var lName: String? = ""
-        fullName?.size?.let {
-            for (i in 1 until (it)){
-                lName += fullName[i]
-            }
-        }
-        if (lName.isNullOrEmpty()){
-            lName = null
-        }
 
         mutableState.update {
             currentValue.copy(
                 name = name ?: currentValue.name,
-                firstName = fName ?: currentValue.firstName,
-                lastName = lName ?: currentValue.lastName,
+                firstName = firstName ?: currentValue.firstName,
+                lastName = lastName ?: currentValue.lastName,
                 isSuccess = isSuccess ?: currentValue.isSuccess,
                 openNextScreen = openNestScreen ?: currentValue.openNextScreen
             )

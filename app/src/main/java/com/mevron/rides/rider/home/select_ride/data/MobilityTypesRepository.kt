@@ -6,6 +6,8 @@ import com.mevron.rides.rider.home.select_ride.domain.MobilityTypeDomainModel
 import com.mevron.rides.rider.home.select_ride.domain.MobilityTypesRequest
 import com.mevron.rides.rider.home.select_ride.model.Data
 import com.mevron.rides.rider.home.select_ride.model.Fare2
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 
 class MobilityTypesRepository (
     private val api: MobilityTypesApi
@@ -19,11 +21,15 @@ class MobilityTypesRepository (
                     DomainModel.Success(data = it.success.data.map { data -> data.toDomainModel() })
                 } ?: DomainModel.Success(data = listOf<MobilityTypeDomainModel>())
             } else {
-                DomainModel.Error(Throwable(response.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(response)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(error)
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
+
+
+
 
     private fun Data.toDomainModel():MobilityTypeDomainModel{
         var values = mutableListOf<String>()

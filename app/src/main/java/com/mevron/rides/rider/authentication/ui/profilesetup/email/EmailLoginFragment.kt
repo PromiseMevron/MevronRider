@@ -2,18 +2,24 @@ package com.mevron.rides.rider.authentication.ui.profilesetup.email
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
+import com.mevron.rides.rider.IntroScreenActivity
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.auth.AuthUtil
 import com.mevron.rides.rider.authentication.ui.profilesetup.email.event.RegisterEmailEvent
@@ -99,7 +105,7 @@ class EmailLoginFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun checkButton(state: Boolean){
         if (state){
             print("state is $state")
-            binding.nextButton.isEnabled = state
+            binding.nextButton.isEnabled = true
             binding.nextButton.setImageResource(R.drawable.ic_done_enabled)
             binding.incorrectNumber.visibility = View.INVISIBLE
             binding.nextButton.setImageResource(R.drawable.next_enabled)
@@ -107,10 +113,10 @@ class EmailLoginFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             binding.riderEmail.setTextColor(resources.getColor(R.color.field_color ))
         }else{
             binding.nextButton.setImageResource(R.drawable.ic_done_enabled)
-             binding.incorrectNumber.visibility = View.VISIBLE
-            binding.nextButton.isEnabled = state
-            binding.riderEmail.setBackground(resources.getDrawable(R.drawable.rounded_corner_field_red,))
-            binding.riderEmail.setTextColor(resources.getColor(R.color.red ))
+             binding.incorrectNumber.visibility = View.INVISIBLE
+            binding.nextButton.isEnabled = true
+            binding.riderEmail.setBackground(resources.getDrawable(R.drawable.rounded_corner_field,))
+            binding.riderEmail.setTextColor(resources.getColor(R.color.field_color ))
         }
     }
 
@@ -129,8 +135,18 @@ class EmailLoginFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private fun openHomeActivity(){
         if (hasPermission()){
-            startActivity(Intent(activity, HomeActivity::class.java))
-            activity?.finish()
+
+            val mLocationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val mGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+            if (mGPS) {
+                startActivity(Intent(activity, HomeActivity::class.java))
+                activity?.finish()
+            }
+            else {
+                Toast.makeText(requireContext(), "Enable Location and try again", Toast.LENGTH_LONG).show()
+                activity?.startActivity(Intent(requireActivity(), IntroScreenActivity::class.java))
+            }
         }else{
             requestPermission()
         }

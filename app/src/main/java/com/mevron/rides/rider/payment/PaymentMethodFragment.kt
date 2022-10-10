@@ -1,8 +1,10 @@
 package com.mevron.rides.rider.payment
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +13,22 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.wallet.IsReadyToPayRequest
+import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.PaymentMethodFragmentBinding
+import com.mevron.rides.rider.util.Constants
+import com.mevron.rides.rider.util.Constants.baseRequest
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -34,6 +44,7 @@ class PaymentMethodFragment : Fragment() {
     private val viewModel: PaymentMethodViewModel by viewModels()
     private lateinit var binding: PaymentMethodFragmentBinding
     private var mDialog: Dialog? = null
+    private lateinit var client: PaymentsClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +61,22 @@ class PaymentMethodFragment : Fragment() {
         binding.webView.settings.builtInZoomControls = true
         binding.webView.settings.useWideViewPort = true
 
+        val options = Wallet.WalletOptions.Builder().setEnvironment(WalletConstants.ENVIRONMENT_TEST).build()
+        client = Wallet.getPaymentsClient(requireContext(), options)
+        val request = IsReadyToPayRequest.fromJson(Constants.baseRequest.toString())
+        request.let {
+            val task = client.isReadyToPay(request)
+            task.addOnCompleteListener { completedTask ->
+                val result = completedTask.getResult(ApiException::class.java)
+                result?.let {
+                    if (it)
+                    binding.google.visibility = View.GONE
+                    else
+                        binding.google.visibility = View.GONE
+                }
+            }
+        }
+
         binding.backButton.setOnClickListener {
             if (binding.webView.visibility == View.GONE) {
                 activity?.onBackPressed()
@@ -63,30 +90,55 @@ class PaymentMethodFragment : Fragment() {
         }
 
         binding.credit.setOnClickListener {
-            viewModel.updateState(amount = "100")
-            viewModel.getPayLink()
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("To add your card to mevron, we will charge a fee that will be refunded into your wallet")
+            builder.setTitle("Info!")
+            builder.setCancelable(true)
+            builder.setPositiveButton("Proceed",
+                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int ->
+                    toggleBusyDialog(
+                        true, "Please wait"
+                    )
+                    viewModel.updateState(amount = "100")
+                    viewModel.getPayLink()
+                } as DialogInterface.OnClickListener)
+
+            builder.setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                    dialog.cancel()
+                } as DialogInterface.OnClickListener)
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        binding.google.setOnClickListener {
+            binding.google.isClickable = false
         }
 
 
         lifecycleScope.launch {
 
                 viewModel.state.collect { state ->
-                    toggleBusyDialog(
-                        state.isLoading,
-                        desc = if (state.isLoading) "Submitting Data..." else null
-                    )
 
                     if (state.error.isNotEmpty()) {
                         Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
                     }
 
                     if (state.paymentLink.isNotEmpty()) {
+                        toggleBusyDialog(
+                            false,
+                        )
                         loadWebView(state.paymentLink)
                         binding.webView.visibility = View.VISIBLE
                         viewModel.updateState(payLink = "")
                     }
 
                     if (state.successFund) {
+                        toggleBusyDialog(
+                            false,
+                        )
                         Toast.makeText(
                             requireContext(),
                             "Card Added Successfully",
@@ -101,6 +153,9 @@ class PaymentMethodFragment : Fragment() {
     }
 
     private fun loadWebView(webUrl: String) {
+        toggleBusyDialog(
+            false,
+        )
         binding.webView.loadUrl(webUrl)
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(

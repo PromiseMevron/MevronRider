@@ -339,14 +339,14 @@ class SelectRideFragment : Fragment(), OnMapReadyCallback, OnCarSelectedListener
         return clusterBitmap
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
+    override fun onMapReady(p0: GoogleMap) {
         if (p0 != null) {
             gMap = p0
            // Toast.makeText(context, "33", Toast.LENGTH_LONG).show()
         }
         gMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-        MapsInitializer.initialize(context?.applicationContext)
+        context?.applicationContext?.let { MapsInitializer.initialize(it) }
 
         arguments?.let { theArguments -> SelectRideFragmentArgs.fromBundle(theArguments).location }
             ?.let { locationModel ->

@@ -32,7 +32,6 @@ class TopUpViewModel @Inject constructor(
          Log.d("we reached here", "we reached here 1111111")
          val amount = mutableState.value.addFundAmount
          val cardId = mutableState.value.cardNumber
-        updateState(loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = addFundUseCase(data =   CashActionData(
                 amount = amount,
@@ -70,7 +69,6 @@ class TopUpViewModel @Inject constructor(
     }
 
      fun getCards() {
-        updateState(loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = getPaymentMethodsUseCase()) {
                 is DomainModel.Success -> {
@@ -95,7 +93,6 @@ class TopUpViewModel @Inject constructor(
 
     fun getPayLink() {
         Log.d("we reached here", "we reached here 5656555555")
-        updateState(loading = true)
         val request = mutableState.value.toLinkRequest()
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = linkCase(request)) {

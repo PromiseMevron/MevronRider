@@ -107,6 +107,7 @@ class HomeViewModel @Inject constructor(
                 }
                 when (tripState) {
                     is TripState.DriverSearchState -> {
+                        setState { copy(hideStateCheckCover = true) }
                         setState { copy(shouldOpenConfirmRide = true) }
                     }
 
@@ -119,6 +120,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     is TripState.TripStatusState -> {
+                        setState { copy(hideStateCheckCover = true) }
                         if (tripState.data.metaData.status.toTripStatus() == TripStatus.TRIP_COMPLETED) {
                             setState {
                                 copy(shouldOpenTipView = SingleStateEvent<Unit>().apply {
@@ -131,7 +133,9 @@ class HomeViewModel @Inject constructor(
                         // setState { copy(shouldOpenBookedRide = true) }
                     }
 
-                    else -> {}
+                    else -> {
+                        setState { copy(hideStateCheckCover = true) }
+                    }
                 }
             }
         }

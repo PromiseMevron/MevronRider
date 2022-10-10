@@ -58,7 +58,8 @@ class HelpFragment : Fragment() {
             makePhoneCall()
         }
         binding.chatButton.setOnClickListener {
-            Zendesk.instance.messaging.showMessaging(requireContext())
+            Zendesk.instance.messaging
+                .showMessaging(requireContext())
         }
     }
 

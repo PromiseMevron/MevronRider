@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.payment
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.text.toLowerCase
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.SavedPaymentFragmentBinding
 import com.mevron.rides.rider.home.model.getCard.Data
 import com.mevron.rides.rider.payment.domain.PaymentCard
+import com.mevron.rides.rider.payment.ui.GetLinkSavedState
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -70,29 +73,49 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
             }
         }
         binding.credit.setOnClickListener {
-            viewModel.updateState(amount = "100")
-            viewModel.getPayLink()
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("To add your card to mevron, we will charge a fee that will be refunded into your wallet")
+            builder.setTitle("Info!")
+            builder.setCancelable(true)
+            builder.setPositiveButton("Proceed",
+                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int ->
+                    toggleBusyDialog(
+                        true, "Please wait"
+                    )
+                    viewModel.updateState(amount = "100")
+                    viewModel.getPayLink()
+                } as DialogInterface.OnClickListener)
+
+            builder.setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                    dialog.cancel()
+                } as DialogInterface.OnClickListener)
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
         }
 
-        viewModel.getPaymentMethods()
+        get()
 
         lifecycleScope.launchWhenResumed {
 
                 viewModel.state.collect { state ->
-                    toggleBusyDialog(
-                        state.isLoading,
-                        desc = if (state.isLoading) "Processing..." else null
-                    )
-                    adapter = PaymentAdapter(this@SavedPaymentFragment, -1)
-                    binding.recyclerView.adapter = adapter
-                    adapter.submitList(state.paymentCards)
+
+                    setUpAdapter(state)
 
                     if (state.error.isNotEmpty()) {
+                        toggleBusyDialog(
+                            false, "Please wait"
+                        )
                         Log.d("Failure", state.error)
                         Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
                     }
 
                     if (state.paymentLink.isNotEmpty()) {
+                        toggleBusyDialog(
+                            false, "Please wait"
+                        )
                         loadWebView(state.paymentLink)
                         binding.webView.visibility = View.VISIBLE
                         viewModel.updateState(payLink = "")
@@ -103,7 +126,26 @@ class SavedPaymentFragment : Fragment(), PaySelected2, OnPaymentMethodSelectedLi
 
     }
 
+    private fun setUpAdapter(state: GetLinkSavedState){
+        toggleBusyDialog(
+            false, "Please wait"
+        )
+        adapter = PaymentAdapter(this@SavedPaymentFragment, -1)
+        binding.recyclerView.adapter = adapter
+        adapter.submitList(state.paymentCards)
+    }
+
+    private fun get(){
+        toggleBusyDialog(
+            true, "Please wait"
+        )
+        viewModel.getPaymentMethods()
+    }
+
     private fun loadWebView(webUrl: String) {
+        toggleBusyDialog(
+            false, "Please wait"
+        )
         binding.webView.loadUrl(webUrl)
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(

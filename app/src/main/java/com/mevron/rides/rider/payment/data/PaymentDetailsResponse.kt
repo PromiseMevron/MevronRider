@@ -17,13 +17,15 @@ data class PaymentDetailsSuccess(
 data class PayData(
     val balance: String,
     val currency: String,
+    @SerializedName("currency_symbol")
+    val currencySymbol: String?,
     val transactions: List<PayDataDatum>
 )
 
 data class PayDataDatum(
     val amount: String,
     val date: String,
-    val icon: String,
+    val icon: String?,
     val method: String,
     val narration: String,
     val time: String

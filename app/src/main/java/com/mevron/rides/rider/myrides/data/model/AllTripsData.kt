@@ -55,6 +55,7 @@ package com.mevron.rides.rider.myrides.data.model
 )*/
 data class AllTripsData(
     val amount: String,
+    val currency: String,
     val date: String,
     val destinationLatitude: String,
     val destinationLongitude: String,

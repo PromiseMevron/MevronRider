@@ -50,7 +50,7 @@
         android:layout_height="@dimen/_90sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_logo"
+        android:src="@drawable/profile"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/_70sdp"
         android:id="@+id/profile_image"/>
@@ -76,13 +76,39 @@
         app:layout_constraintEnd_toEndOf="@id/profile_image"
         app:layout_constraintStart_toStartOf="@id/profile_image">
 
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#8a8a8a"
+        android:textSize="@dimen/_10ssp"
+        android:text="@string/first_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/change_image"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:id="@+id/fname" />
 
+
+    <EditText
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@id/fname"
+        android:layout_width="0dp"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_height="52dp"
+        android:imeOptions="actionNext"
+        android:layout_weight="2"
+        android:id="@+id/rider_fname"
+        android:background="@drawable/rounded_corner_field"
+        android:textColor="#383838"
+        android:inputType="textPersonName"/>
 
 
 
@@ -91,12 +117,12 @@
         android:layout_height="wrap_content"
         android:textColor="#8a8a8a"
         android:textSize="@dimen/_10ssp"
-        android:text="@string/name"
+        android:text="@string/last_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image"
+        app:layout_constraintTop_toBottomOf="@id/rider_fname"
         android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:id="@+id/name" />
+        android:id="@+id/lname" />
 
 
     <EditText
@@ -104,7 +130,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginEnd="@dimen/_14sdp"
-        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@id/lname"
         android:layout_width="0dp"
         android:paddingStart="@dimen/_10sdp"
         android:paddingEnd="@dimen/_10sdp"
@@ -112,7 +138,7 @@
         android:layout_height="52dp"
         android:imeOptions="actionNext"
         android:layout_weight="2"
-        android:id="@+id/rider_name"
+        android:id="@+id/rider_lname"
         android:background="@drawable/rounded_corner_field"
         android:textColor="#383838"
         android:inputType="textPersonName"/>
@@ -128,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
         android:id="@+id/email_model"
-        app:layout_constraintTop_toBottomOf="@id/rider_name"
+        app:layout_constraintTop_toBottomOf="@id/rider_lname"
         android:layout_weight="1">
 
         <TextView
@@ -169,7 +195,7 @@
             app:layout_constraintBottom_toBottomOf="@id/rider_email"
             android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/ic_check_mark"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:id="@+id/check_email"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -277,6 +303,7 @@
         app:cornerRadius="4dp"
         android:text="@string/update_profile"
         android:textAllCaps="false"
+        android:visibility="gone"
         android:fontFamily="@font/poppins_regular"
         android:textSize="@dimen/_12ssp"
         android:id="@+id/update_profile"/>

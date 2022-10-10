@@ -1,6 +1,7 @@
 package com.mevron.rides.rider.payment.ui
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,6 +27,7 @@ import com.mevron.rides.rider.payment.PaymentAdapter
 import com.mevron.rides.rider.payment.domain.PaymentCard
 import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 {
@@ -53,7 +56,7 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
         binding.webView.settings.useWideViewPort = true
         val amount = arguments?.let { TopUpFragmentArgs.fromBundle(it).amount }
         viewModel.updateState(addFund = amount)
-        viewModel.getCards()
+        fetchCards()
         adapter = PaymentAdapter(this@TopUpFragment, 0)
         binding.recyclerView.adapter = adapter
         adapter = PaymentAdapter(this@TopUpFragment, 0)
@@ -69,16 +72,11 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                         activity?.onBackPressed()
                     } else {
                         if (state.addCard) {
-                            viewModel.getCards()
+                            fetchCards()
                         }
                         binding.webView.visibility = View.GONE
                     }
                 }
-
-                toggleBusyDialog(
-                    state.loading,
-                    desc = if (state.loading) "Processing..." else null
-                )
 
                 if (state.cardData.isNotEmpty()) {
                     Log.d("THE CARDS ARE", "THE CARDS ARE ${state.cardData}")
@@ -86,8 +84,14 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                         it.uuid != null && it.lastDigits != null
                     }
                     if (dataToUse.isEmpty()) {
+                        toggleBusyDialog(
+                            false
+                        )
                         binding.addCard.visibility = View.VISIBLE
                     } else {
+                        toggleBusyDialog(
+                            false
+                        )
                         binding.addCard.visibility = View.GONE
                     }
                     adapter.submitList(
@@ -106,14 +110,21 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
                 }
 
                 if (state.successFund) {
+                    toggleBusyDialog(
+                        false
+                    )
                     Toast.makeText(
                         requireContext(),
                         "Fund Added Successfully",
                         Toast.LENGTH_LONG
                     ).show()
                     binding.webView.visibility = View.GONE
+                    activity?.onBackPressed()
                 }
                 if (state.payLink.isNotEmpty()) {
+                    toggleBusyDialog(
+                        false
+                    )
                     loadWebView(state.payLink)
                     binding.webView.visibility = View.VISIBLE
                     viewModel.updateState(payLink = "")
@@ -123,16 +134,41 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
         }
 
         binding.addOtherMethod.setOnClickListener {
+            toggleBusyDialog(
+                true
+            )
             viewModel.getPayLink()
         }
 
         binding.addCard.setOnClickListener {
-            viewModel.updateState(addFund = "100", addCard = true)
-            viewModel.getPayLink()
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("To add your card to mevron, we will charge a fee that will be refunded into your wallet")
+            builder.setTitle("Info!")
+            builder.setCancelable(true)
+            builder.setPositiveButton("Proceed",
+                DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int ->
+                    viewModel.updateState(addFund = "100", addCard = true)
+                    viewModel.getPayLink()
+                    toggleBusyDialog(
+                        true)
+                } as DialogInterface.OnClickListener)
+
+            builder.setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                    dialog.cancel()
+                } as DialogInterface.OnClickListener)
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.show()
         }
     }
 
-    private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
+    private fun fetchCards(){
+        toggleBusyDialog(true)
+        viewModel.getCards()
+    }
+    private fun toggleBusyDialog(busy: Boolean, desc: String = "Processing please wait...") {
         if (busy) {
             if (mDialog == null) {
                 val view = LayoutInflater.from(requireContext())
@@ -152,6 +188,9 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
     }
 
     private fun loadWebView(webUrl: String) {
+        toggleBusyDialog(
+            false
+        )
         binding.webView.loadUrl(webUrl)
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
@@ -192,9 +231,9 @@ class TopUpFragment : Fragment(), OnPaymentMethodSelectedListener, PaySelected2 
     }
 
     override fun onPaymentMethodSelected(paymentCard: PaymentCard) {
-        Log.d("we reached here", "we reached here 22222222")
         viewModel.updateState(cardNumber = paymentCard.uuid)
         viewModel.addFundToWallet()
+        toggleBusyDialog(true)
     }
 
     override fun selected(data: Data) {

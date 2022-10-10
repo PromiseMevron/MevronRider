@@ -1,8 +1,11 @@
 package com.mevron.rides.rider.home.booked
 
+import android.Manifest
 import android.app.Dialog
+import android.content.ContentResolver
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -10,6 +13,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +23,8 @@ import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,24 +44,37 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.mevron.rides.rider.R
 import com.mevron.rides.rider.databinding.BookedFragmentBinding
+import com.mevron.rides.rider.emerg.data.model.Contact
+import com.mevron.rides.rider.emerg.data.model.Set
+import com.mevron.rides.rider.emerg.ui.EmergencyEvent
+import com.mevron.rides.rider.emerg.ui.adapter.AddEmergencyAdapter
+import com.mevron.rides.rider.emerg.ui.adapter.SaveNumber
 import com.mevron.rides.rider.home.booked.domain.BookedTripEvent
 import com.mevron.rides.rider.home.booked.domain.TripStatus
+import com.mevron.rides.rider.home.data.ContactShare
+import com.mevron.rides.rider.home.data.ShareTrip
 import com.mevron.rides.rider.home.model.GeoDirectionsResponse
 import com.mevron.rides.rider.home.model.LocationModel
+import com.mevron.rides.rider.home.ride.ConfirmRideFragmentDirections
 import com.mevron.rides.rider.payment.ui.*
+import com.mevron.rides.rider.remote.GenericStatus
 import com.mevron.rides.rider.shared.ui.services.LocationProcessor
 import com.mevron.rides.rider.socket.domain.models.MetaData
 import com.mevron.rides.rider.util.Constants
 import com.mevron.rides.rider.util.LauncherUtil
 import com.mevron.rides.rider.util.bitmapFromVector
 import com.mevron.rides.rider.util.getGeoLocation
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import reactivecircus.flowbinding.android.widget.textChanges
 import java.util.*
 
 @AndroidEntryPoint
 class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
-    CashOutAddFundEventListener, CustomRatingEventListener, CustomCancelEventListener {
+    CashOutAddFundEventListener, CustomRatingEventListener, CustomCancelEventListener, SaveNumber {
 
     companion object {
         fun newInstance() = BookedFragment()
@@ -85,6 +104,18 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var shadeColor = 0x44ff0000 //opaque red fill
 
     private lateinit var location: Array<LocationModel>
+
+    private val PROJECTION = arrayOf(
+        ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+        ContactsContract.Contacts.DISPLAY_NAME,
+        ContactsContract.CommonDataKinds.Phone.NUMBER
+    )
+
+    private lateinit var adapter: AddEmergencyAdapter
+    var contactList: ArrayList<Contact> = ArrayList()
+    var contactListToSend: ArrayList<Contact> = ArrayList()
+    var contactListSend: ArrayList<ContactShare> = ArrayList()
+    val positions: ArrayList<Int> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -210,6 +241,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun bindDriverArrived(data: MetaData?) {
+        binding.scheduleButton.visibility = View.GONE
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -224,6 +256,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun bindRateDriver(data: MetaData?){
+        binding.scheduleButton.visibility = View.GONE
         binding.tipDriverLayout.rootView.visibility = View.VISIBLE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -252,6 +285,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun bindTripStarted(data: MetaData?) {
+        binding.scheduleButton.visibility = View.VISIBLE
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
         driverAllBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -310,17 +344,24 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun setUpDefaultView(data: MetaData?) {
+        binding.scheduleButton.visibility = View.GONE
         binding.tipDriverLayout.rootView.visibility = View.GONE
         binding.ratingDriverLayout.rootView.visibility = View.GONE
         generalView(data)
     }
 
     private fun generalView(data: MetaData?){
+     if (!data?.driver?.profilePicture.isNullOrEmpty()){
+         Picasso.get().load(data?.driver?.profilePicture).placeholder(R.drawable.profile).error(R.drawable.profile).into(binding.bookedHomeBottom.profileImage)
+         Picasso.get().load(data?.driver?.profilePicture).placeholder(R.drawable.profile).error(R.drawable.profile).into(binding.bookedOnrideBottom.profileImage)
+         Picasso.get().load(data?.driver?.profilePicture).placeholder(R.drawable.profile).error(R.drawable.profile).into(binding.tipDriverLayout.profileImage)
+     }
         binding.bookedHomeBottom.optNum.text = data?.trip?.verificationCode
         binding.bookedHomeBottom.pickName.text = ""
         binding.bookedHomeBottom.dropName.text = ""
         binding.bookedHomeBottom.pickName.visibility = View.GONE
         binding.bookedHomeBottom.dropName.visibility = View.GONE
+        binding.bookedEmergencyBottom.carsDetail.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
         binding.bookedHomeBottom.driverCar.text = "${data?.driver?.vehicle?.type} . ${data?.driver?.vehicle?.plateNumber}"
         binding.bookedHomeBottom.cardNumber.text = data?.paymentMethod?.type
         binding.bookedHomeBottom.userRating.text = data?.driver?.rating
@@ -392,12 +433,84 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         viewModel.getDriverLocation()
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                Toast.makeText(context, "back pressed", Toast.LENGTH_LONG).show()
                 activity?.finish()
                 // in here you can do logic when backPress is clicked
             }
         })
 
+        binding.bookedOnrideBottom.shareButton.setOnClickListener {
+            getContactList()
+            binding.shareTripDetails.rootView.visibility = View.VISIBLE
+        }
+
+        binding.bookedEmergencyBottom.shareButton.setOnClickListener {
+            getContactList()
+            binding.shareTripDetails.rootView.visibility = View.VISIBLE
+        }
+
+        binding.shareTripDetails.addressField.textChanges().skipInitialValue().onEach {filter ->
+            val searchWord = filter ?: ""
+            if (searchWord.isEmpty()){
+                adapter.submitList(contactList)
+                return@onEach
+            }
+            val cities = mutableListOf<Contact>()
+            if (contactList.isNotEmpty()){
+                for (city in contactList){
+                    if (city.name?.contains(searchWord, ignoreCase = true) == true){
+                        cities.add(city)
+                    }
+                }
+                adapter.submitList(cities)
+            }
+
+        }.launchIn(lifecycleScope)
+
+        binding.shareTripDetails.okay.setOnClickListener {
+            contactListSend = arrayListOf()
+            for (cnt in contactListToSend) {
+                val set = ContactShare(name = cnt.name ?: "", phoneNumber = cnt.phoneNumber ?: "")
+                contactListSend.add(set)
+            }
+            if (contactListSend.isEmpty()){
+
+                binding.shareTripDetails.rootView.visibility = View.GONE
+                return@setOnClickListener
+            }
+            val tripId = viewModel.uiState.value.metaData?.trip?.tripId ?: ""
+            val data = ShareTrip(contacts = contactListSend, trip_id = tripId)
+
+            toggleBusyDialog(true, "Submitting")
+            viewModel.shareTrip(data).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                it?.let { res ->
+                    when (res) {
+                        is GenericStatus.Success -> {
+                            toggleBusyDialog(false)
+                            binding.shareTripDetails.rootView.visibility = View.GONE
+                        }
+
+                        is GenericStatus.Error -> {
+                            toggleBusyDialog(false)
+                            Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG)
+                                .show()
+                        }
+
+                        is GenericStatus.Unaunthenticated -> {
+                            toggleBusyDialog(false)
+                            Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG)
+                                .show()
+
+                        }
+                    }
+
+                }
+            })
+
+        }
+
+        binding.shareTripDetails.close.setOnClickListener {
+            binding.shareTripDetails.rootView.visibility = View.GONE
+        }
 
         driverAllBottomSheetBehavior =
             BottomSheetBehavior.from(binding.bookedHomeBottom.bottomSheet)
@@ -675,17 +788,23 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         /** Do nothing **/
                     }
                     else -> {
-                        findNavController().navigate(R.id.action_global_homeFragment)
+                        val  action = BookedFragmentDirections.actionGlobalHomeFragment().apply {
+                            showLoader = false
+                        }
+                        findNavController().navigate(action)
                     }
                 }
 
                 if (uiState.isRideCancelled){
-                    findNavController().navigate(R.id.action_global_homeFragment)
+                    binding.cancelReasonSuccess.baseLayout.visibility = View.VISIBLE
                 }
 
                 if (uiState.isSuccess){
                     Toast.makeText(context, "Tip and Rating Successful", Toast.LENGTH_LONG).show()
-                    findNavController().navigate(R.id.action_global_homeFragment)
+                    val  action = BookedFragmentDirections.actionGlobalHomeFragment().apply {
+                        showLoader = false
+                    }
+                    findNavController().navigate(action)
                 }
 
                 if (uiState.error.isNotEmpty()){
@@ -703,7 +822,42 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             binding.verifiedCode.visibility = View.GONE
         }
 
+        binding.cancelReasonSuccess.doneButton.setOnClickListener {
+            val  action = BookedFragmentDirections.actionGlobalHomeFragment().apply {
+                showLoader = false
+            }
+            findNavController().navigate(action)
+        }
+
         binding.scheduleButton.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ), Constants.LOCATION_REQUEST_CODE
+                )
+                return@setOnClickListener
+            }
+            getLocationProvider()?.lastLocation?.addOnSuccessListener {
+                //  Toast.makeText(context, "22", Toast.LENGTH_LONG).show()
+                val location = it
+                if (location != null) {
+                    val currentLocation = LatLng(location.latitude, location.longitude)
+                    getAddressFromLocation(currentLocation)
+                } else {
+                   Toast.makeText(requireContext(), "FAILURE TO GET FETCH LOCATION", Toast.LENGTH_LONG).show()
+                }
+            }?.addOnFailureListener {
+                it.printStackTrace()
+            }
             emergedBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
@@ -734,12 +888,12 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapView.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(p0: GoogleMap) {
 
-        if (googleMap != null) {
-            gMap = googleMap
+        if (p0 != null) {
+            gMap = p0
         }
-        MapsInitializer.initialize(activity?.applicationContext)
+        activity?.applicationContext?.let { MapsInitializer.initialize(it) }
 /*
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
@@ -805,7 +959,7 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
             layoutParams.setMargins(0, 0, 30, 850)
         }
 
-        googleMap?.isMyLocationEnabled = true
+        p0.isMyLocationEnabled = true
     }
 
     private fun addMarkerToPolyLines(
@@ -1053,6 +1207,10 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if (requestCode == Constants.LOCATION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mapView.getMapAsync(this)
         }
+
+        if (requestCode == 100 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getContactList()
+        }
     }
 
     fun getAddressFromLocation(location: LatLng?) {
@@ -1067,13 +1225,63 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 val address = if (addresses.isNotEmpty())
                     addresses[0].getAddressLine(0)
                 else ""
-
-
+                binding.bookedEmergencyBottom.myLocation.text = address
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
+
+    private fun getContactList() {
+
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.READ_CONTACTS
+                )
+            }
+            != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                100
+            )
+            return
+        }
+        var id = 0
+        val cr: ContentResolver = activity?.contentResolver!!
+        val cursor: Cursor? = cr.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            PROJECTION,
+            null,
+            null,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"
+        )
+        if (cursor != null) {
+            val mobileNoSet = HashSet<String>()
+            cursor.use { cursor ->
+                val nameIndex: Int = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+                val numberIndex: Int =
+                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                var name: String
+                var number: String
+                while (cursor.moveToNext()) {
+                    name = cursor.getString(nameIndex)
+                    number = cursor.getString(numberIndex)
+                    number = number.replace(" ", "")
+                    if (!mobileNoSet.contains(number)) {
+                        id += 1
+                        contactList.add(Contact(name, number, id = id))
+                        mobileNoSet.add(number)
+                    }
+                }
+                adapter = AddEmergencyAdapter(this)
+                adapter.submitList(contactList)
+                binding.shareTripDetails.contactsRecyclerView.adapter = adapter
+            }
+        }
+    }
+
+
 
     private fun toggleBusyDialog(busy: Boolean, desc: String? = null) {
         if (busy) {
@@ -1187,6 +1395,17 @@ class BookedFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun addRCancelRating(rating: String) {
         viewModel.updateCancelValue(rating)
+    }
+
+    override fun addRemoveContact(cnt: Contact) {
+        if (positions.contains(cnt.id)){
+            val index = positions.indexOfFirst { it == cnt.id }
+            contactListToSend.removeAt(index)
+            positions.removeAt(index)
+        }else{
+            contactListToSend.add(cnt)
+            positions.add(cnt.id)
+        }
     }
 
 }

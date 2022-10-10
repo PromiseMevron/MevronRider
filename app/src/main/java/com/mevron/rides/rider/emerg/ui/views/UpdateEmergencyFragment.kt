@@ -55,12 +55,16 @@ class UpdateEmergencyFragment : Fragment() {
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }
+        updateView(data.details)
 
         binding.name.text = data.name
         binding.number.text = data.phone
+        binding.nameToShare.text = "${resources.getString(R.string.select_when_to_share_your_ride_status_with)} ${data.name}."
 
         binding.before.setOnClickListener {
             before = !before
+            night = false
+            manual = false
             if (before) {
                 binding.before.setBackgroundResource(R.drawable.rounded_border_colored)
                 binding.before.setTextColor(resources.getColor(R.color.primary))
@@ -68,11 +72,17 @@ class UpdateEmergencyFragment : Fragment() {
                 binding.before.setBackgroundResource(R.drawable.rounded_border_cancel)
                 binding.before.setTextColor(resources.getColor(R.color.field_color))
             }
+            binding.manual.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.manual.setTextColor(resources.getColor(R.color.field_color))
+            binding.night.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.night.setTextColor(resources.getColor(R.color.field_color))
 
         }
 
         binding.night.setOnClickListener {
             night = !night
+            before = false
+            manual = false
             if (night) {
                 binding.night.setBackgroundResource(R.drawable.rounded_border_colored)
                 binding.night.setTextColor(resources.getColor(R.color.primary))
@@ -80,25 +90,27 @@ class UpdateEmergencyFragment : Fragment() {
                 binding.night.setBackgroundResource(R.drawable.rounded_border_cancel)
                 binding.night.setTextColor(resources.getColor(R.color.field_color))
             }
+            binding.manual.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.manual.setTextColor(resources.getColor(R.color.field_color))
+            binding.before.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.before.setTextColor(resources.getColor(R.color.field_color))
         }
 
         binding.manual.setOnClickListener {
-            Toast.makeText(requireContext(), "$manual", Toast.LENGTH_LONG).show()
-
             manual = !manual
-            Toast.makeText(requireContext(), "$manual 0", Toast.LENGTH_LONG).show()
-
+            before = false
+            night = false
             if (manual) {
-                Toast.makeText(requireContext(), "$manual 1", Toast.LENGTH_LONG).show()
-
                 binding.manual.setBackgroundResource(R.drawable.rounded_border_colored)
                 binding.manual.setTextColor(resources.getColor(R.color.primary))
             } else {
-                Toast.makeText(requireContext(), "$manual 2", Toast.LENGTH_LONG).show()
-
                 binding.manual.setBackgroundResource(R.drawable.rounded_border_cancel)
                 binding.manual.setTextColor(resources.getColor(R.color.field_color))
             }
+            binding.night.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.night.setTextColor(resources.getColor(R.color.field_color))
+            binding.before.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.before.setTextColor(resources.getColor(R.color.field_color))
         }
 
         binding.delete.setOnClickListener {
@@ -113,13 +125,13 @@ class UpdateEmergencyFragment : Fragment() {
 
                         is GenericStatus.Error -> {
                             toggleBusyDialog(false)
-                            Toast.makeText(context, "Error in deleting contact", Toast.LENGTH_LONG)
+                            Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG)
                                 .show()
                         }
 
                         is GenericStatus.Unaunthenticated -> {
                             toggleBusyDialog(false)
-                            Toast.makeText(context, "Error in deleting contact", Toast.LENGTH_LONG)
+                            Toast.makeText(context, res.error?.error?.message, Toast.LENGTH_LONG)
                                 .show()
 
                         }
@@ -130,15 +142,15 @@ class UpdateEmergencyFragment : Fragment() {
         }
 
         binding.doneButton.setOnClickListener {
-            val i = mutableListOf<Int>()
+            var i = mutableListOf<Int>()
             if (before) {
-                i.add(1)
+                i = arrayListOf(1)
             }
             if (night) {
-                i.add(2)
+                i = arrayListOf(2)
             }
             if (manual) {
-                i.add(3)
+                i = arrayListOf(3)
             }
             val dt = UpdateEmergencyContact(name = data.name, phoneNumber = data.phone, details = i)
             toggleBusyDialog(true, "Please Wait")
@@ -174,6 +186,38 @@ class UpdateEmergencyFragment : Fragment() {
                     }
                 })
 
+        }
+    }
+
+    private fun updateView(data: List<Int>){
+        if (data.contains(1)){
+            before = true
+            binding.before.setBackgroundResource(R.drawable.rounded_border_colored)
+            binding.before.setTextColor(resources.getColor(R.color.primary))
+        } else {
+            before = false
+            binding.before.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.before.setTextColor(resources.getColor(R.color.field_color))
+        }
+
+        if (data.contains(2)){
+            night = true
+            binding.night.setBackgroundResource(R.drawable.rounded_border_colored)
+            binding.night.setTextColor(resources.getColor(R.color.primary))
+        } else {
+            night = false
+            binding.night.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.night.setTextColor(resources.getColor(R.color.field_color))
+        }
+
+        if (data.contains(3)){
+            manual = true
+            binding.manual.setBackgroundResource(R.drawable.rounded_border_colored)
+            binding.manual.setTextColor(resources.getColor(R.color.primary))
+        } else {
+            manual = false
+            binding.manual.setBackgroundResource(R.drawable.rounded_border_cancel)
+            binding.manual.setTextColor(resources.getColor(R.color.field_color))
         }
     }
 

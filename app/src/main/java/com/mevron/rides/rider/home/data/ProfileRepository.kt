@@ -4,6 +4,8 @@ import com.mevron.rides.rider.authentication.data.models.profile.ProfileData
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.home.domain.IProfileRepository
 import com.mevron.rides.rider.home.domain.ProfileDomainData
+import com.mevron.rides.rider.remote.HTTPErrorHandler
+import com.mevron.rides.rider.util.Constants
 
 class ProfileRepository(private val api: ProfileApi) : IProfileRepository {
 
@@ -13,12 +15,13 @@ class ProfileRepository(private val api: ProfileApi) : IProfileRepository {
             if (result.isSuccessful) {
                 result.body()?.let {
                     it.success.profileData.toDomainModel()
-                } ?: DomainModel.Error(Throwable("Error Loading profile data from api"))
+                } ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(result.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(result)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         } catch (error: Throwable) {
-            DomainModel.Error(Throwable("Error connecting to network to fetch profile data"))
+            DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         }
 
     override suspend fun sendToken(id: DeviceID): DomainModel =

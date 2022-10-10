@@ -109,6 +109,7 @@ class SaveAddressFragment : Fragment(), PlaceAdapter.OnPlaceSelectedListener {
                         activity?.onBackPressed()
                     }
                     if (state.isSuccess) {
+                        toggleBusyDialog(false)
                         Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show()
                         activity?.onBackPressed()
                     }

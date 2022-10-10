@@ -96,6 +96,7 @@ class HomeActivity : AppCompatActivity() {
         navView = findViewById(R.id.nav_view)
         val widthOfNav = (Screen.width) * 0.7
         navView.layoutParams.width = widthOfNav.toInt()
+        navView.layoutParams.height = Screen.height
         navView.requestLayout()
 
         navController = findNavController(R.id.nav_host_fragment)

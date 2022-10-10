@@ -9,6 +9,8 @@ import com.mevron.rides.rider.authentication.ui.registerphone.event.RegisterPhon
 import com.mevron.rides.rider.authentication.ui.registerphone.state.RegisterPhoneState
 import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.domain.update
+import com.mevron.rides.rider.sharedprefrence.domain.usescases.SetPreferenceUseCase
+import com.mevron.rides.rider.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterPhoneViewModel @Inject constructor(
-    private val useCase: RegisterPhoneUseCase
+    private val useCase: RegisterPhoneUseCase,
+    private val setPreferenceUseCase: SetPreferenceUseCase
 ) : ViewModel() {
 
     private val mutableState: MutableStateFlow<RegisterPhoneState> =
@@ -53,6 +56,7 @@ class RegisterPhoneViewModel @Inject constructor(
     fun onEvent(event: RegisterPhoneEvent) {
         when (event) {
             RegisterPhoneEvent.NextButtonClick -> {
+                setPreferenceUseCase(Constants.COUNTRY, state.value.country)
                 updateState(canCheckNumber = true)
                 if (state.value.isCorrectNumber)
                 registerPhone(mutableState.value.buildRequest())

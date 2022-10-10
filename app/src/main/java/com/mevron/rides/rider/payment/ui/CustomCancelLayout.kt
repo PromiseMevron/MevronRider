@@ -23,7 +23,6 @@ class CustomCancelLayout @JvmOverloads constructor(
     private var numberText: TextView
     private var headingText: TextView
     private var doneButton: ImageButton
-    private var backGround: Button
     private var customEventListener: CustomCancelEventListener? = null
 
     init {
@@ -33,12 +32,7 @@ class CustomCancelLayout @JvmOverloads constructor(
         doneButton = findViewById(R.id.add_fund_done)
         numberText = findViewById(R.id.rate_count)
         headingText = findViewById(R.id.title)
-        backGround = findViewById(R.id.touch_background)
         closeButton.setOnClickListener {
-            hideKeyboard()
-            customEventListener?.closeCustomCancelButton()
-        }
-        backGround.setOnClickListener {
             hideKeyboard()
             customEventListener?.closeCustomCancelButton()
         }

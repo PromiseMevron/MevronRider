@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -73,6 +74,40 @@ class SaveAddressDetailsFragment : Fragment() {
 
         binding.editAddress.setOnClickListener {
             activity?.onBackPressed()
+        }
+
+        binding.homeAddress.setOnClickListener {
+            val type = viewModel.state.value.type
+            if (type != "home") {
+                viewModel.updateState(type = "home")
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_address_selected)
+                    ?.let { it1 -> binding.homeAddress.background = it1 }
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.workAddress.background = it1 }
+            }else{
+                viewModel.updateState(type = "others")
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.homeAddress.background = it1 }
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.workAddress.background = it1 }
+            }
+        }
+
+        binding.workAddress.setOnClickListener {
+            val type = viewModel.state.value.type
+            if (type != "work") {
+                viewModel.updateState(type = "work")
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_address_selected)
+                    ?.let { it1 -> binding.workAddress.background = it1 }
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.homeAddress.background = it1 }
+            }else{
+                viewModel.updateState(type = "others")
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.homeAddress.background = it1 }
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_border_save_button)
+                    ?.let { it1 -> binding.workAddress.background = it1 }
+            }
         }
 
         lifecycleScope.launchWhenResumed {

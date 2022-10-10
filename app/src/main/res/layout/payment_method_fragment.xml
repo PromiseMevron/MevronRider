@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/apple"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,15 +111,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/google"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/credit">
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_gog_pay"
+            android:layout_width="54dp"
+            android:layout_height="39dp"
+            android:src="@drawable/google_pay"
             android:layout_margin="@dimen/_16sdp"
             android:contentDescription="@string/google_pay"/>
 
@@ -141,6 +143,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/paypal"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/google">
@@ -170,7 +173,6 @@
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:id="@+id/webView"
         android:visibility="gone"/>
 

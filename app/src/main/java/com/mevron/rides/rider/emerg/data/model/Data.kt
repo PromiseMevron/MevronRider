@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 data class Data(
     val id: String,
     val name: String,
-    val phoneNumber: String
+    val phoneNumber: String,
+    val details: List<Int>
 ):Parcelable

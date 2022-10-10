@@ -11,33 +11,38 @@ import com.mevron.rides.rider.authentication.domain.model.VerifyOTPDomainModel
 import com.mevron.rides.rider.authentication.domain.repository.IAuthRepository
 import com.mevron.rides.rider.authentication.data.models.createaccount.SaveDetailsRequest
 import com.mevron.rides.rider.domain.DomainModel
+import com.mevron.rides.rider.remote.HTTPErrorHandler
 import com.mevron.rides.rider.remote.model.GeneralResponse
+import com.mevron.rides.rider.util.Constants
 
 class AuthRepository(private val authApi: AuthApi) : IAuthRepository {
     override suspend fun registerPhone(registerPhoneRequest: RegisterBody) =
         authApi.registerPhone(registerPhoneRequest).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     override suspend fun verifyOTP(verifyOTPRequest: ValidateOTPRequest) =
         authApi.verifyOTP(verifyOTPRequest).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
     override suspend fun createAccount(createAccountRequest: SaveDetailsRequest) =
         authApi.sendDetail(createAccountRequest).let {
             if (it.isSuccessful) {
-                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable("Empty result found"))
+                it.body()?.toDomainModel() ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
             } else {
-                DomainModel.Error(Throwable(it.errorBody().toString()))
+                val error = HTTPErrorHandler.handleErrorWithCode(it)
+                DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
             }
         }
 
@@ -55,7 +60,8 @@ class AuthRepository(private val authApi: AuthApi) : IAuthRepository {
         data = VerifyOTPDomainModel(
             accessToken = this.success.otpData.accessToken,
             riderType = this.success.otpData.riderType,
-            uuid = this.success.otpData.uuid
+            uuid = this.success.otpData.uuid,
+            proceed = this.success.otpData.stage.lowercase() != "dashboard"
         )
     )
 

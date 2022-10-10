@@ -4,8 +4,10 @@ import com.mevron.rides.rider.domain.DomainModel
 import com.mevron.rides.rider.home.ride.domain.IRideRepository
 import com.mevron.rides.rider.home.ride.domain.RideDomainData
 import com.mevron.rides.rider.home.ride.model.ConfirmRideResponse
+import com.mevron.rides.rider.remote.HTTPErrorHandler
 import com.mevron.rides.rider.remote.model.CancelRideRequest
 import com.mevron.rides.rider.remote.model.RideRequest
+import com.mevron.rides.rider.util.Constants
 
 class RideRequestRepository(private val api: RideRequestApi) : IRideRepository {
     override suspend fun createRide(rideRequest: RideRequest): DomainModel {
@@ -13,9 +15,10 @@ class RideRequestRepository(private val api: RideRequestApi) : IRideRepository {
         return if (result.isSuccessful) {
             result.body()?.let { data ->
                 DomainModel.Success(data = data.toDomainModel())
-            } ?: DomainModel.Error(Throwable("Error, Ride request response is empty"))
+            } ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         } else {
-            DomainModel.Error(Throwable(result.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(result)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 
@@ -24,9 +27,10 @@ class RideRequestRepository(private val api: RideRequestApi) : IRideRepository {
         return if (result.isSuccessful) {
             result.body()?.let { data ->
                 DomainModel.Success(data = Unit)
-            } ?: DomainModel.Error(Throwable("Error, Ride request response is empty"))
+            } ?: DomainModel.Error(Throwable(Constants.UNEXPECTED_ERROR))
         } else {
-            DomainModel.Error(Throwable(result.errorBody().toString()))
+            val error = HTTPErrorHandler.handleErrorWithCode(result)
+            DomainModel.Error(Throwable(error?.error?.message ?: Constants.UNEXPECTED_ERROR))
         }
     }
 }

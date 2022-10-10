@@ -18,6 +18,7 @@
             android:textColor="#383838"
             android:textFontWeight="500"
             android:textSize="18sp"
+            android:visibility="gone"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline1"
@@ -51,16 +52,20 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.96667" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <TextView
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/ic_no_trips"
+            android:layout_width="0dp"
             android:visibility="visible"
-            android:id="@+id/none"/>
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/none"
+            android:text="@string/once_you_successfully_fund_your_wallet_your_balance_will_reflect_your_current_balance"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -44,7 +44,6 @@ class NameSignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
                 registerNameViewModel.state.collect { state ->
                     if (state.openNextScreen){
                         handleSuccess(state.name)
@@ -52,7 +51,6 @@ class NameSignUpFragment : Fragment() {
                     binding.nextButton.isEnabled = state.isSuccess
                     buttonCheck(state = state.isSuccess)
                 }
-            }
         }
 
         binding.nextButton.clicks().take(1).onEach{
@@ -63,26 +61,38 @@ class NameSignUpFragment : Fragment() {
             activity?.onBackPressed()
         }
 
-        binding.riderName.textChanges().skipInitialValue().onEach {
+        binding.riderFirstName.textChanges().skipInitialValue().onEach {
+
+            validateText()
+        }.launchIn(lifecycleScope)
+
+        binding.riderLastName.textChanges().skipInitialValue().onEach {
             validateText()
         }.launchIn(lifecycleScope)
     }
 
     fun validateText(){
-       val name = binding.riderName.text.toString()
-        registerNameViewModel.updateState(isSuccess = AuthUtil.validateFullName(name), name = name )
+       val name = binding.riderFirstName.text.toString()
+        val lname = binding.riderLastName.text.toString()
+        registerNameViewModel.updateState(lastName = lname)
+        registerNameViewModel.updateState(firstName = name)
+        registerNameViewModel.updateState(isSuccess = AuthUtil.validateFullName(name, lname))
     }
 
     private fun buttonCheck(state: Boolean){
         if (state){
             binding.nextButton.setImageResource(R.drawable.next_enabled)
-            binding.riderName.background = resources.getDrawable(R.drawable.rounded_corner_field,)
-            binding.riderName.setTextColor(resources.getColor(R.color.field_color ))
+         //   binding.riderFirstName.background = resources.getDrawable(R.drawable.rounded_corner_field,)
+        //    binding.riderFirstName.setTextColor(resources.getColor(R.color.field_color ))
+            //binding.riderLastName.background = resources.getDrawable(R.drawable.rounded_corner_field,)
+           // binding.riderLastName.setTextColor(resources.getColor(R.color.field_color ))
             binding.nextButton.setImageResource(R.drawable.next_enabled)
         }else{
             binding.nextButton.setImageResource(R.drawable.next_enabled)
-            binding.riderName.background = resources.getDrawable(R.drawable.rounded_corner_field_red, )
-            binding.riderName.setTextColor(resources.getColor(R.color.red ))
+           // binding.riderFirstName.background = resources.getDrawable(R.drawable.rounded_corner_field_red, )
+          //  binding.riderFirstName.setTextColor(resources.getColor(R.color.red ))
+          //  binding.riderLastName.background = resources.getDrawable(R.drawable.rounded_corner_field_red,)
+         //   binding.riderLastName.setTextColor(resources.getColor(R.color.field_color ))
         }
     }
 

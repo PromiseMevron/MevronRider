@@ -1,9 +1,11 @@
 package com.mevron.rides.rider.emerg.ui.views
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +19,7 @@ import com.mevron.rides.rider.emerg.domain.model.GetContactDomainData
 import com.mevron.rides.rider.emerg.ui.EmergencyEvent
 import com.mevron.rides.rider.emerg.ui.adapter.EmergencyAdapter
 import com.mevron.rides.rider.emerg.ui.adapter.SelectedContact
+import com.mevron.rides.rider.util.LauncherUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -30,6 +33,7 @@ class EmergencyFragment : Fragment(), SelectedContact {
     private val viewModel: EmergencyViewModel by viewModels()
     private lateinit var binding: EmergencyFragmentBinding
     private lateinit var adapter: EmergencyAdapter
+    var mDialog: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,26 +62,38 @@ class EmergencyFragment : Fragment(), SelectedContact {
                     }
 
                     if (state.openNextPage) {
-                        viewModel.handleEvent(EmergencyEvent.MakeAPICall)
+                        fetchContact()
                     }
 
                     if (state.isSuccess) {
                         activity?.onBackPressed()
                     }
+                    if (state.error.isNotEmpty()){
+                        Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
+                        viewModel.updateState(error = "")
+                    }
 
                     if (state.result.isNotEmpty()) {
-                        setUpAdapter(state.result)
                         binding.emptyData.visibility = View.GONE
                     }else{
+                        toggleBusyDialog(false)
                         binding.emptyData.visibility = View.VISIBLE
                     }
+                    setUpAdapter(state.result)
 
             }
         }
+        fetchContact()
+
+    }
+
+    private fun fetchContact(){
+        toggleBusyDialog(true)
         viewModel.handleEvent(EmergencyEvent.MakeAPICall)
     }
 
     private fun setUpAdapter(data: MutableList<GetContactDomainData>) {
+        toggleBusyDialog(false)
         adapter = EmergencyAdapter(this)
         binding.recyclerView.adapter = adapter
         adapter.submitList(data)
@@ -90,6 +106,26 @@ class EmergencyFragment : Fragment(), SelectedContact {
                 data
             )
         findNavController().navigate(action)
+    }
+
+    fun toggleBusyDialog(busy: Boolean, desc: String = "Please wait") {
+
+        if (busy) {
+            if (mDialog == null) {
+                val view = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.dialog_busy_layout, null)
+                mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+            } else {
+                if (!desc.isNullOrBlank()) {
+                    val view = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.dialog_busy_layout, null)
+                    mDialog = LauncherUtil.showPopUp(requireContext(), view, desc)
+                }
+            }
+            mDialog?.show()
+        } else {
+            mDialog?.dismiss()
+        }
     }
 
 

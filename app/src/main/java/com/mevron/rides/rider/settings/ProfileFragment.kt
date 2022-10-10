@@ -74,7 +74,6 @@ class ProfileFragment : Fragment() {
             returnedImage = result
             binding.profileImage.setImageBitmap(result)
             createFile()
-
         }
 
         binding.changeImage.setOnClickListener {
@@ -92,11 +91,13 @@ class ProfileFragment : Fragment() {
         }
 
         binding.resendLink.setOnClickListener {
+            toggleBusyDialog(true, "Resending link")
             viewModel.resendLink().observe(viewLifecycleOwner, Observer {
                 it.let {  res ->
                     when(res){
 
                         is  GenericStatus.Success ->{
+                            toggleBusyDialog(false)
                           Toast.makeText(context, "Email verification link sent", Toast.LENGTH_LONG).show()
                         }
 
@@ -115,21 +116,21 @@ class ProfileFragment : Fragment() {
         }
 
         binding.updateProfile.setOnClickListener {
-            updateProfile()
+           // updateProfile()
         }
-
 
         val gson = Gson()
         val json = sPref.getString(Constants.PROFILE, null)
         json?.let {
             val user = gson.fromJson(it, ProfileData::class.java)
-            binding.riderName.setText("${user.firstName}  ${user.lastName}")
+            binding.riderFname.setText(user?.firstName)
+            binding.riderLname.setText(user?.lastName)
             binding.riderEmail.setText("${user.email}")
             binding.phoneNumber.setText("${user.phoneNumber}")
             if (user.email.toString().isValidEmail()){
-                binding.checkEmail.visibility = View.VISIBLE
+            //    binding.checkEmail.visibility = View.VISIBLE
             }else{
-                binding.checkEmail.visibility = View.GONE
+               // binding.checkEmail.visibility = View.GONE
             }
 
             if (user.emailStatus == 0){
@@ -146,20 +147,14 @@ class ProfileFragment : Fragment() {
             // name.text = user.firstName.toString()
         }
 
-
     }
 
     fun updateProfile(){
-        val name = binding.riderName.text.toString()
+        val fName = binding.riderFname.text.toString()
+        val lName = binding.riderLname.text.toString()
         val phone = binding.phoneNumber.text.toString()
         val email = binding.riderEmail.text.toString()
-        val fullName = name.split(" ")
-        val fName = fullName[0]
-        var lName = ""
-        for (i in 1 until (fullName.size)){
-            lName += fullName[i]
-        }
-        val data = SaveDetailsRequest(email = email, firstName = fName, lastName = lName, phoneNumber = phone)
+        val data = SaveDetailsRequest(email = email, firstName = fName, lastName = lName, phoneNumber = phone, country = null)
         toggleBusyDialog(true, "Uploading Data")
 
         viewModel.saveProfile(data).observe(viewLifecycleOwner, Observer {
@@ -189,22 +184,22 @@ class ProfileFragment : Fragment() {
     }
 
     fun getProfile(){
-        toggleBusyDialog(true, "Fetching Data")
         viewModel.getProfile().observe(viewLifecycleOwner, Observer {
             it.let {  res ->
-                toggleBusyDialog(false)
+                //toggleBusyDialog(false)
                 when(res){
 
                     is  GenericStatus.Success ->{
                         val user = res.data?.success?.profileData
-                        binding.riderName.setText("${user?.firstName}  ${user?.lastName}")
+                        binding.riderFname.setText(user?.firstName)
+                        binding.riderLname.setText(user?.lastName)
                         binding.riderEmail.setText("${user?.email}")
                         binding.phoneNumber.setText("${user?.phoneNumber}")
 
                         if (user?.email.toString().isValidEmail()){
-                            binding.checkEmail.visibility = View.VISIBLE
+                          //  binding.checkEmail.visibility = View.VISIBLE
                         }else{
-                            binding.checkEmail.visibility = View.GONE
+                          //  binding.checkEmail.visibility = View.GONE
                         }
 
                         if (user?.emailStatus == 0){
@@ -239,7 +234,7 @@ class ProfileFragment : Fragment() {
 //Convert bitmap to byte array
         val bitmap = returnedImage
         val bos =  ByteArrayOutputStream();
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos)
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 100 /*ignored for PNG*/, bos)
         val bitmapdata = bos.toByteArray()
 
 //write the bytes in file
@@ -259,7 +254,8 @@ class ProfileFragment : Fragment() {
         val reqFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
         val body: MultipartBody.Part =
             MultipartBody.Part.createFormData("document", file.name, reqFile)
-        toggleBusyDialog(true, "Uploading Profile...")
+
+        toggleBusyDialog(true, "Uploading Profile Picture...")
 
         viewModel.uploadProfile(body).observe(viewLifecycleOwner, Observer {
 
@@ -279,7 +275,7 @@ class ProfileFragment : Fragment() {
 
                     is  GenericStatus.Success ->{
                         toggleBusyDialog(false)
-                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Profile picture uploaded successfully", Toast.LENGTH_LONG).show()
                         //  findNavController().navigate(R.id.action_uploadInsuranceFragment_to_uploadStickerFragment)
                     }
                     else -> {}
